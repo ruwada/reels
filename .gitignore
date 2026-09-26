@@ -1,0 +1,5 @@
+__pycache__/
+# working files next to each edit.json: source video, stock clips, transcripts
+*/orig.*
+*/broll/
+*/work/

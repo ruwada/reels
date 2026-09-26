@@ -1,0 +1,105 @@
+{
+ "src": "orig.mov",
+ "words": "words.json",
+ "out": "reel8.mp4",
+ "hook": {
+  "text": "Главная ошибка\nпосле запуска",
+  "accent": "ошибка",
+  "start": 0,
+  "end": 3.0,
+  "top": 940
+ },
+ "zooms": [
+  {
+   "start": 3.3,
+   "end": 5.6,
+   "scale": 1.12
+  },
+  {
+   "start": 12.4,
+   "end": 13.9,
+   "scale": 1.1
+  },
+  {
+   "start": 13.9,
+   "end": 15.9,
+   "scale": 1.18
+  },
+  {
+   "start": 18.0,
+   "end": 20.2,
+   "scale": 1.15
+  },
+  {
+   "start": 22.3,
+   "end": 23.6,
+   "scale": 1.12
+  },
+  {
+   "start": 28.3,
+   "end": 30.6,
+   "scale": 1.18
+  }
+ ],
+ "cards": [
+  {
+   "start": 5.7,
+   "end": 8.3,
+   "kind": "stat",
+   "theme": "paper",
+   "transition": "sharp",
+   "value": "90%",
+   "label": "проблем появляются\nпосле релиза",
+   "accent": "после релиза"
+  },
+  {
+   "start": 10.2,
+   "end": 12.3,
+   "kind": "clip",
+   "file": "broll/7918580.mp4",
+   "from": 2.0,
+   "transition": "sharp"
+  },
+  {
+   "start": 16.2,
+   "end": 17.9,
+   "kind": "clip",
+   "file": "broll/33314914.mp4",
+   "from": 2.0,
+   "transition": "smooth"
+  },
+  {
+   "start": 20.3,
+   "end": 22.1,
+   "kind": "clip",
+   "file": "broll/36298433.mp4",
+   "from": 0.3,
+   "transition": "sharp"
+  },
+  {
+   "start": 23.6,
+   "end": 27.9,
+   "kind": "list",
+   "theme": "terminal",
+   "transition": "sharp",
+   "title": "Что продумать\nдо запуска",
+   "accent": "до запуска",
+   "items": [
+    "Логирование",
+    "Обработка ошибок",
+    "Запас по нагрузке"
+   ],
+   "item_at": [
+    0.42,
+    1.39,
+    2.27
+   ]
+  }
+ ],
+ "cta": {
+  "text": "Весь разбор\nв Telegram\nссылка в шапке",
+  "accent": "Telegram",
+  "start": -3.0,
+  "top": 900
+ }
+}

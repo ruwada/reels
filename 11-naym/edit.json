@@ -1,0 +1,128 @@
+{
+ "src": "orig.mov",
+ "words": "words.json",
+ "out": "reel11-v4.mp4",
+ "hook": {
+  "text": "Рост бизнеса\nбез новых сотрудников",
+  "accent": "без новых сотрудников",
+  "start": 0,
+  "end": 3.0,
+  "top": 940
+ },
+ "zooms": [
+  {
+   "start": 6.3,
+   "end": 8.6,
+   "scale": 1.15
+  },
+  {
+   "start": 13.8,
+   "end": 15.9,
+   "scale": 1.12
+  },
+  {
+   "start": 28.1,
+   "end": 30.5,
+   "scale": 1.15
+  },
+  {
+   "start": 58.6,
+   "end": 61.9,
+   "scale": 1.12
+  },
+  {
+   "start": 64.0,
+   "end": 66.0,
+   "scale": 1.1
+  },
+  {
+   "start": 71.5,
+   "end": 73.9,
+   "scale": 1.18
+  }
+ ],
+ "cards": [
+  {
+   "start": 3.1,
+   "end": 5.1,
+   "kind": "clip",
+   "file": "broll/8347250.mp4",
+   "from": 2.0,
+   "transition": "sharp"
+  },
+  {
+   "start": 8.6,
+   "end": 11.3,
+   "kind": "clip",
+   "file": "broll/30284959.mp4",
+   "from": 3.0,
+   "transition": "sharp"
+  },
+  {
+   "start": 16.5,
+   "end": 19.1,
+   "kind": "clip",
+   "file": "broll/13801233.mp4",
+   "from": 1.0,
+   "transition": "smooth"
+  },
+  {
+   "start": 22.3,
+   "end": 27.3,
+   "kind": "chat",
+   "frame": "phone",
+   "title": "AI-агент школы",
+   "status": "бот · онлайн",
+   "transition": "sharp",
+   "messages": [
+    {
+     "me": true,
+     "text": "Когда следующее занятие?",
+     "time": "19:02"
+    },
+    {
+     "me": false,
+     "text": "Завтра в 19:00. Ссылка и материалы уже здесь",
+     "time": "19:02"
+    },
+    {
+     "me": true,
+     "text": "Спасибо, быстро!",
+     "time": "19:03"
+    }
+   ]
+  },
+  {
+   "start": 32.4,
+   "end": 35.0,
+   "kind": "clip",
+   "file": "broll/12893567.mp4",
+   "from": 1.0,
+   "transition": "smooth"
+  },
+  {
+   "start": 43.9,
+   "end": 46.0,
+   "kind": "clip",
+   "file": "broll/6100414.mp4",
+   "from": 2.2,
+   "transition": "sharp"
+  },
+  {
+   "start": 68.9,
+   "end": 71.5,
+   "kind": "stat",
+   "value": "1 = 3",
+   "label": "один человек делает\nработу троих",
+   "accent": "троих",
+   "transition": "sharp"
+  }
+ ],
+ "cta": {
+  "text": "Разбор в Telegram\nссылка в шапке",
+  "accent": "Telegram",
+  "start": -3.6,
+  "top": 940
+ },
+ "theme": "glass"
+}
