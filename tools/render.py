@@ -21,6 +21,7 @@ edit.json:
      "messages": [{"me": true, "text": "..."}, {"me": false, "text": "...", "time": "19:02"}]},
     {"start": 23, "end": 26, "kind": "clip", "file": "broll.mp4", "from": 0, "transition": "sharp", "grade": true}
   ],
+  "subs": {"text": "#FFFFFF", "hl": "#C6F432", "bg": "#0B1B4D", "bg_alpha": 0.15},  # optional subtitle box, pick per reel
   "cta": {"text": "Напиши «AI»\\nв комментариях", "accent": "«AI»", "start": -3.5}
   # hook/cta take an optional "top" (px) to keep the plate off the speaker's face
 }
@@ -74,8 +75,23 @@ def chunk_words(words, max_words=3, max_chars=20, gap=0.35):
     return chunks
 
 
-def build_ass(words, path):
-    lime = "&H0032F4C6&"
+def ass_color(hex_rgb, alpha=0.0):
+    """#RRGGBB + transparency 0..1 -> ASS &HAABBGGRR"""
+    r, g, b = hex_rgb.lstrip("#")[0:2], hex_rgb.lstrip("#")[2:4], hex_rgb.lstrip("#")[4:6]
+    return f"&H{round(alpha * 255):02X}{b}{g}{r}".upper().replace("&H", "&H", 1)
+
+
+def build_ass(words, path, subs=None):
+    """subs (optional, pick per reel): {"text": "#FFFFFF", "hl": "#C6F432", "bg": "#0B1B4D", "bg_alpha": 0.15}
+    With "bg" every line sits on a coloured box; without it, the classic outlined white text."""
+    subs = subs or {}
+    lime = ass_color(subs.get("hl", LIME)) + "&"
+    white = ass_color(subs.get("text", "#FFFFFF")) + "&"
+    if subs.get("bg"):
+        box = ass_color(subs["bg"], subs.get("bg_alpha", 0.15))
+        style = f"Style: Sub,Manrope ExtraBold,80,{white[:-1]},{white[:-1]},{box},{box},-1,0,0,0,100,100,0,0,3,20,0,2,90,90,560,1"
+    else:
+        style = f"Style: Sub,Manrope ExtraBold,86,{white[:-1]},{white[:-1]},&H00000000,&H96000000,-1,0,0,0,100,100,0,0,1,7,4,2,90,90,560,1"
     head = f"""[Script Info]
 ScriptType: v4.00+
 PlayResX: {W}
@@ -85,7 +101,7 @@ ScaledBorderAndShadow: yes
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Sub,Manrope ExtraBold,86,&H00FFFFFF,&H00FFFFFF,&H00000000,&H96000000,-1,0,0,0,100,100,0,0,1,7,4,2,90,90,560,1
+{style}
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
@@ -100,7 +116,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
             parts = []
             for j, text in enumerate(shown):
                 text = ass_escape(text)
-                parts.append(f"{{\\c{lime}}}{text}{{\\c&H00FFFFFF&}}" if j == i else text)
+                parts.append(f"{{\\c{lime}}}{text}{{\\c{white}}}" if j == i else text)
             pop = "{\\fscx88\\fscy88\\t(0,110,\\fscx100\\fscy100)}" if i == 0 else ""
             lines.append(f"Dialogue: 0,{ass_time(start)},{ass_time(end)},Sub,,0,0,0,,{pop}{' '.join(parts)}")
     open(path, "w").write(head + "\n".join(lines) + "\n")
@@ -305,7 +321,7 @@ def main(plan_path):
     words = json.load(open(p(plan["words"])))
     tmp = tempfile.mkdtemp(prefix="reel-")
 
-    build_ass(words, f"{tmp}/subs.ass")
+    build_ass(words, f"{tmp}/subs.ass", plan.get("subs"))
 
     # cards and clips; transition "smooth" = soft fade, "sharp" = slide (cards) or hard cut + punch-in (clips)
     overlays, banners = [], []
