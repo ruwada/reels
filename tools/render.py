@@ -178,7 +178,7 @@ THEME_CSS = f"""
 .terminal .item .n::before{{content:'> '}}
 .terminal .tag{{border-radius:10px}}
 
-.phone{{position:absolute;left:190px;right:190px;top:170px;height:1060px;border-radius:90px;background:#0E1621;overflow:hidden;
+.phone{{position:absolute;left:190px;right:190px;top:240px;height:1000px;border-radius:90px;background:#0E1621;overflow:hidden;
   border:14px solid #15171C;box-shadow:0 40px 120px rgba(0,0,0,.6),0 0 0 3px rgba(255,255,255,.1);
   animation:panel .45s cubic-bezier(.2,.9,.3,1.1) both}}
 .phone .island{{position:absolute;top:20px;left:50%;width:150px;height:42px;margin-left:-75px;border-radius:24px;background:#000;z-index:2}}
