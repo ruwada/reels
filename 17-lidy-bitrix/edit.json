@@ -1,0 +1,157 @@
+{
+ "src": "orig.mov",
+ "words": "words.json",
+ "out": "reel17.mp4",
+ "theme": "dark",
+ "hook": {
+  "text": "AI сам разбирает\nлиды в Bitrix",
+  "accent": "лиды в Bitrix",
+  "start": 0,
+  "end": 3.0,
+  "top": 940
+ },
+ "zooms": [
+  {
+   "start": 10.9,
+   "end": 12.6,
+   "scale": 1.12
+  },
+  {
+   "start": 18.3,
+   "end": 20.5,
+   "scale": 1.15
+  },
+  {
+   "start": 25.3,
+   "end": 28.4,
+   "scale": 1.1
+  },
+  {
+   "start": 31.7,
+   "end": 33.7,
+   "scale": 1.15
+  },
+  {
+   "start": 48.2,
+   "end": 51.2,
+   "scale": 1.12
+  },
+  {
+   "start": 55.5,
+   "end": 57.9,
+   "scale": 1.18
+  },
+  {
+   "start": 58.0,
+   "end": 61.9,
+   "scale": 1.08
+  },
+  {
+   "start": 62.8,
+   "end": 65.2,
+   "scale": 1.15
+  }
+ ],
+ "cards": [
+  {
+   "start": 4.3,
+   "end": 6.0,
+   "kind": "clip",
+   "file": "broll/5716221.mp4",
+   "from": 1.0,
+   "transition": "sharp"
+  },
+  {
+   "start": 7.1,
+   "end": 9.5,
+   "kind": "clip",
+   "file": "broll/6324532.mp4",
+   "from": 2.0,
+   "transition": "smooth"
+  },
+  {
+   "start": 12.8,
+   "end": 17.8,
+   "kind": "chat",
+   "frame": "phone",
+   "title": "AI-менеджер школы",
+   "status": "бот · онлайн",
+   "transition": "sharp",
+   "messages": [
+    {
+     "me": true,
+     "text": "Сколько стоит курс по Python?",
+     "time": "10:14"
+    },
+    {
+     "me": false,
+     "text": "Вы уже программировали? Подберу поток под ваш уровень",
+     "time": "10:14"
+    },
+    {
+     "me": true,
+     "text": "Нет, с нуля",
+     "time": "10:15"
+    }
+   ]
+  },
+  {
+   "start": 21.4,
+   "end": 24.3,
+   "kind": "clip",
+   "file": "broll/7448471.mp4",
+   "from": 30.0,
+   "transition": "smooth"
+  },
+  {
+   "start": 35.2,
+   "end": 42.8,
+   "kind": "list",
+   "transition": "sharp",
+   "title": "Что автоматизировать\nпервым",
+   "accent": "первым",
+   "items": [
+    "Повторяется каждый день",
+    "Понятные правила",
+    "Есть входные данные",
+    "Измеримый результат"
+   ],
+   "item_at": [
+    0.2,
+    2.3,
+    3.8,
+    5.3
+   ]
+  },
+  {
+   "start": 44.2,
+   "end": 46.9,
+   "kind": "clip",
+   "file": "broll/39365412.mp4",
+   "from": 1.0,
+   "transition": "sharp"
+  },
+  {
+   "start": 51.3,
+   "end": 53.4,
+   "kind": "clip",
+   "file": "broll/31423053.mp4",
+   "from": 3.0,
+   "transition": "smooth"
+  },
+  {
+   "start": 65.2,
+   "end": 66.8,
+   "kind": "clip",
+   "file": "broll/32238063.mp4",
+   "from": 2.0,
+   "transition": "smooth"
+  }
+ ],
+ "cta": {
+  "text": "Больше кейсов\nв Telegram\nссылка в шапке",
+  "accent": "Telegram",
+  "start": -3.0,
+  "top": 900
+ }
+}
