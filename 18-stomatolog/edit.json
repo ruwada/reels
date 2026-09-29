@@ -1,0 +1,122 @@
+{
+ "src": "orig.mp4",
+ "words": "words.json",
+ "out": "reel18.mp4",
+ "theme": "paper",
+ "subs": {
+  "text": "#FFFFFF",
+  "hl": "#C6F432",
+  "bg": "#0F4C4A",
+  "bg_alpha": 0.1
+ },
+ "hook": {
+  "text": "Сайт, который\nсам подбирает курс",
+  "accent": "сам подбирает курс",
+  "start": 0,
+  "end": 3.0,
+  "top": 940
+ },
+ "zooms": [
+  {
+   "start": 3.0,
+   "end": 5.0,
+   "scale": 1.12
+  },
+  {
+   "start": 11.0,
+   "end": 13.2,
+   "scale": 1.15
+  },
+  {
+   "start": 17.6,
+   "end": 19.6,
+   "scale": 1.1
+  },
+  {
+   "start": 30.4,
+   "end": 33.3,
+   "scale": 1.15
+  },
+  {
+   "start": 39.2,
+   "end": 41.8,
+   "scale": 1.1
+  },
+  {
+   "start": 44.6,
+   "end": 47.1,
+   "scale": 1.15
+  },
+  {
+   "start": 47.3,
+   "end": 49.9,
+   "scale": 1.08
+  }
+ ],
+ "cards": [
+  {
+   "start": 5.2,
+   "end": 7.1,
+   "kind": "clip",
+   "file": "broll/33504458.mp4",
+   "from": 1.0,
+   "transition": "smooth"
+  },
+  {
+   "start": 15.3,
+   "end": 17.5,
+   "kind": "clip",
+   "file": "broll/33315143.mp4",
+   "from": 2.0,
+   "transition": "sharp"
+  },
+  {
+   "start": 22.3,
+   "end": 27.6,
+   "kind": "list",
+   "transition": "sharp",
+   "title": "Квиз:\n3 вопроса",
+   "accent": "3 вопроса",
+   "items": [
+    "Какой у вас уровень?",
+    "Что хотите получить?",
+    "Какое направление интересно?"
+   ],
+   "item_at": [
+    1.1,
+    2.1,
+    3.4
+   ]
+  },
+  {
+   "start": 27.8,
+   "end": 30.3,
+   "kind": "clip",
+   "file": "broll/6611949.mp4",
+   "from": 2.0,
+   "transition": "smooth"
+  },
+  {
+   "start": 36.7,
+   "end": 38.9,
+   "kind": "clip",
+   "file": "broll/33590010.mp4",
+   "from": 1.0,
+   "transition": "smooth"
+  },
+  {
+   "start": 42.0,
+   "end": 44.4,
+   "kind": "clip",
+   "file": "broll/7944932.mp4",
+   "from": 3.0,
+   "transition": "sharp"
+  }
+ ],
+ "cta": {
+  "text": "Напиши «врач»\nв комментариях",
+  "accent": "«врач»",
+  "start": -3.4,
+  "top": 940
+ }
+}
