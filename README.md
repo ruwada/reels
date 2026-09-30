@@ -6,7 +6,7 @@ every reel.
 Talking-head video in, polished 1080x1920 reel out: word-by-word subtitles (active word in lime),
 hook plate, Pexels B-roll, a few motion cards, punch-in zooms, CTA plate, loudness normalised to -14 LUFS.
 
-    tools/                 setup.sh, transcribe.py, render.py, pexels.py
+    tools/                 setup.sh, transcribe.py, render.py, pexels.py, export_project.py
     08-90/, 11-naym/ ...   one folder per reel: edit.json (the plan) and words.json (subtitles)
 
 ## Editing a reel
@@ -33,3 +33,15 @@ the previous reel's: `dark` (grid on near-black), `paper` (light sheet, marker h
 
 Transitions (`"transition"`): `smooth` fades, `sharp` slides a card in or hard-cuts a clip with a
 quick punch-in. Clips get a mild grade to match the speaker footage (`"grade": false` to skip).
+
+## Handing a reel over to DaVinci Resolve
+
+Optional, only when the author asks for it after seeing the rendered reel: the same plan as an editable
+DaVinci Resolve (free) project the author finishes on Windows or Mac.
+
+    python3 tools/export_project.py 08-90/edit.json            # -> 08-90/proekt/
+
+`proekt/` holds `<name>.fcpxml` (V1 speaker split at zooms, V2 B-roll and cards, V3 word-highlight
+subtitles as one alpha clip per phrase, V4 hook and CTA), `subtitry.srt`, `KAK-OTKRYT.txt` and `media/`.
+The original video is not copied: the author drops it into `media/` under its own name. Zip `proekt/`
+and send it. Transitions and the -14 LUFS loudness step are added in Resolve. `proekt/` stays out of git.
