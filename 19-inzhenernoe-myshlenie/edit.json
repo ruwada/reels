@@ -1,0 +1,150 @@
+{
+ "src": "orig.mp4",
+ "words": "words.json",
+ "out": "reel19.mp4",
+ "theme": "terminal",
+ "subs": {
+  "text": "#F4F1EA",
+  "hl": "#FFB547",
+  "bg": "#1B1F27",
+  "bg_alpha": 0.12
+ },
+ "hook": {
+  "text": "AI пишет код.\nКто его проверит?",
+  "accent": "Кто его проверит?",
+  "start": 0,
+  "end": 3.6,
+  "top": 940
+ },
+ "zooms": [
+  {
+   "start": 7.5,
+   "end": 10.9,
+   "scale": 1.12
+  },
+  {
+   "start": 11.3,
+   "end": 13.6,
+   "scale": 1.08
+  },
+  {
+   "start": 23.3,
+   "end": 27.9,
+   "scale": 1.1
+  },
+  {
+   "start": 28.1,
+   "end": 29.4,
+   "scale": 1.2
+  },
+  {
+   "start": 42.3,
+   "end": 46.1,
+   "scale": 1.1
+  },
+  {
+   "start": 48.4,
+   "end": 53.9,
+   "scale": 1.08
+  },
+  {
+   "start": 60.0,
+   "end": 62.1,
+   "scale": 1.14
+  }
+ ],
+ "cards": [
+  {
+   "start": 4.6,
+   "end": 7.4,
+   "kind": "clip",
+   "file": "broll/5377697.mp4",
+   "from": 2.0,
+   "transition": "sharp"
+  },
+  {
+   "start": 13.8,
+   "end": 16.9,
+   "kind": "clip",
+   "file": "broll/30284959.mp4",
+   "from": 1.0,
+   "transition": "smooth"
+  },
+  {
+   "start": 19.1,
+   "end": 22.9,
+   "kind": "clip",
+   "file": "broll/8003418.mp4",
+   "from": 0.5,
+   "transition": "sharp"
+  },
+  {
+   "start": 33.0,
+   "end": 42.1,
+   "kind": "list",
+   "theme": "glass",
+   "transition": "smooth",
+   "title": "Вопросы\nинженера",
+   "accent": "инженера",
+   "items": [
+    "Что при росте нагрузки?",
+    "Что, если сервис упадёт?",
+    "Кто поддержит через полгода?",
+    "Что будет с данными?"
+   ],
+   "item_at": [
+    1.3,
+    3.3,
+    5.8,
+    8.2
+   ]
+  },
+  {
+   "start": 46.3,
+   "end": 48.3,
+   "kind": "clip",
+   "file": "broll/8632194.mp4",
+   "from": 1.0,
+   "transition": "smooth"
+  },
+  {
+   "start": 54.1,
+   "end": 60.0,
+   "kind": "list",
+   "theme": "terminal",
+   "transition": "sharp",
+   "title": "фундамент",
+   "accent": "фундамент",
+   "items": [
+    "архитектура",
+    "базы данных",
+    "Git · Docker",
+    "сети",
+    "дебаг",
+    "безопасность"
+   ],
+   "item_at": [
+    1.5,
+    2.1,
+    3.3,
+    4.0,
+    5.0,
+    5.3
+   ]
+  },
+  {
+   "start": 62.2,
+   "end": 65.0,
+   "kind": "clip",
+   "file": "broll/9618375.mp4",
+   "from": 2.0,
+   "transition": "smooth"
+  }
+ ],
+ "cta": {
+  "text": "Весь разбор\nв Telegram",
+  "accent": "Telegram",
+  "start": -3.4,
+  "top": 800
+ }
+}
