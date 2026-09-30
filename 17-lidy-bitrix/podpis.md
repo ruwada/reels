@@ -22,3 +22,5 @@
 4. Отдайте AI самые частые шаги по правилам, а сложные и нестандартные случаи оставьте человеку.
 
 Так автоматизация окупается быстрее, и команда видит результат уже в первые недели.
+
+EN: AI qualifies leads and fills the CRM right inside Bitrix. Start with one repetitive process, not the whole business.

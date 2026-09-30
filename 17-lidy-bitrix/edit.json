@@ -1,5 +1,5 @@
 {
- "src": "orig.mov",
+ "src": "orig.mp4",
  "words": "words.json",
  "out": "reel17.mp4",
  "theme": "dark",
@@ -8,7 +8,8 @@
   "accent": "лиды в Bitrix",
   "start": 0,
   "end": 3.0,
-  "top": 940
+  "top": 840,
+  "sub": "AI sorts leads in Bitrix by itself"
  },
  "zooms": [
   {
@@ -152,6 +153,8 @@
   "text": "Больше кейсов\nв Telegram\nссылка в шапке",
   "accent": "Telegram",
   "start": -4.6,
-  "top": 900
- }
+  "top": 760,
+  "sub": "More cases on Telegram, link in bio"
+ },
+ "en": "en.json"
 }
