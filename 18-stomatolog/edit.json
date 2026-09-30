@@ -7,14 +7,16 @@
   "text": "#FFFFFF",
   "hl": "#C6F432",
   "bg": "#0F4C4A",
-  "bg_alpha": 0.1
+  "bg_alpha": 0.1,
+  "en": "#D6E6E3"
  },
  "hook": {
   "text": "Сайт, который\nсам подбирает курс",
   "accent": "сам подбирает курс",
   "start": 0,
   "end": 3.0,
-  "top": 940
+  "top": 800,
+  "sub": "A website that picks the course itself"
  },
  "zooms": [
   {
@@ -117,6 +119,8 @@
   "text": "Напиши «врач»\nв комментариях",
   "accent": "«врач»",
   "start": -3.4,
-  "top": 940
- }
+  "top": 800,
+  "sub": "Comment «врач» for a free website review"
+ },
+ "en": "en.json"
 }

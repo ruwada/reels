@@ -19,3 +19,5 @@
 3. Что делать дальше: записаться, выбрать курс, пройти квиз.
 
 Если хотя бы на один вопрос посетитель не находит ответ сразу, он закрывает вкладку. А квиз снимает с человека главную работу — выбор.
+
+EN: A doctor's website should answer who, why trust, and what next in 5 seconds. A quiz takes the hardest part, the choice, off the visitor.
