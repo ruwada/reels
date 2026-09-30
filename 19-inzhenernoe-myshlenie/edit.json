@@ -7,14 +7,16 @@
   "text": "#F4F1EA",
   "hl": "#FFB547",
   "bg": "#1B1F27",
-  "bg_alpha": 0.12
+  "bg_alpha": 0.12,
+  "en": "#D9DDE5"
  },
  "hook": {
   "text": "AI пишет код.\nКто его проверит?",
   "accent": "Кто его проверит?",
   "start": 0,
   "end": 3.6,
-  "top": 940
+  "top": 790,
+  "sub": "AI writes code. Who checks it?"
  },
  "zooms": [
   {
@@ -66,7 +68,7 @@
    "start": 13.8,
    "end": 16.9,
    "kind": "clip",
-   "file": "broll/30284959.mp4",
+   "file": "broll/12896413.mp4",
    "from": 1.0,
    "transition": "smooth"
   },
@@ -145,6 +147,8 @@
   "text": "Весь разбор\nв Telegram",
   "accent": "Telegram",
   "start": -3.4,
-  "top": 800
- }
+  "top": 800,
+  "sub": "Full breakdown on Telegram"
+ },
+ "en": "en.json"
 }

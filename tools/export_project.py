@@ -93,7 +93,8 @@ def main(plan_path, outdir=None):
     assets[src_name] = ("a0", info)
 
     # ---- subtitles: one full-length alpha layer, cut into one clip per phrase on the timeline
-    R.build_ass(words, f"{tmp}/subs.ass")
+    en = json.load(open(p(plan["en"]))) if plan.get("en") else None
+    R.build_ass(words, f"{tmp}/subs.ass", plan.get("subs"), en)
     subs = f"{tmp}/subs.ass".replace(":", "\\:")
     R.run(["ffmpeg", "-y", "-v", "error", "-f", "lavfi", "-i", f"color=c=black@0:s={R.W}x{R.H}:r={FPS}:d={total:.3f},format=rgba",
            "-vf", f"ass='{subs}':fontsdir=/usr/local/share/fonts/brand:alpha=1",
@@ -102,6 +103,10 @@ def main(plan_path, outdir=None):
     with open(os.path.join(outdir, "subtitry.srt"), "w") as f:
         for i, ch in enumerate(chunks, 1):
             f.write(f"{i}\n{srt_time(ch[0]['s'])} --> {srt_time(ch[-1]['e'])}\n{' '.join(w['w'] for w in ch)}\n\n")
+    if en:  # English line: also an editable subtitle track
+        with open(os.path.join(outdir, "subtitry-en.srt"), "w") as f:
+            for i, seg in enumerate(en, 1):
+                f.write(f"{i}\n{srt_time(seg['s'])} --> {srt_time(seg['e'])}\n{seg['t']}\n\n")
 
     # ---- cards, clips, hook / CTA
     v2, v4 = [], []  # (clip name, file, timeline start, timeline end, source in)
@@ -132,7 +137,7 @@ def main(plan_path, outdir=None):
             s = total + s if s < 0 else s
             e = b.get("end", total)
             d = f"{tmp}/{key}"
-            n = R.render_frames(page, R.banner_html(b["text"], b.get("accent"), b.get("top", top)), e - s, d, transparent=True)
+            n = R.render_frames(page, R.banner_html(b["text"], b.get("accent"), b.get("top", top), b.get("sub")), e - s, d, transparent=True)
             fname = f"{'huk' if key == 'hook' else 'prizyv'}.mov"
             encode_frames(d, os.path.join(media, fname), alpha=True, fade_out=0.25, n=n)
             v4.append((label, fname, s, e, 0))

@@ -22,7 +22,8 @@ edit.json:
     {"start": 23, "end": 26, "kind": "clip", "file": "broll.mp4", "from": 0, "transition": "sharp", "grade": true}
   ],
   "subs": {"text": "#FFFFFF", "hl": "#C6F432", "bg": "#0B1B4D", "bg_alpha": 0.15},  # optional subtitle box, pick per reel
-  "cta": {"text": "Напиши «AI»\\nв комментариях", "accent": "«AI»", "start": -3.5}
+  "cta": {"text": "Напиши «AI»\\nв комментариях", "accent": "«AI»", "start": -3.5},
+  "en": "en.json"                  # optional English line under the subtitles: [{"s": 0.1, "e": 3.9, "t": "..."}]
   # hook/cta take an optional "top" (px) to keep the plate off the speaker's face
 }
 All times are seconds in the source video; a negative cta.start counts from the end.
@@ -81,9 +82,10 @@ def ass_color(hex_rgb, alpha=0.0):
     return f"&H{round(alpha * 255):02X}{b}{g}{r}".upper().replace("&H", "&H", 1)
 
 
-def build_ass(words, path, subs=None):
-    """subs (optional, pick per reel): {"text": "#FFFFFF", "hl": "#C6F432", "bg": "#0B1B4D", "bg_alpha": 0.15}
-    With "bg" every line sits on a coloured box; without it, the classic outlined white text."""
+def build_ass(words, path, subs=None, en=None):
+    """subs (optional, pick per reel): {"text": "#FFFFFF", "hl": "#C6F432", "bg": "#0B1B4D", "bg_alpha": 0.15,
+    "en": "#C9CED8"}. With "bg" every line sits on a coloured box; without it, the classic outlined white text.
+    en (optional): English phrases [{"s": 0.1, "e": 3.9, "t": "..."}], a smaller line under the Russian one."""
     subs = subs or {}
     lime = ass_color(subs.get("hl", LIME)) + "&"
     white = ass_color(subs.get("text", "#FFFFFF")) + "&"
@@ -92,6 +94,12 @@ def build_ass(words, path, subs=None):
         style = f"Style: Sub,Manrope ExtraBold,80,{white[:-1]},{white[:-1]},{box},{box},-1,0,0,0,100,100,0,0,3,20,0,2,90,90,560,1"
     else:
         style = f"Style: Sub,Manrope ExtraBold,86,{white[:-1]},{white[:-1]},&H00000000,&H96000000,-1,0,0,0,100,100,0,0,1,7,4,2,90,90,560,1"
+    en_col = ass_color(subs.get("en", "#C9CED8"))
+    if subs.get("bg"):
+        en_box = ass_color(subs["bg"], min(subs.get("bg_alpha", 0.15) + 0.1, 1))
+        style += f"\nStyle: En,Manrope,44,{en_col},{en_col},{en_box},{en_box},-1,0,0,0,100,100,0,0,3,14,0,8,110,110,{H - 560 + 26},1"
+    else:
+        style += f"\nStyle: En,Manrope,46,{en_col},{en_col},&H00000000,&H96000000,-1,0,0,0,100,100,0,0,1,4,2,8,110,110,{H - 560 + 26},1"
     head = f"""[Script Info]
 ScriptType: v4.00+
 PlayResX: {W}
@@ -119,6 +127,8 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
                 parts.append(f"{{\\c{lime}}}{text}{{\\c{white}}}" if j == i else text)
             pop = "{\\fscx88\\fscy88\\t(0,110,\\fscx100\\fscy100)}" if i == 0 else ""
             lines.append(f"Dialogue: 0,{ass_time(start)},{ass_time(end)},Sub,,0,0,0,,{pop}{' '.join(parts)}")
+    for seg in en or []:
+        lines.append(f"Dialogue: 1,{ass_time(seg['s'])},{ass_time(seg['e'])},En,,0,0,0,,{ass_escape(seg['t'])}")
     open(path, "w").write(head + "\n".join(lines) + "\n")
 
 
@@ -288,13 +298,17 @@ def card_html(c, theme="dark"):
 <div class="handle">{HANDLE}</div><div class="content">{body}</div></div>"""
 
 
-def banner_html(text, accent, top=260):
-    """Hook / CTA plate on a transparent background, sits above the speaker."""
+def banner_html(text, accent, top=260, sub=None):
+    """Hook / CTA plate on a transparent background, sits above the speaker; sub = optional small second line
+    (e.g. the English version)."""
+    sub = (f'<div style="font-family:Manrope;font-weight:700;font-size:38px;line-height:1.25;letter-spacing:0;'
+           f'color:#AEB4C0;margin-top:18px;animation:up .4s .35s both">{html.escape(sub).replace(chr(10), "<br>")}</div>'
+           if sub else "")
     return f"""<div style="position:absolute;left:70px;right:70px;top:{top}px;display:flex;justify-content:center;
 animation:slidein .4s cubic-bezier(.2,.9,.3,1.2) both">
 <div style="background:rgba(13,15,20,.92);border:4px solid {LIME};border-radius:36px;padding:40px 48px;text-align:center;
 font-family:Unbounded;font-weight:800;font-size:72px;line-height:1.12;letter-spacing:-1px;box-shadow:0 20px 60px rgba(0,0,0,.5)">
-{accented(text, accent, words_anim=True, delay0=0.15, step=0.06)}</div></div>"""
+{accented(text, accent, words_anim=True, delay0=0.15, step=0.06)}{sub}</div></div>"""
 
 
 def render_frames(page, body, seconds, outdir, transparent):
@@ -321,7 +335,8 @@ def main(plan_path):
     words = json.load(open(p(plan["words"])))
     tmp = tempfile.mkdtemp(prefix="reel-")
 
-    build_ass(words, f"{tmp}/subs.ass", plan.get("subs"))
+    en = json.load(open(p(plan["en"]))) if plan.get("en") else None
+    build_ass(words, f"{tmp}/subs.ass", plan.get("subs"), en)
 
     # cards and clips; transition "smooth" = soft fade, "sharp" = slide (cards) or hard cut + punch-in (clips)
     overlays, banners = [], []
@@ -348,7 +363,7 @@ def main(plan_path):
             s = total + s if s < 0 else s
             e = b.get("end", total)
             d = f"{tmp}/{key}"
-            render_frames(page, banner_html(b["text"], b.get("accent"), b.get("top", top)), e - s, d, transparent=True)
+            render_frames(page, banner_html(b["text"], b.get("accent"), b.get("top", top), b.get("sub")), e - s, d, transparent=True)
             banners.append((s, e, ["-framerate", str(FPS), "-i", f"{d}/%05d.png"]))
         browser.close()
 

@@ -1,0 +1,172 @@
+[
+{
+"s": 0.12,
+"e": 1.08,
+"t": "Many thought AI would make"
+},
+{
+"s": 1.08,
+"e": 3.28,
+"t": "senior developers less needed."
+},
+{
+"s": 4.46,
+"e": 7.21,
+"t": "But the more code AI writes,"
+},
+{
+"s": 7.54,
+"e": 9.78,
+"t": "the more you need someone who knows"
+},
+{
+"s": 9.78,
+"e": 10.95,
+"t": "what to do with that code."
+},
+{
+"s": 11.43,
+"e": 13.16,
+"t": "AI really made development faster."
+},
+{
+"s": 13.72,
+"e": 15.28,
+"t": "But along with speed grew"
+},
+{
+"s": 15.28,
+"e": 17.25,
+"t": "the number of decisions to check."
+},
+{
+"s": 17.5,
+"e": 19.81,
+"t": "AI can suggest architecture, write a service,"
+},
+{
+"s": 20.06,
+"e": 22.82,
+"t": "build an API, generate SQL and tests."
+},
+{
+"s": 23.26,
+"e": 24.42,
+"t": "But someone has to understand"
+},
+{
+"s": 24.42,
+"e": 27.53,
+"t": "if it really fits this project."
+},
+{
+"s": 28.09,
+"e": 29.25,
+"t": "And that's where experience shows."
+},
+{
+"s": 29.53,
+"e": 31.29,
+"t": "An experienced engineer looks beyond"
+},
+{
+"s": 31.29,
+"e": 32.68,
+"t": "whether the code works right now."
+},
+{
+"s": 33.02,
+"e": 34.02,
+"t": "He asks questions:"
+},
+{
+"s": 34.3,
+"e": 35.56,
+"t": "What happens under higher load?"
+},
+{
+"s": 36.28,
+"e": 38.8,
+"t": "What if an external service goes down?"
+},
+{
+"s": 38.8,
+"e": 40.87,
+"t": "How will this be maintained in six months?"
+},
+{
+"s": 41.24,
+"e": 42.24,
+"t": "What happens to the data?"
+},
+{
+"s": 42.33,
+"e": 44.85,
+"t": "So after AI, software engineering"
+},
+{
+"s": 44.85,
+"e": 45.86,
+"t": "didn't become less important."
+},
+{
+"s": 46.26,
+"e": 48.07,
+"t": "What changed is where the engineer is needed."
+},
+{
+"s": 48.41,
+"e": 50.69,
+"t": "If you're a developer using AI a lot,"
+},
+{
+"s": 50.69,
+"e": 53.48,
+"t": "I wouldn't try to learn every AI tool."
+},
+{
+"s": 54.1,
+"e": 55.14,
+"t": "I'd strengthen the fundamentals:"
+},
+{
+"s": 55.61,
+"e": 56.84,
+"t": "architecture, databases,"
+},
+{
+"s": 57.35,
+"e": 59.42,
+"t": "Git, Docker, networking, debugging,"
+},
+{
+"s": 59.42,
+"e": 60.02,
+"t": "security."
+},
+{
+"s": 60.02,
+"e": 61.62,
+"t": "AI can speed up a developer,"
+},
+{
+"s": 62.25,
+"e": 64.21,
+"t": "but only engineering thinking shows"
+},
+{
+"s": 64.21,
+"e": 65.85,
+"t": "where to direct that speed."
+},
+{
+"s": 65.85,
+"e": 67.61,
+"t": "What engineering thinking is built on"
+},
+{
+"s": 67.61,
+"e": 68.54,
+"t": "I broke down on Telegram."
+}
+]

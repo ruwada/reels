@@ -25,4 +25,6 @@ AI не спросит:
 
 С чего начал бы ты? Напиши в комментариях 👇
 
+EN: AI writes code faster than anyone, but checking it is still on you. Fundamentals beat chasing every new AI tool.
+
 #программирование #softwareengineering #нейросети
