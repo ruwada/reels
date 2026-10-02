@@ -90,7 +90,7 @@ def composite(name, pieces, bg, bg_from, pos, pad):
     else:
         bgin = ["-ss", str(bg_from), "-t", f"{dur:.3f}", "-i", bg]
         bgf = ("scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,fps=30,setsar=1,"
-               "eq=brightness=-0.07:saturation=0.9,vignette=angle=PI/4")
+               "eq=contrast=1.04:saturation=1.08")
     fc = (f"[0:v]{bgf},trim=duration={dur:.3f},setpts=PTS-STARTPTS[bg];"
           f"[2:v]format=gray[m];[1:v]format=rgba[s0];[s0][m]alphamerge[s1];[s1][3:v]overlay[s];"
           f"[4:v]format=rgba[body];[body][s]overlay={pad + BZ}:{pad + BZ}[ph];"

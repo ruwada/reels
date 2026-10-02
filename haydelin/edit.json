@@ -30,7 +30,7 @@
    "file": "broll/33401574.mp4",
    "from": 1.0,
    "transition": "cut",
-   "grade": true
+   "grade": false
   },
   {
    "start": 3.5,
@@ -39,7 +39,7 @@
    "file": "broll/7597961.mp4",
    "from": 3.0,
    "transition": "cut",
-   "grade": true
+   "grade": false
   },
   {
    "start": 4.55,
@@ -48,7 +48,7 @@
    "file": "broll/7250829.mp4",
    "from": 1.0,
    "transition": "cut",
-   "grade": true
+   "grade": false
   },
   {
    "start": 5.45,
@@ -57,7 +57,7 @@
    "file": "broll/33590009.mp4",
    "from": 1.0,
    "transition": "cut",
-   "grade": true
+   "grade": false
   },
   {
    "start": 8.1,
@@ -120,7 +120,7 @@
    "file": "broll/7171041.mp4",
    "from": 2.0,
    "transition": "cut",
-   "grade": true
+   "grade": false
   },
   {
    "start": 37.6,
