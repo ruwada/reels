@@ -1,0 +1,119 @@
+{
+ "src": "orig.mp4",
+ "words": "words.json",
+ "out": "reel20.mp4",
+ "theme": "dark",
+ "subs": {
+  "text": "#FFFFFF",
+  "hl": "#5EE7FF",
+  "bg": "#1E0A0D",
+  "bg_alpha": 0.12,
+  "en": "#E3D9DA"
+ },
+ "hook": {
+  "text": "CRM скоро станет\nбазой данных",
+  "accent": "базой данных",
+  "start": 0,
+  "end": 3.0,
+  "top": 900,
+  "sub": "CRM may soon be just a database"
+ },
+ "zooms": [
+  {
+   "start": 9.3,
+   "end": 11.4,
+   "scale": 1.12
+  },
+  {
+   "start": 23.7,
+   "end": 26.0,
+   "scale": 1.15
+  },
+  {
+   "start": 26.0,
+   "end": 29.5,
+   "scale": 1.06
+  },
+  {
+   "start": 33.0,
+   "end": 35.6,
+   "scale": 1.12
+  },
+  {
+   "start": 36.4,
+   "end": 38.2,
+   "scale": 1.18
+  },
+  {
+   "start": 40.4,
+   "end": 43.6,
+   "scale": 1.08
+  }
+ ],
+ "cards": [
+  {
+   "start": 3.3,
+   "end": 6.1,
+   "kind": "clip",
+   "file": "broll/6573990.mp4",
+   "from": 1.0,
+   "transition": "sharp"
+  },
+  {
+   "start": 7.2,
+   "end": 9.2,
+   "kind": "clip",
+   "file": "broll/12894331.mp4",
+   "from": 2.0,
+   "transition": "smooth"
+  },
+  {
+   "start": 12.6,
+   "end": 23.2,
+   "kind": "list",
+   "transition": "sharp",
+   "title": "AI-агент\nсам",
+   "accent": "сам",
+   "items": [
+    "Получает новый лид",
+    "Смотрит историю",
+    "Определяет этап",
+    "Отвечает клиенту",
+    "Обновляет CRM",
+    "Ставит задачу менеджеру"
+   ],
+   "item_at": [
+    0.4,
+    3.0,
+    4.3,
+    6.9,
+    7.6,
+    9.1
+   ]
+  },
+  {
+   "start": 29.6,
+   "end": 32.5,
+   "kind": "clip",
+   "file": "broll/25935025.mp4",
+   "from": 5.5,
+   "transition": "smooth"
+  },
+  {
+   "start": 38.3,
+   "end": 40.4,
+   "kind": "clip",
+   "file": "broll/6324853.mp4",
+   "from": 0.5,
+   "transition": "sharp"
+  }
+ ],
+ "cta": {
+  "text": "Схема в Telegram\nссылка в шапке",
+  "accent": "Telegram",
+  "start": -3.4,
+  "top": 900,
+  "sub": "The diagram is in Telegram, link in bio"
+ },
+ "en": "en.json"
+}
