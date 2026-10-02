@@ -1,14 +1,16 @@
 {
- "src": "orig.mp4",
+ "src": "orig.mov",
  "words": "words.json",
- "out": "rils-haydelin-montazh.mp4",
+ "out": "rils-haydelin-montazh-v2.mp4",
  "theme": "paper",
  "subs": {
+  "style": "marker",
   "text": "#FFFFFF",
-  "hl": "#C9B8FF",
-  "bg": "#1F5C4E",
-  "bg_alpha": 0.08,
-  "en": "#DCEBE5"
+  "hl": "#FFD84D",
+  "ink": "#10201B",
+  "size": 56,
+  "y": 400,
+  "en": "#E6ECEA"
  },
  "hook": {
   "text": "Брекеты за\nсотни тысяч",
@@ -16,161 +18,124 @@
   "start": 0,
   "end": 2.2,
   "top": 230,
-  "sub": "Braces cost a fortune"
+  "sub": "Braces cost a fortune",
+  "color": "#FFD84D"
  },
- "zooms": [
-  {
-   "start": 0.0,
-   "end": 2.2,
-   "scale": 1.08
-  },
-  {
-   "start": 55.0,
-   "end": 57.4,
-   "scale": 1.1
-  }
- ],
+ "zooms": [],
  "cards": [
   {
    "start": 2.2,
+   "end": 3.5,
+   "kind": "clip",
+   "file": "broll/33401574.mp4",
+   "from": 1.0,
+   "transition": "cut",
+   "grade": true
+  },
+  {
+   "start": 3.5,
    "end": 4.55,
    "kind": "clip",
-   "file": "broll/6528790.mp4",
-   "from": 0.0,
-   "transition": "sharp",
+   "file": "broll/7597961.mp4",
+   "from": 3.0,
+   "transition": "cut",
    "grade": true
   },
   {
    "start": 4.55,
    "end": 5.45,
    "kind": "clip",
-   "file": "broll/10574089.mp4",
-   "from": 6.0,
-   "transition": "sharp",
+   "file": "broll/7250829.mp4",
+   "from": 1.0,
+   "transition": "cut",
    "grade": true
   },
   {
    "start": 5.45,
-   "end": 6.68,
+   "end": 6.7,
    "kind": "clip",
-   "file": "broll/8322052.mp4",
-   "from": 2.0,
-   "transition": "sharp",
+   "file": "broll/33590009.mp4",
+   "from": 1.0,
+   "transition": "cut",
    "grade": true
   },
   {
-   "start": 6.68,
+   "start": 8.1,
    "end": 10.4,
    "kind": "clip",
-   "file": "assets/c_dev.mp4",
+   "file": "work/p_dev.mp4",
    "from": 0,
-   "transition": "sharp",
+   "transition": "cut",
    "grade": false
   },
   {
    "start": 10.4,
    "end": 12.4,
    "kind": "clip",
-   "file": "assets/c_alarm.mp4",
+   "file": "work/p_alarm.mp4",
    "from": 0,
-   "transition": "sharp",
+   "transition": "cut",
    "grade": false
   },
   {
    "start": 12.4,
-   "end": 13.75,
-   "kind": "clip",
-   "file": "assets/c_start.mp4",
-   "from": 0,
-   "transition": "sharp",
-   "grade": false
-  },
-  {
-   "start": 13.75,
    "end": 18.15,
    "kind": "clip",
-   "file": "assets/c_face.mp4",
+   "file": "work/p_start.mp4",
    "from": 0,
-   "transition": "sharp",
+   "transition": "cut",
    "grade": false
   },
   {
    "start": 18.15,
-   "end": 22.62,
+   "end": 22.6,
    "kind": "clip",
-   "file": "assets/c_timer.mp4",
+   "file": "work/p_timer.mp4",
    "from": 0,
-   "transition": "sharp",
+   "transition": "cut",
    "grade": false
   },
   {
-   "start": 22.62,
-   "end": 25.4,
+   "start": 24.3,
+   "end": 29.4,
    "kind": "clip",
-   "file": "assets/c_myt.mp4",
+   "file": "work/p_modes.mp4",
    "from": 0,
-   "transition": "sharp",
+   "transition": "cut",
    "grade": false
   },
   {
-   "start": 25.4,
-   "end": 29.38,
-   "kind": "clip",
-   "file": "assets/c_tyagi.mp4",
-   "from": 0,
-   "transition": "sharp",
-   "grade": false
-  },
-  {
-   "start": 29.38,
-   "end": 32.45,
-   "kind": "clip",
-   "file": "assets/c_coins.mp4",
-   "from": 0,
-   "transition": "sharp",
-   "grade": false
-  },
-  {
-   "start": 32.45,
+   "start": 29.4,
    "end": 35.7,
    "kind": "clip",
-   "file": "assets/c_shop.mp4",
+   "file": "work/p_coins.mp4",
    "from": 0,
-   "transition": "sharp",
+   "transition": "cut",
    "grade": false
   },
   {
    "start": 35.7,
-   "end": 37.65,
+   "end": 37.6,
    "kind": "clip",
-   "file": "assets/c_parent.mp4",
+   "file": "broll/7171041.mp4",
+   "from": 2.0,
+   "transition": "cut",
+   "grade": true
+  },
+  {
+   "start": 37.6,
+   "end": 43.8,
+   "kind": "clip",
+   "file": "work/p_parent.mp4",
    "from": 0,
-   "transition": "sharp",
+   "transition": "cut",
    "grade": false
   },
   {
-   "start": 37.65,
-   "end": 39.62,
-   "kind": "clip",
-   "file": "assets/c_hist.mp4",
-   "from": 0,
-   "transition": "sharp",
-   "grade": false
-  },
-  {
-   "start": 39.62,
-   "end": 43.78,
-   "kind": "clip",
-   "file": "assets/c_missed.mp4",
-   "from": 0,
-   "transition": "sharp",
-   "grade": false
-  },
-  {
-   "start": 43.78,
+   "start": 43.8,
    "end": 48.65,
    "kind": "clip",
-   "file": "assets/c_priv.mp4",
+   "file": "work/p_priv.mp4",
    "from": 0,
    "transition": "smooth",
    "grade": false
@@ -179,18 +144,18 @@
    "start": 48.65,
    "end": 50.4,
    "kind": "clip",
-   "file": "assets/c_role.mp4",
+   "file": "work/p_both.mp4",
    "from": 0,
-   "transition": "sharp",
+   "transition": "cut",
    "grade": false
   },
   {
    "start": 50.4,
    "end": 53.25,
    "kind": "clip",
-   "file": "assets/c_store.mp4",
+   "file": "work/p_store.mp4",
    "from": 0,
-   "transition": "sharp",
+   "transition": "cut",
    "grade": false
   }
  ],
@@ -199,7 +164,8 @@
   "accent": "«ЗУБЫ»",
   "start": 53.25,
   "top": 230,
-  "sub": "Comment “TEETH” for the link"
+  "sub": "Comment “TEETH” for the link",
+  "color": "#FFD84D"
  },
  "en": "en.json"
 }

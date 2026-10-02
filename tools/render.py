@@ -89,17 +89,32 @@ def build_ass(words, path, subs=None, en=None):
     subs = subs or {}
     lime = ass_color(subs.get("hl", LIME)) + "&"
     white = ass_color(subs.get("text", "#FFFFFF")) + "&"
-    if subs.get("bg"):
+    mv = subs.get("y", 560)  # distance of the subtitle baseline from the bottom edge
+    marker = subs.get("style") == "marker"
+    if marker:
+        # "marker": bold caps with a dark outline; the spoken word turns dark on a thick coloured outline,
+        # which reads as a highlighter stroke behind that word
+        ink = ass_color(subs.get("ink", "#10201B"))
+        style = (f"Style: Sub,Unbounded ExtraBold,{subs.get('size', 62)},{white[:-1]},{white[:-1]},&H00101010,&H8C000000,"
+                 f"-1,0,0,0,100,100,0,0,1,6,3,2,80,80,{mv},1")
+        hl_on = f"{{\\c{ink}&\\3c{lime}\\bord13\\shad0}}"
+        hl_off = f"{{\\c{white}\\3c&H101010&\\bord6\\shad3}}"
+        en_col = ass_color(subs.get("en", "#E6ECEA"))
+        style += f"\nStyle: En,Manrope ExtraBold,42,{en_col},{en_col},&H00101010,&H8C000000,-1,0,0,0,100,100,0,0,1,4,2,8,110,110,{H - mv + 30},1"
+    elif subs.get("bg"):
         box = ass_color(subs["bg"], subs.get("bg_alpha", 0.15))
-        style = f"Style: Sub,Manrope ExtraBold,80,{white[:-1]},{white[:-1]},{box},{box},-1,0,0,0,100,100,0,0,3,20,0,2,90,90,560,1"
+        style = f"Style: Sub,Manrope ExtraBold,80,{white[:-1]},{white[:-1]},{box},{box},-1,0,0,0,100,100,0,0,3,20,0,2,90,90,{mv},1"
     else:
-        style = f"Style: Sub,Manrope ExtraBold,86,{white[:-1]},{white[:-1]},&H00000000,&H96000000,-1,0,0,0,100,100,0,0,1,7,4,2,90,90,560,1"
-    en_col = ass_color(subs.get("en", "#C9CED8"))
-    if subs.get("bg"):
+        style = f"Style: Sub,Manrope ExtraBold,86,{white[:-1]},{white[:-1]},&H00000000,&H96000000,-1,0,0,0,100,100,0,0,1,7,4,2,90,90,{mv},1"
+    if marker:
+        pass
+    elif subs.get("bg"):
+        en_col = ass_color(subs.get("en", "#C9CED8"))
         en_box = ass_color(subs["bg"], min(subs.get("bg_alpha", 0.15) + 0.1, 1))
-        style += f"\nStyle: En,Manrope,44,{en_col},{en_col},{en_box},{en_box},-1,0,0,0,100,100,0,0,3,14,0,8,110,110,{H - 560 + 26},1"
+        style += f"\nStyle: En,Manrope,44,{en_col},{en_col},{en_box},{en_box},-1,0,0,0,100,100,0,0,3,14,0,8,110,110,{H - mv + 26},1"
     else:
-        style += f"\nStyle: En,Manrope,46,{en_col},{en_col},&H00000000,&H96000000,-1,0,0,0,100,100,0,0,1,4,2,8,110,110,{H - 560 + 26},1"
+        en_col = ass_color(subs.get("en", "#C9CED8"))
+        style += f"\nStyle: En,Manrope,46,{en_col},{en_col},&H00000000,&H96000000,-1,0,0,0,100,100,0,0,1,4,2,8,110,110,{H - mv + 26},1"
     head = f"""[Script Info]
 ScriptType: v4.00+
 PlayResX: {W}
@@ -117,6 +132,8 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
     lines = []
     for chunk in chunk_words(words):
         shown = [re.sub(r"[.,:;…]+$", "", w["w"]) for w in chunk]
+        if marker:
+            shown = [x.upper() for x in shown]
         c_end = chunk[-1]["e"]
         for i, w in enumerate(chunk):
             start = w["s"]
@@ -124,7 +141,11 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
             parts = []
             for j, text in enumerate(shown):
                 text = ass_escape(text)
-                parts.append(f"{{\\c{lime}}}{text}{{\\c{white}}}" if j == i else text)
+                if marker:
+                    # hard spaces keep the thick marker stroke off the neighbouring words
+                    parts.append(f"\\h{hl_on}{text}{hl_off}\\h" if j == i else text)
+                else:
+                    parts.append(f"{{\\c{lime}}}{text}{{\\c{white}}}" if j == i else text)
             pop = "{\\fscx88\\fscy88\\t(0,110,\\fscx100\\fscy100)}" if i == 0 else ""
             lines.append(f"Dialogue: 0,{ass_time(start)},{ass_time(end)},Sub,,0,0,0,,{pop}{' '.join(parts)}")
     for seg in en or []:
@@ -298,7 +319,7 @@ def card_html(c, theme="dark"):
 <div class="handle">{HANDLE}</div><div class="content">{body}</div></div>"""
 
 
-def banner_html(text, accent, top=260, sub=None):
+def banner_html(text, accent, top=260, sub=None, color=LIME):
     """Hook / CTA plate on a transparent background, sits above the speaker; sub = optional small second line
     (e.g. the English version)."""
     sub = (f'<div style="font-family:Manrope;font-weight:700;font-size:38px;line-height:1.25;letter-spacing:0;'
@@ -306,9 +327,9 @@ def banner_html(text, accent, top=260, sub=None):
            if sub else "")
     return f"""<div style="position:absolute;left:70px;right:70px;top:{top}px;display:flex;justify-content:center;
 animation:slidein .4s cubic-bezier(.2,.9,.3,1.2) both">
-<div style="background:rgba(13,15,20,.92);border:4px solid {LIME};border-radius:36px;padding:40px 48px;text-align:center;
+<div style="background:rgba(13,15,20,.92);border:4px solid {color};border-radius:36px;padding:40px 48px;text-align:center;
 font-family:Unbounded;font-weight:800;font-size:72px;line-height:1.12;letter-spacing:-1px;box-shadow:0 20px 60px rgba(0,0,0,.5)">
-{accented(text, accent, words_anim=True, delay0=0.15, step=0.06)}{sub}</div></div>"""
+{accented(text, accent, words_anim=True, delay0=0.15, step=0.06).replace('class="w acc" style="', f'class="w acc" style="color:{color};')}{sub}</div></div>"""
 
 
 def render_frames(page, body, seconds, outdir, transparent):
@@ -345,7 +366,8 @@ def main(plan_path):
         browser = pw.chromium.launch(executable_path=CHROME)
         page = browser.new_page(viewport={"width": W, "height": H})
         for i, c in enumerate(plan.get("cards", [])):
-            o = dict(s=c["start"], e=c["end"], kind=c["kind"], sharp=c.get("transition", plan.get("transition")) == "sharp")
+            tr = c.get("transition", plan.get("transition"))
+            o = dict(s=c["start"], e=c["end"], kind=c["kind"], sharp=tr in ("sharp", "cut"), cut=tr == "cut")
             if c["kind"] == "clip":
                 o.update(kind="clip", grade=c.get("grade", True),
                          inp=["-ss", str(c.get("from", 0)), "-t", f"{o['e'] - o['s']:.3f}", "-i", p(c["file"])])
@@ -363,7 +385,7 @@ def main(plan_path):
             s = total + s if s < 0 else s
             e = b.get("end", total)
             d = f"{tmp}/{key}"
-            render_frames(page, banner_html(b["text"], b.get("accent"), b.get("top", top), b.get("sub")), e - s, d, transparent=True)
+            render_frames(page, banner_html(b["text"], b.get("accent"), b.get("top", top), b.get("sub"), b.get("color", LIME)), e - s, d, transparent=True)
             banners.append((s, e, ["-framerate", str(FPS), "-i", f"{d}/%05d.png"]))
         browser.close()
 
@@ -400,7 +422,7 @@ def main(plan_path):
             chain += f"scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},fps={FPS},setsar=1,"
             if o["grade"]:
                 chain += "eq=contrast=1.05:brightness=-0.02:saturation=0.88,vignette=angle=PI/5,"
-            if sharp:  # hard cut in, then a quick settle from a 12% push-in
+            if sharp and not o.get("cut"):  # hard cut in, then a quick settle from a 12% push-in
                 chain += (f"scale=w='trunc({W}*(1+0.12*pow(max(0,1-t/0.3),2))/2)*2':h=-2:eval=frame,"
                           f"crop={W}:{H}:(iw-{W})/2:(ih-{H})/2,")
         chain += f"format=rgba,trim=duration={d:.3f},"
