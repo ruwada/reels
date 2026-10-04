@@ -1,7 +1,7 @@
 {
  "src": "../work/zaur/src.mov",
  "words": "words.json",
- "out": "../work/zaur/reel-zaur.mp4",
+ "out": "../work/zaur/reel-zaur-v2.mp4",
  "theme": "glass",
  "subs": {
   "style": "marker",
@@ -67,6 +67,15 @@
    "end": 35.2,
    "kind": "clip",
    "file": "../work/p_timer.mp4",
+   "from": 0,
+   "transition": "cut",
+   "grade": false
+  },
+  {
+   "start": 35.2,
+   "end": 36.9,
+   "kind": "clip",
+   "file": "../work/zaur/brekety.mp4",
    "from": 0,
    "transition": "cut",
    "grade": false
