@@ -2,7 +2,7 @@
 import json, subprocess
 N = len(json.load(open('lines.json')))
 GAP, LEAD = 0.28, 0.35          # pause between phrases, silence before the first word
-FIX = {("эй-ай", "бот."): "AI-бот.", ("си-ар-эм.",): "CRM."}
+FIX = {("эй-ай", "бот."): "AI-бот.", ("си-эр-эм.",): "CRM."}
 words, parts, t = [], [], LEAD
 for i in range(N):
     a = json.load(open(f'tts/p{i}.json'))
