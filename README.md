@@ -7,6 +7,7 @@ Talking-head video in, polished 1080x1920 reel out: word-by-word subtitles (acti
 hook plate, Pexels B-roll, a few motion cards, punch-in zooms, CTA plate, loudness normalised to -14 LUFS.
 
     tools/                 setup.sh, transcribe.py, render.py, pexels.py
+    tools/code-video/      method 3: motion-graphics reels from code (HyperFrames / Remotion), see its README
     08-90/, 11-naym/ ...   one folder per reel: edit.json (the plan) and words.json (subtitles)
 
 ## Editing a reel
