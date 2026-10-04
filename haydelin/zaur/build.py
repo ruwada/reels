@@ -23,7 +23,7 @@ SEGS = [
     ("sc4.mp4", 0.0, 4.4),       # Islam types: "Договорились..."
     ("sc5.mp4", 0.0, 2.9),       # night coding: "Вот что получилось."
     (ORIG, 10.3, 43.95),         # app demo from v2 (screens are cards in edit.json)
-    ("sc7.mp4", 1.0, 5.0),       # Zaur with the phone: "Это ровно то, что я хотел."
+    ("sc7.mp4", 0.8, 4.8),       # Zaur with the phone (Omni dissolves into the reference photo after 4.9 s): "Это ровно то, что я хотел."
     (os.path.join(BROLL, "8266177.mp4"), 2.0, 6.8),  # CTA
 ]
 # (audio file, offset in that file, timeline position)
@@ -34,7 +34,7 @@ VOICE = [
     ("B1.mp3", 0.0, 15.9),
     ("B2.mp3", 0.0, 20.35),
     ("app-b.mp3", 0.0, 22.9),
-    ("z7e.wav", 1.0, 56.55),
+    ("z7e.wav", 0.8, 56.55),
     ("B3.mp3", 0.0, 60.75),
 ]
 
@@ -52,7 +52,8 @@ def main():
     for i, (f, a, b) in enumerate(SEGS):
         out = f"{W}/seg{i}.mp4"
         run(["ffmpeg", "-v", "error", "-y", "-ss", str(a), "-t", f"{b - a:.3f}", "-i", p(f), "-an",
-             "-vf", "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,fps=30,setsar=1,format=yuv420p",
+             "-vf", "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,fps=30,setsar=1,format=yuv420p,tpad=stop_mode=clone:stop_duration=1",
+             "-frames:v", str(round((b - a) * 30)),  # exact frame count, so the picture never drifts from the voice
              "-c:v", "libx264", "-preset", "fast", "-crf", "14", out])
         parts.append(out); t += b - a
     total = t
