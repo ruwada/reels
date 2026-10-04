@@ -3,3 +3,9 @@ __pycache__/
 */orig.*
 */broll/
 */work/
+# method 3 reels: generated voice, renders
+*/tts/
+*/golos.wav
+*/code/assets/golos.wav
+*/code/index.html
+*/code/renders/
