@@ -23,6 +23,7 @@ edit.json:
   ],
   "subs": {"text": "#FFFFFF", "hl": "#C6F432", "bg": "#0B1B4D", "bg_alpha": 0.15},  # optional subtitle box, pick per reel
   "cta": {"text": "Напиши «AI»\\nв комментариях", "accent": "«AI»", "start": -3.5},
+  "plates": [{"text": "...", "start": 20, "end": 23, "top": 300}],  # optional extra plates in the hook style
   "en": "en.json"                  # optional English line under the subtitles: [{"s": 0.1, "e": 3.9, "t": "..."}]
   # hook/cta take an optional "top" (px) to keep the plate off the speaker's face
 }
@@ -377,14 +378,14 @@ def main(plan_path):
                 render_frames(page, card_html(c, theme), o["e"] - o["s"], d, transparent=theme == "glass")
                 o.update(kind="card", glass=theme == "glass", inp=["-framerate", str(FPS), "-i", f"{d}/%05d.png"])
             overlays.append(o)
-        for key, top in (("hook", 260), ("cta", 300)):
-            b = plan.get(key)
+        plates = [(plan.get("hook"), 260), (plan.get("cta"), 300)] + [(b, 260) for b in plan.get("plates", [])]
+        for key, (b, top) in enumerate(plates):
             if not b:
                 continue
             s = b.get("start", 0)
             s = total + s if s < 0 else s
             e = b.get("end", total)
-            d = f"{tmp}/{key}"
+            d = f"{tmp}/plate{key}"
             render_frames(page, banner_html(b["text"], b.get("accent"), b.get("top", top), b.get("sub"), b.get("color", LIME)), e - s, d, transparent=True)
             banners.append((s, e, ["-framerate", str(FPS), "-i", f"{d}/%05d.png"]))
         browser.close()
@@ -419,7 +420,8 @@ def main(plan_path):
             last = f"gv{idx}"
         chain = f"[{idx}:v]"
         if o["kind"] == "clip":
-            chain += f"scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},fps={FPS},setsar=1,"
+            # tpad holds the last frame if the clip is a little shorter than its slot
+            chain += f"scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},fps={FPS},setsar=1,tpad=stop_mode=clone:stop_duration=2,"
             if o["grade"]:
                 chain += "eq=contrast=1.05:brightness=-0.02:saturation=0.88,vignette=angle=PI/5,"
             if sharp and not o.get("cut"):  # hard cut in, then a quick settle from a 12% push-in

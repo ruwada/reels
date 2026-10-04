@@ -1,0 +1,130 @@
+{
+ "src": "../work/zaur/src.mov",
+ "words": "words.json",
+ "out": "../work/zaur/reel-zaur.mp4",
+ "theme": "glass",
+ "subs": {
+  "style": "marker",
+  "text": "#FFFFFF",
+  "hl": "#FFD84D",
+  "ink": "#10201B",
+  "size": 56,
+  "y": 400,
+  "en": "#E6ECEA"
+ },
+ "hook": {
+  "text": "Стоматолог заказал\nу меня приложение",
+  "accent": "приложение",
+  "start": 0,
+  "end": 3.2,
+  "top": 990,
+  "sub": "A dentist ordered an app from me",
+  "color": "#FFD84D"
+ },
+ "zooms": [],
+ "cards": [
+  {
+   "start": 15.5,
+   "end": 20.0,
+   "kind": "list",
+   "theme": "glass",
+   "title": "Договорились",
+   "accent": "Договорились",
+   "items": [
+    "Напоминания утром и вечером",
+    "Таймер чистки по зонам",
+    "Режимы для брекетов и тяг",
+    "Контроль для родителей"
+   ],
+   "item_at": [
+    0.35,
+    0.9,
+    1.45,
+    2.0
+   ],
+   "transition": "smooth"
+  },
+  {
+   "start": 22.9,
+   "end": 24.9,
+   "kind": "clip",
+   "file": "../work/p_alarm.mp4",
+   "from": 0,
+   "transition": "cut",
+   "grade": false
+  },
+  {
+   "start": 24.9,
+   "end": 30.75,
+   "kind": "clip",
+   "file": "../work/p_start.mp4",
+   "from": 0,
+   "transition": "cut",
+   "grade": false
+  },
+  {
+   "start": 30.75,
+   "end": 35.2,
+   "kind": "clip",
+   "file": "../work/p_timer.mp4",
+   "from": 0,
+   "transition": "cut",
+   "grade": false
+  },
+  {
+   "start": 36.9,
+   "end": 42.0,
+   "kind": "clip",
+   "file": "../work/p_modes.mp4",
+   "from": 0,
+   "transition": "cut",
+   "grade": false
+  },
+  {
+   "start": 42.0,
+   "end": 48.3,
+   "kind": "clip",
+   "file": "../work/p_coins.mp4",
+   "from": 0,
+   "transition": "cut",
+   "grade": false
+  },
+  {
+   "start": 48.3,
+   "end": 50.2,
+   "kind": "clip",
+   "file": "../broll/7171041.mp4",
+   "from": 2.0,
+   "transition": "cut",
+   "grade": false
+  },
+  {
+   "start": 50.2,
+   "end": 56.55,
+   "kind": "clip",
+   "file": "../work/p_parent.mp4",
+   "from": 0,
+   "transition": "cut",
+   "grade": false
+  }
+ ],
+ "plates": [
+  {
+   "text": "Разработка",
+   "start": 20.1,
+   "end": 22.85,
+   "top": 300,
+   "sub": "Building it",
+   "color": "#FFD84D"
+  }
+ ],
+ "cta": {
+  "text": "Напиши\n«ПРИЛОЖЕНИЕ»",
+  "accent": "«ПРИЛОЖЕНИЕ»",
+  "start": 60.6,
+  "top": 300,
+  "sub": "Comment “APP” and let's talk",
+  "color": "#FFD84D"
+ },
+ "en": "en.json"
+}
