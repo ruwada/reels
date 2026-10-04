@@ -1,0 +1,175 @@
+<!doctype html><html lang="ru"><head><meta charset="UTF-8"><style>
+  @font-face { font-family: "Unbounded"; src: url("assets/fonts/unbounded-cyr.woff2") format("woff2"); font-weight: 200 900; unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+  @font-face { font-family: "Unbounded"; src: url("assets/fonts/unbounded-lat.woff2") format("woff2"); font-weight: 200 900; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+20BD, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+  @font-face { font-family: "Manrope"; src: url("assets/fonts/manrope-cyr.woff2") format("woff2"); font-weight: 200 800; unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+  @font-face { font-family: "Manrope"; src: url("assets/fonts/manrope-lat.woff2") format("woff2"); font-weight: 200 800; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+20BD, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: #060819; }
+  #root { width: 100%; height: 100%; position: relative; overflow: hidden; font-family: "Manrope", sans-serif; color: #F3F1FF; }
+  .abs { position: absolute; }
+  .layer { position: absolute; inset: 0; }
+
+  /* ---------- world: sky, stars, moon, skyline ---------- */
+  #world { position: absolute; inset: 0; transform-origin: 540px 900px; }
+  #sky { position: absolute; inset: 0; background: linear-gradient(180deg, #05071A 0%, #0D0B2E 45%, #1C1550 78%, #2A1B5E 100%); }
+  #dawn { position: absolute; inset: 0; opacity: 0; background: linear-gradient(180deg, #1B2A5C 0%, #6B4E8E 45%, #F29E6B 80%, #FFC98A 100%); }
+  #stars { position: absolute; inset: 0; }
+  .star { position: absolute; width: 4px; height: 4px; border-radius: 50%; background: #fff; }
+  #moon { position: absolute; left: 700px; top: 250px; width: 150px; height: 150px; border-radius: 50%;
+    box-shadow: inset -34px 14px 0 0 #FFE2A8; filter: drop-shadow(0 0 40px rgba(255,214,140,.55)); }
+  #sun { position: absolute; left: 390px; top: 860px; width: 300px; height: 300px; border-radius: 50%; opacity: 0;
+    background: radial-gradient(circle, #FFE9B0 0%, #FFC46B 45%, rgba(255,160,90,0) 70%); }
+  #city { position: absolute; left: 0; top: 640px; width: 1080px; height: 420px; }
+  .shade { position: absolute; left: 0; right: 0; top: 960px; height: 960px; background: linear-gradient(180deg, rgba(6,8,25,0) 0%, #060819 18%, #060819 100%); }
+
+  /* ---------- scene 1-3: clock, stamp, sleep ---------- */
+  #notif { left: 140px; top: 270px; width: 800px; height: 128px; border-radius: 40px; background: rgba(255,255,255,.12);
+    border: 2px solid rgba(255,255,255,.18); display: flex; align-items: center; gap: 26px; padding: 0 34px; backdrop-filter: blur(18px); }
+  #notif .ic { width: 72px; height: 72px; border-radius: 20px; background: linear-gradient(135deg, #8B7CFF, #5B4BE0); display: flex; align-items: center; justify-content: center; font: 800 34px "Unbounded"; }
+  #notif .tx b { display: block; font: 800 32px "Manrope"; }
+  #notif .tx span { font: 600 30px "Manrope"; color: #CFCBEF; }
+  #notif .tm { margin-left: auto; font: 700 28px "Manrope"; color: #CFCBEF; }
+
+  #clock { left: 0; width: 1080px; top: 440px; display: flex; justify-content: center; align-items: center; gap: 6px; }
+  .dg { width: 150px; height: 230px; overflow: hidden; border-radius: 26px; background: linear-gradient(180deg, #1A1747, #100E33); border: 2px solid rgba(139,124,255,.35); position: relative; }
+  .dg .strip { position: absolute; left: 0; top: 0; width: 100%; }
+  .dg .strip div { height: 230px; display: flex; align-items: center; justify-content: center; font: 800 170px "Unbounded"; color: #FFF4DC; }
+  .dg::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 2px; background: rgba(0,0,0,.45); }
+  .colon { font: 800 150px "Unbounded"; color: #FFC56B; width: 60px; text-align: center; margin-top: -20px; }
+
+  #stamp { left: 0; width: 1080px; top: 720px; display: flex; justify-content: center; align-items: center; gap: 30px; }
+  #ring { position: absolute; left: 420px; top: 690px; width: 240px; height: 240px; border-radius: 50%; border: 6px solid #5BE49B; opacity: 0; }
+  .ok { width: 120px; height: 120px; border-radius: 50%; background: #2FCB7A; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 60px rgba(47,203,122,.6); }
+  .ok svg { width: 70px; height: 70px; }
+  #stamp .lbl b { display: block; font: 800 64px "Unbounded"; color: #7CF0B0; }
+  #stamp .lbl span { font: 700 44px "Manrope"; color: #E6FFF1; }
+  .pt { opacity: 0; position: absolute; width: 16px; height: 16px; border-radius: 50%; left: 532px; top: 772px; }
+
+  #dnd { left: 240px; top: 440px; width: 600px; height: 150px; border-radius: 75px; background: rgba(139,124,255,.18); border: 2px solid rgba(139,124,255,.45);
+    display: flex; align-items: center; gap: 28px; padding: 0 44px; }
+  #dnd .mi { width: 84px; height: 84px; border-radius: 50%; background: #8B7CFF; display: flex; align-items: center; justify-content: center; }
+  #dnd span { font: 800 46px "Manrope"; }
+  .z { position: absolute; font: 800 70px "Unbounded"; color: #CFC8FF; }
+
+  /* ---------- scene 4: phone chat ---------- */
+  #phoneWrap { left: 290px; top: 225px; width: 500px; height: 770px; perspective: 1800px; }
+  #phone { width: 500px; height: 770px; border-radius: 70px; background: #0B0B14; border: 10px solid #26243A; position: relative; overflow: hidden;
+    box-shadow: 0 50px 140px rgba(0,0,0,.6), 0 0 0 2px #3A3755, 0 0 90px rgba(139,124,255,.25); }
+  #phone .island { position: absolute; left: 175px; top: 16px; width: 130px; height: 36px; border-radius: 18px; background: #000; z-index: 3; }
+  #phone .hdr { position: absolute; left: 0; right: 0; top: 0; height: 150px; padding: 66px 26px 0; background: #15142A; display: flex; align-items: center; gap: 16px; z-index: 2; border-bottom: 1px solid #2A2846; }
+  #phone .av { width: 62px; height: 62px; border-radius: 50%; background: linear-gradient(135deg, #FF8FA3, #FFC56B); display: flex; align-items: center; justify-content: center; }
+  #phone .hdr b { display: block; font: 800 28px "Manrope"; }
+  #phone .hdr span { font: 600 22px "Manrope"; color: #7CF0B0; }
+  #feed { position: absolute; left: 0; right: 0; top: 150px; bottom: 0; overflow: hidden; background: radial-gradient(400px 500px at 80% 20%, #1A1838, #0E0D1C); }
+  #msgs { position: absolute; left: 0; right: 0; top: 0; padding: 22px 20px; display: flex; flex-direction: column; gap: 14px; }
+  .m { max-width: 360px; padding: 16px 20px; border-radius: 26px; font: 600 25px/1.3 "Manrope"; position: relative; }
+  .m small { display: block; font: 600 17px "Manrope"; opacity: .6; margin-top: 4px; text-align: right; }
+  .cl { align-self: flex-end; background: #6D5DF6; border-bottom-right-radius: 8px; }
+  .bt { align-self: flex-start; background: #23213D; border-bottom-left-radius: 8px; }
+  .slot { align-self: flex-start; position: relative; }
+  .typing { position: absolute; left: 0; top: 0; background: #23213D; border-radius: 26px; padding: 18px 22px; display: flex; gap: 8px; height: 60px; }
+  .typing i { width: 12px; height: 12px; border-radius: 50%; background: #A9A3E8; display: block; }
+  .prods { align-self: flex-start; display: flex; gap: 10px; }
+  .pr { width: 132px; border-radius: 22px; background: #23213D; padding: 10px; border: 3px solid transparent; }
+  .pr .pic { height: 110px; border-radius: 14px; position: relative; overflow: hidden; }
+  .pr b { display: block; font: 700 19px "Manrope"; margin-top: 8px; }
+  .pr span { font: 800 20px "Manrope"; color: #FFC56B; }
+  .pay { align-self: flex-start; width: 330px; border-radius: 26px; background: #23213D; padding: 18px; }
+  .pay b { display: block; font: 700 22px "Manrope"; color: #CFCBEF; margin-bottom: 12px; }
+  .btn { height: 74px; border-radius: 20px; background: linear-gradient(90deg, #FFC56B, #FF9F5A); color: #1A1030; display: flex; align-items: center; justify-content: center; font: 800 28px "Manrope"; position: relative; overflow: hidden; }
+  .btn .paid { position: absolute; inset: 0; background: #2FCB7A; color: #fff; display: flex; align-items: center; justify-content: center; gap: 10px; }
+  .tap { position: absolute; width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,.7); left: 135px; top: 7px; }
+
+  /* ---------- scene 5: 24h dial ---------- */
+  #dialWrap { left: 240px; top: 250px; width: 600px; height: 600px; }
+  #dial { width: 600px; height: 600px; }
+  .chip { position: absolute; height: 84px; padding: 0 34px; border-radius: 42px; display: flex; align-items: center; font: 800 38px "Manrope"; background: rgba(139,124,255,.22); border: 2px solid rgba(139,124,255,.6); }
+  #lost { left: 150px; top: 330px; width: 780px; }
+  .bubble { padding: 30px 36px; border-radius: 36px; border-bottom-left-radius: 10px; background: rgba(255,255,255,.14); border: 2px solid rgba(255,255,255,.2); font: 700 42px/1.25 "Manrope"; }
+  .bubble small { display: block; margin-top: 10px; font: 600 26px "Manrope"; color: #E9E4FF; opacity: .75; }
+  #loss { margin-top: 40px; font: 800 120px "Unbounded"; color: #FF6B6B; text-shadow: 0 0 50px rgba(255,90,90,.5); }
+  #replied { margin-bottom: 30px; display: inline-flex; align-items: center; gap: 16px; height: 72px; padding: 0 30px; border-radius: 36px; background: rgba(255,255,255,.2); font: 800 32px "Manrope"; color: #2A1B3E; background: #FFE2A8; }
+
+  /* ---------- scene 6: diagram ---------- */
+  #net { left: 0; top: 0; width: 1080px; height: 1000px; }
+  .ch { position: absolute; width: 130px; height: 130px; border-radius: 36px; display: flex; align-items: center; justify-content: center; box-shadow: 0 20px 60px rgba(0,0,0,.4); }
+  .ch svg { width: 74px; height: 74px; }
+  .chl { position: absolute; font: 700 26px "Manrope"; color: #CFCBEF; width: 200px; text-align: center; }
+  #core { position: absolute; left: 430px; top: 470px; width: 220px; height: 220px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(circle at 35% 30%, #A99CFF, #5B4BE0 60%, #3A2DB0); box-shadow: 0 0 120px rgba(139,124,255,.7); font: 800 64px "Unbounded"; }
+  #orbit { position: absolute; left: 395px; top: 435px; width: 290px; height: 290px; border-radius: 50%; border: 4px dashed rgba(199,190,255,.55); }
+  #crm { position: absolute; left: 690px; top: 395px; width: 245px; border-radius: 28px; background: rgba(21,20,42,.92); border: 2px solid rgba(139,124,255,.45); padding: 18px; box-shadow: 0 30px 80px rgba(0,0,0,.5); }
+  #crm h4 { font: 800 28px "Unbounded"; margin-bottom: 12px; color: #FFC56B; }
+  .row { height: 54px; border-radius: 14px; background: rgba(255,255,255,.06); margin-top: 10px; display: flex; align-items: center; gap: 10px; padding: 0 12px; font: 700 19px "Manrope"; white-space: nowrap; overflow: hidden; }
+  .row i { width: 14px; height: 14px; border-radius: 50%; background: #2FCB7A; display: block; flex: 0 0 14px; }
+  .flow { position: absolute; width: 18px; height: 18px; border-radius: 50%; background: #FFE2A8; box-shadow: 0 0 20px #FFC56B; left: -9px; top: -9px; }
+
+  /* ---------- scene 7: CTA ---------- */
+  #cta { left: 80px; top: 300px; width: 860px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+  #cta .t1 { font: 700 50px "Manrope"; color: #DCD6FF; }
+  #word { display: flex; gap: 18px; margin: 40px 0 34px; perspective: 1200px; }
+  #word div { width: 230px; height: 270px; border-radius: 40px; background: linear-gradient(160deg, #FFD88F, #FF9F5A); color: #1A1030; display: flex; align-items: center; justify-content: center; font: 800 190px "Unbounded"; box-shadow: 0 30px 90px rgba(255,170,90,.35); }
+  #cta .t2 { font: 700 44px/1.3 "Manrope"; color: #DCD6FF; max-width: 760px; }
+  #cta .h { margin-top: 44px; font: 800 40px "Manrope"; color: #FFC56B; }
+
+  /* ---------- subtitles ---------- */
+  #subs { left: 60px; width: 890px; top: 1030px; height: 150px; }
+  .chunk { position: absolute; left: 0; right: 0; top: 0; display: flex; justify-content: center; gap: 28px; font: 800 66px/1.1 "Unbounded"; letter-spacing: -0.01em; }
+  .chunk span { color: #FFFFFF; display: inline-block; text-shadow: 0 6px 30px rgba(0,0,0,.6); }
+  #ens { left: 60px; width: 890px; top: 1122px; height: 60px; }
+  .en { position: absolute; left: 0; right: 0; top: 0; text-align: center; font: italic 600 38px "Manrope"; color: #BFB8F0; text-shadow: 0 4px 20px rgba(0,0,0,.7); }
+
+  #vignette { position: absolute; inset: 0; background: radial-gradient(1100px 1500px at 50% 40%, rgba(0,0,0,0) 55%, rgba(0,0,0,.55) 100%); pointer-events: none; }
+  #flash { position: absolute; inset: 0; background: #fff; opacity: 0; }
+
+#cv { position:absolute; inset:0; }
+#top { left:0; width:1080px; top:290px; text-align:center; font:800 40px "Manrope"; letter-spacing:.12em; text-transform:uppercase; color:#CFC8FF; }
+#cclock { left:0; width:1080px; top:370px; display:flex; justify-content:center; align-items:center; gap:10px; }
+#cclock .dg { width:190px; height:290px; }
+#cclock .dg div { height:290px; display:flex; align-items:center; justify-content:center; font:800 215px "Unbounded"; color:#FFF4DC; }
+#cclock .colon { font:800 190px "Unbounded"; width:70px; }
+#head { left:40px; width:940px; top:720px; text-align:center; font:800 100px/1.08 "Unbounded"; letter-spacing:-.02em; text-shadow:0 10px 50px rgba(0,0,0,.6); }
+#head em { font-style:normal; color:#FFC56B; }
+#paid { left:0; width:1080px; top:980px; display:flex; justify-content:center; }
+#paid div { display:flex; align-items:center; gap:22px; height:118px; padding:0 46px 0 22px; border-radius:59px; background:rgba(47,203,122,.18); border:3px solid #2FCB7A; font:800 50px "Manrope"; color:#E6FFF1; box-shadow:0 0 70px rgba(47,203,122,.35); }
+#paid i { width:80px; height:80px; border-radius:50%; background:#2FCB7A; display:flex; align-items:center; justify-content:center; }
+#tag { left:0; width:1080px; top:1150px; text-align:center; font:700 44px "Manrope"; color:#DCD6FF; }
+</style></head><body>
+<div id="root"><div id="world"><div id="sky"></div><div id="stars"></div><div id="moon"></div><svg id="city" viewBox="0 0 1080 420"></svg></div>
+
+<div id="top" class="abs">03:12 · новый клиент</div>
+<div id="cclock" class="abs"><div class="dg"><div>0</div></div><div class="dg"><div>3</div></div><div class="colon">:</div><div class="dg"><div>1</div></div><div class="dg"><div>4</div></div></div>
+<div id="head" class="abs"><div>Он купил,</div><div>пока ты <em>спал</em></div></div>
+<div id="paid" class="abs"><div><i><svg width="50" height="50" viewBox="0 0 24 24"><path d="M4.5 12.5l5 5L19.5 7" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></i>Оплачено за 2 минуты</div></div>
+<div id="tag" class="abs">Кто ответил клиенту в 3 ночи?</div>
+<div id="vignette"></div></div>
+<script>let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647; const $ = s => document.querySelector(s);
+/* ---------- build world ---------- */
+const stars = $("#stars");
+for (let i = 0; i < 90; i++) {
+  const s = document.createElement("div"); s.className = "star";
+  const sz = 2 + rnd() * 4; s.style.width = s.style.height = sz + "px";
+  s.style.left = (rnd() * 1080) + "px"; s.style.top = (rnd() * 820) + "px"; s.style.opacity = .3 + rnd() * .7;
+  stars.appendChild(s);
+}
+const NS = "http://www.w3.org/2000/svg";
+const city = $("#city"); const wins = [];
+let x = -10;
+while (x < 1090) {
+  const w = 70 + rnd() * 90, h = 140 + rnd() * 250, y = 420 - h;
+  const b = document.createElementNS(NS, "rect");
+  Object.entries({ x, y, width: w, height: h, fill: rnd() > .5 ? "#120F33" : "#0E0C2A" }).forEach(([k, v]) => b.setAttribute(k, v));
+  city.appendChild(b);
+  for (let wy = y + 18; wy < 400; wy += 34) for (let wx = x + 12; wx < x + w - 18; wx += 26) {
+    if (rnd() < .28) {
+      const r = document.createElementNS(NS, "rect");
+      Object.entries({ x: wx, y: wy, width: 12, height: 18, rx: 2, fill: "#FFC56B" }).forEach(([k, v]) => r.setAttribute(k, v));
+      r.style.opacity = .55 + rnd() * .45; city.appendChild(r); wins.push(r);
+    }
+  }
+  x += w + 4 + rnd() * 10;
+}
+
+
+document.getElementById("city").style.top="1260px"; Object.assign(document.getElementById("moon").style, {left: "850px", top: "205px", width: "130px", height: "130px"});
+</script></body></html>
