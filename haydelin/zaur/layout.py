@@ -50,6 +50,7 @@ def main():
         else:
             cut.append(APP0 if ph == 0 else round(starts[ph] - 0.1, 2))
     cut.append(app_end)
+    cut = [round(round(c * 30) / 30, 3) for c in cut]  # on the frame grid
     plan = json.load(open(f"{HERE}/edit.json"))
     keep = [c for c in plan["cards"] if c["start"] < APP0]  # the contract list before the app part
     for k, (f, ph, fr) in enumerate(SCREENS):
@@ -58,7 +59,7 @@ def main():
     plan["cards"] = keep
     cta = app_end + 4.0
     plan["cta"]["start"] = round(cta + 0.05, 2)
-    plan["out"] = "../work/zaur/reel-zaur-v5.mp4"
+    plan["out"] = "../work/zaur/reel-zaur-v6.mp4"
     json.dump(plan, open(f"{HERE}/edit.json", "w"), ensure_ascii=False, indent=1)
 
     en = [x for x in json.load(open(f"{HERE}/en.json")) if x["e"] <= APP0]

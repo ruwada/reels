@@ -409,7 +409,8 @@ def main(plan_path):
         s, e, sharp = o["s"], o["e"], o["sharp"]
         d = e - s
         args += o["inp"]
-        on = f"enable='between(t,{s},{e})'"
+        pad = 1 / FPS if o["kind"] == "clip" else 0  # clips run one frame past their slot: no one-frame gap
+        on = f"enable='between(t,{s},{e + pad:.4f})'"
         if o.get("glass"):
             # frost the speaker behind a glass card: blurred, dimmed copy of the frame that fades with the card
             f = 0.15 if sharp else 0.4
@@ -427,7 +428,7 @@ def main(plan_path):
             if sharp and not o.get("cut"):  # hard cut in, then a quick settle from a 12% push-in
                 chain += (f"scale=w='trunc({W}*(1+0.12*pow(max(0,1-t/0.3),2))/2)*2':h=-2:eval=frame,"
                           f"crop={W}:{H}:(iw-{W})/2:(ih-{H})/2,")
-        chain += f"format=rgba,trim=duration={d:.3f},"
+        chain += f"format=rgba,trim=duration={d + pad:.3f},"
         ov = "overlay=eof_action=pass"
         if not sharp:
             fd = 0.4

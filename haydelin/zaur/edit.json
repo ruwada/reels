@@ -1,7 +1,7 @@
 {
  "src": "../work/zaur/src.mov",
  "words": "words.json",
- "out": "../work/zaur/reel-zaur-v5.mp4",
+ "out": "../work/zaur/reel-zaur-v6.mp4",
  "theme": "glass",
  "subs": {
   "style": "marker",
@@ -46,7 +46,7 @@
   },
   {
    "start": 22.9,
-   "end": 24.65,
+   "end": 24.667,
    "kind": "clip",
    "file": "../work/p_alarm.mp4",
    "from": 0,
@@ -54,7 +54,7 @@
    "grade": false
   },
   {
-   "start": 24.65,
+   "start": 24.667,
    "end": 29.5,
    "kind": "clip",
    "file": "../work/p_start.mp4",
@@ -64,7 +64,7 @@
   },
   {
    "start": 29.5,
-   "end": 33.57,
+   "end": 33.567,
    "kind": "clip",
    "file": "../work/p_timer.mp4",
    "from": 0,
@@ -72,8 +72,8 @@
    "grade": false
   },
   {
-   "start": 33.57,
-   "end": 35.19,
+   "start": 33.567,
+   "end": 35.2,
    "kind": "clip",
    "file": "../work/zaur/brekety.mp4",
    "from": 0,
@@ -81,7 +81,7 @@
    "grade": false
   },
   {
-   "start": 35.19,
+   "start": 35.2,
    "end": 39.1,
    "kind": "clip",
    "file": "../work/p_modes.mp4",
@@ -91,7 +91,7 @@
   },
   {
    "start": 39.1,
-   "end": 44.71,
+   "end": 44.7,
    "kind": "clip",
    "file": "../work/p_coins.mp4",
    "from": 0,
@@ -99,8 +99,8 @@
    "grade": false
   },
   {
-   "start": 44.71,
-   "end": 46.61,
+   "start": 44.7,
+   "end": 46.6,
    "kind": "clip",
    "file": "../broll/7171041.mp4",
    "from": 2.0,
@@ -108,7 +108,7 @@
    "grade": false
   },
   {
-   "start": 46.61,
+   "start": 46.6,
    "end": 52.1,
    "kind": "clip",
    "file": "../work/p_parent.mp4",
