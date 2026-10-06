@@ -6,14 +6,16 @@ cards, subtitles, hook and CTA (zaur/edit.json).
 
 Sound: voices + keyboard/whoosh effects from sfx.py (no music, no instruments).
 Voices: Zaur = Omni scene audio converted to his ElevenLabs clone (speech-to-speech keeps the lipsync),
-then EQ-matched to his real reels; Islam = his ElevenLabs voice (TTS from the clean script, tts_app.py places the app phrases on their screens).
+then EQ-matched to his real reels; Islam = his ElevenLabs voice (TTS from the clean script, tts_app.py + layout.py put the app phrases back to back and fit the screens to them).
 """
-import os, subprocess
+import json, os, subprocess
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 W = os.path.join(HERE, "..", "work", "zaur")
 ORIG = os.path.join(HERE, "..", "orig.mov")
 BROLL = os.path.join(HERE, "..", "broll")
+TL = json.load(open(os.path.join(HERE, "timeline.json")))  # layout.py: where the app part ends
+APP_END, CTA = TL["app_end"], TL["cta"]
 
 # (video file, in, out)  -> placed back to back
 SEGS = [
@@ -22,7 +24,7 @@ SEGS = [
     ("sc3.mp4", 0.6, 4.5),       # Zaur: make it impossible to miss
     ("sc4.mp4", 0.0, 4.4),       # Islam types: "Договорились..."
     ("sc5.mp4", 0.0, 2.9),       # night coding: "Вот что получилось."
-    (ORIG, 10.3, 43.95),         # app demo from v2 (screens are cards in edit.json)
+    (ORIG, 10.3, 10.3 + APP_END - 22.9),  # under the app screens (cards in edit.json cover it fully)
     ("sc7.mp4", 0.8, 4.8),       # Zaur with the phone (Omni dissolves into the reference photo after 4.9 s): "Это ровно то, что я хотел."
     (os.path.join(BROLL, "8266177.mp4"), 2.0, 6.8),  # CTA
 ]
@@ -34,8 +36,8 @@ VOICE = [
     ("B1.mp3", 0.0, 15.9),
     ("B2.mp3", 0.0, 20.35),
     ("app-tts.wav", 0.0, 22.9),  # tts_app.py: clean script, phrases placed on their screens
-    ("z7e.wav", 0.8, 56.55),
-    ("B3.mp3", 0.0, 60.75),
+    ("z7e.wav", 0.8, APP_END),
+    ("B3.mp3", 0.0, CTA + 0.2),
 ]
 
 

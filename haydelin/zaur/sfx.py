@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
-"""Sound design for the Zaur cut: no music and no instruments, only keyboard, whooshes, pops and a stamp.
-Whooshes on scene changes, keyboard where Islam types (and quietly in every pause of the voice),
-pops when list items / chips appear. usage: sfx.py voice.wav out.wav"""
+"""Sound design for the Zaur cut: no music and no instruments, only a few quiet whooshes and keyboard taps
+on the long scene transitions. usage: sfx.py voice.wav out.wav"""
 import subprocess, sys
 import numpy as np
 
@@ -47,28 +46,15 @@ def whoosh(d=0.45):
     return out * e / np.max(np.abs(out * e))
 
 
-def stamp():
-    n = int(0.35 * SR); t = np.arange(n) / SR
-    s = np.sin(2 * np.pi * (90 - 40 * t) * t) * env(n, 0.06) + bp(rng.standard_normal(n), 200, 3000) * env(n, 0.01) * 0.7
-    return s / np.max(np.abs(s))
-
-
-def pop():
-    n = int(0.09 * SR); t = np.arange(n) / SR
-    s = np.sin(2 * np.pi * (700 - 3000 * t) * t) * env(n, 0.018)
-    return s / np.max(np.abs(s))
-
-
 def load(p):
     return np.frombuffer(subprocess.run(["ffmpeg", "-v", "error", "-i", p, "-ac", "1", "-ar", str(SR), "-f", "f32le", "-"],
                                         capture_output=True, check=True).stdout, np.float32)
 
 
-# scene changes on the reel timeline (same as build.py / edit.json)
-CUTS = [5.1, 11.7, 15.6, 20.0, 22.9, 24.9, 30.75, 35.2, 36.9, 42.0, 48.3, 50.2, 56.55, 60.55]
-TYPING = [(15.9, 20.0, 0.10), (20.0, 22.85, 0.22), (60.7, 65.35, 0.12)]  # Islam / the CTA guy at the keyboard
-POPS = [0.15, 15.85, 16.4, 16.95, 17.5, 20.1, 35.62, 36.22]  # hook plate, contract items, "Разработка", braces chips
-STAMP = 60.85  # CTA plate lands
+# Minimal, by the user's request (2026-10-06): quiet, only on the long scene transitions, never under speech,
+# nothing on Zaur's reaction and the CTA at the end.
+WHOOSH = [15.45, 19.85, 22.7]           # into the agreement, into the night coding, into the app
+TYPING = [(21.8, 22.75, 0.07)]          # night coding: the pause after "Вот что получилось"
 
 
 def main(voice_path, out):
@@ -79,27 +65,10 @@ def main(voice_path, out):
         if m > 0:
             mix[i:i + m] += sig[:m] * g
 
-    for t in CUTS:
-        put(whoosh(), t - 0.25, 0.16)
+    for t in WHOOSH:
+        put(whoosh(), t - 0.2, 0.07)
     for s, e, g in TYPING:
         put(typing(e - s), s, g)
-    for t in POPS:
-        put(pop(), t, 0.14)
-    put(stamp(), STAMP, 0.3)
-    # quiet keyboard taps in every pause of the voice longer than 0.35 s, so no silence is left
-    hop = int(0.05 * SR); rms = np.array([np.sqrt(np.mean(v[i:i + hop] ** 2)) for i in range(0, n - hop, hop)])
-    silent = rms < 0.02; i = 0
-    while i < len(silent):
-        if silent[i]:
-            j = i
-            while j < len(silent) and silent[j]:
-                j += 1
-            s, e = i * 0.05 + 0.05, j * 0.05 - 0.05
-            if e - s > 0.25 and not any(a <= s <= b for a, b, _ in TYPING):
-                put(typing(e - s, rate=8), s, 0.11)
-            i = j
-        else:
-            i += 1
     mix = mix[:n]
     subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "f32le", "-ar", str(SR), "-ac", "1", "-i", "-", out],
                    input=mix.astype(np.float32).tobytes(), check=True)

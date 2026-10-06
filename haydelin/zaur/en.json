@@ -40,73 +40,78 @@
 "t": "Here's what I built."
 },
 {
-"s": 23.2,
-"e": 25.0,
+"s": 23.05,
+"e": 24.63,
 "t": "An alarm rings morning and evening."
 },
 {
-"s": 25.0,
-"e": 29.0,
+"s": 24.752,
+"e": 27.94,
 "t": "Tap Start, and a character copies your face."
 },
 {
-"s": 29.0,
-"e": 30.8,
+"s": 28.06,
+"e": 29.48,
 "t": "Open your mouth, it opens too."
 },
 {
-"s": 30.8,
-"e": 32.8,
+"s": 29.602,
+"e": 31.28,
 "t": "A timer guides you through 6 zones."
 },
 {
-"s": 32.8,
-"e": 35.3,
+"s": 31.399,
+"e": 33.55,
 "t": "Two minutes, no zone missed."
 },
 {
-"s": 35.3,
-"e": 36.9,
+"s": 33.668,
+"e": 35.17,
 "t": "Braces or elastics?"
 },
 {
-"s": 36.9,
-"e": 42.0,
+"s": 35.286,
+"e": 39.09,
 "t": "Special modes remind you to brush and wear them."
 },
 {
-"s": 42.0,
-"e": 46.4,
+"s": 39.205,
+"e": 42.76,
 "t": "Kids earn coins and buy rewards."
 },
 {
-"s": 46.4,
-"e": 48.3,
+"s": 42.884,
+"e": 44.69,
 "t": "Brushing becomes a game."
 },
 {
-"s": 48.3,
-"e": 52.3,
+"s": 44.814,
+"e": 47.84,
 "t": "Parents see on their phone if the child brushed."
 },
 {
-"s": 52.3,
-"e": 56.5,
-"t": "Missed it? A notification comes, even if the phone is off."
+"s": 47.961,
+"e": 49.73,
+"t": "Missed it? A notification comes."
 },
 {
-"s": 58.6,
-"e": 60.1,
+"s": 49.851,
+"e": 51.85,
+"t": "Even if the phone is off."
+},
+{
+"s": 54.15,
+"e": 55.6,
 "t": "That's exactly what I wanted."
 },
 {
-"s": 60.9,
-"e": 62.6,
+"s": 56.45,
+"e": 58.15,
 "t": "Need an app for your business?"
 },
 {
-"s": 62.6,
-"e": 65.1,
+"s": 58.15,
+"e": 60.65,
 "t": "Comment “APP” and let's talk."
 }
 ]

@@ -1,7 +1,7 @@
 {
  "src": "../work/zaur/src.mov",
  "words": "words.json",
- "out": "../work/zaur/reel-zaur-v4.mp4",
+ "out": "../work/zaur/reel-zaur-v5.mp4",
  "theme": "glass",
  "subs": {
   "style": "marker",
@@ -46,7 +46,7 @@
   },
   {
    "start": 22.9,
-   "end": 24.9,
+   "end": 24.65,
    "kind": "clip",
    "file": "../work/p_alarm.mp4",
    "from": 0,
@@ -54,8 +54,8 @@
    "grade": false
   },
   {
-   "start": 24.9,
-   "end": 30.75,
+   "start": 24.65,
+   "end": 29.5,
    "kind": "clip",
    "file": "../work/p_start.mp4",
    "from": 0,
@@ -63,8 +63,8 @@
    "grade": false
   },
   {
-   "start": 30.75,
-   "end": 35.2,
+   "start": 29.5,
+   "end": 33.57,
    "kind": "clip",
    "file": "../work/p_timer.mp4",
    "from": 0,
@@ -72,8 +72,8 @@
    "grade": false
   },
   {
-   "start": 35.2,
-   "end": 36.9,
+   "start": 33.57,
+   "end": 35.19,
    "kind": "clip",
    "file": "../work/zaur/brekety.mp4",
    "from": 0,
@@ -81,8 +81,8 @@
    "grade": false
   },
   {
-   "start": 36.9,
-   "end": 42.0,
+   "start": 35.19,
+   "end": 39.1,
    "kind": "clip",
    "file": "../work/p_modes.mp4",
    "from": 0,
@@ -90,8 +90,8 @@
    "grade": false
   },
   {
-   "start": 42.0,
-   "end": 48.3,
+   "start": 39.1,
+   "end": 44.71,
    "kind": "clip",
    "file": "../work/p_coins.mp4",
    "from": 0,
@@ -99,8 +99,8 @@
    "grade": false
   },
   {
-   "start": 48.3,
-   "end": 50.2,
+   "start": 44.71,
+   "end": 46.61,
    "kind": "clip",
    "file": "../broll/7171041.mp4",
    "from": 2.0,
@@ -108,8 +108,8 @@
    "grade": false
   },
   {
-   "start": 50.2,
-   "end": 56.55,
+   "start": 46.61,
+   "end": 52.1,
    "kind": "clip",
    "file": "../work/p_parent.mp4",
    "from": 0,
@@ -130,7 +130,7 @@
  "cta": {
   "text": "Напиши\n«ПРИЛОЖЕНИЕ»",
   "accent": "«ПРИЛОЖЕНИЕ»",
-  "start": 60.6,
+  "start": 56.15,
   "top": 300,
   "sub": "Comment “APP” and let's talk",
   "color": "#FFD84D"
