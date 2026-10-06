@@ -1,7 +1,7 @@
 {
  "src": "../work/zaur/src.mov",
  "words": "words.json",
- "out": "../work/zaur/reel-zaur-v2.mp4",
+ "out": "../work/zaur/reel-zaur-v4.mp4",
  "theme": "glass",
  "subs": {
   "style": "marker",

@@ -4,9 +4,9 @@
 Builds work/zaur/src.mp4 (one continuous picture + voice track) that render.py then dresses with
 cards, subtitles, hook and CTA (zaur/edit.json).
 
+Sound: voices + keyboard/whoosh effects from sfx.py (no music, no instruments).
 Voices: Zaur = Omni scene audio converted to his ElevenLabs clone (speech-to-speech keeps the lipsync),
-then EQ-matched to his real reels; Islam = his ElevenLabs voice (TTS lines + the app narration converted
-by speech-to-speech from his recording, so it keeps the timing of the screens).
+then EQ-matched to his real reels; Islam = his ElevenLabs voice (TTS from the clean script, tts_app.py places the app phrases on their screens).
 """
 import os, subprocess
 
@@ -33,7 +33,7 @@ VOICE = [
     ("z3e.wav", 0.6, 11.7),
     ("B1.mp3", 0.0, 15.9),
     ("B2.mp3", 0.0, 20.35),
-    ("app-b.mp3", 0.0, 22.9),
+    ("app-tts.wav", 0.0, 22.9),  # tts_app.py: clean script, phrases placed on their screens
     ("z7e.wav", 0.8, 56.55),
     ("B3.mp3", 0.0, 60.75),
 ]
@@ -69,7 +69,10 @@ def main():
     fc.append("".join(f"[a{i}]" for i in range(len(VOICE))) +
               f"amix=inputs={len(VOICE)}:normalize=0:duration=longest,apad,atrim=0:{total:.3f}[a]")
     run(args + ["-filter_complex", ";".join(fc), "-map", "[a]", "-ac", "1", "-ar", "48000", f"{W}/voice.wav"])
-    run(["ffmpeg", "-v", "error", "-y", "-i", f"{W}/pic.mp4", "-i", f"{W}/voice.wav", "-map", "0:v", "-map", "1:a",
+    run(["python3", os.path.join(HERE, "sfx.py"), f"{W}/voice.wav", f"{W}/sfx.wav"])
+    run(["ffmpeg", "-v", "error", "-y", "-i", f"{W}/voice.wav", "-i", f"{W}/sfx.wav", "-filter_complex",
+         "[0:a][1:a]amix=inputs=2:normalize=0:duration=first[a]", "-map", "[a]", f"{W}/voice-sfx.wav"])
+    run(["ffmpeg", "-v", "error", "-y", "-i", f"{W}/pic.mp4", "-i", f"{W}/voice-sfx.wav", "-map", "0:v", "-map", "1:a",
          "-c:v", "copy", "-c:a", "pcm_s16le", "-shortest", f"{W}/src.mov"])
     print(f"src.mov {total:.2f}s")
 
