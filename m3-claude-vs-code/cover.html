@@ -1,0 +1,28 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+@font-face{font-family:U;src:url(unbounded-cyr.woff2);unicode-range:U+0400-045F}@font-face{font-family:U;src:url(unbounded-lat.woff2)}
+@font-face{font-family:M;src:url(manrope-cyr.woff2);unicode-range:U+0400-045F}@font-face{font-family:M;src:url(manrope-lat.woff2)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{width:1080px;height:1920px;overflow:hidden;background:#F3EEE5;font-family:M;color:#1F1B16;position:relative}
+.dots{position:absolute;inset:0;background-image:radial-gradient(#D9CDB9 2.2px,transparent 2.4px);background-size:44px 44px;opacity:.55}
+.blob{position:absolute;width:700px;height:700px;left:-200px;top:60px;border-radius:50%;background:#F6C9A8;filter:blur(110px);opacity:.75}
+.pill{position:absolute;left:70px;top:250px;height:60px;padding:0 26px 0 16px;border-radius:30px;background:#1F1B16;color:#FFF4E8;display:flex;align-items:center;gap:12px;font:800 26px M}
+.pill i{width:30px;height:30px;border-radius:50%;background:#D4693B;color:#fff;font:800 17px U;font-style:normal;display:flex;align-items:center;justify-content:center}
+.pill span{color:#F0A06E}
+h1{position:absolute;left:66px;top:350px;font:800 128px/1.02 U;letter-spacing:-.04em}
+h1 .a{color:#D4693B}
+h1 .ne{display:inline-block;width:120px;height:120px;border-radius:30px;background:#1F1B16;color:#F0A06E;font:800 96px/120px U;text-align:center;vertical-align:14px;margin-left:16px}
+.sub{position:absolute;left:70px;top:700px;font:800 50px/1.2 M;color:#4F463C}
+.sub b{color:#1F1B16;background:#F7D2B8;padding:0 10px;border-radius:12px}
+.card{position:absolute;left:0;top:830px;width:1080px;height:1090px;border-radius:64px 64px 0 0;overflow:hidden;background:#0a0909}
+.card img{position:absolute;left:50%;transform:translateX(-50%);top:0;height:1110px;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 14%,#000 86%,transparent 100%)}
+.card:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 55%,rgba(12,10,8,.85) 85%)}
+.term{position:absolute;left:70px;top:1690px;z-index:2;height:110px;padding:0 36px;border-radius:30px;background:#1C1915;border:3px solid #3A332B;color:#EDE6DA;display:flex;align-items:center;gap:18px;font:800 44px M;box-shadow:0 30px 70px rgba(0,0,0,.5)}
+.term span{color:#F0A06E;font:800 46px U}
+</style></head><body>
+<div class="dots"></div><div class="blob"></div>
+<div class="pill"><i>1</i>AI по-честному <span>· выпуск 1</span></div>
+<h1><span class="a">Claude</span><span class="ne">≠</span><br>Claude Code</h1>
+<div class="sub">Ты видел только <b>половину</b></div>
+<div class="card"><img src="foto.jpg"></div>
+<div class="term"><span>&gt;_</span>В чём разница</div>
+</body></html>

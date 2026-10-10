@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<script src="assets/gsap.min.js"></script>
+<style>
+  @font-face { font-family: "Unbounded"; src: url("assets/fonts/unbounded-cyr.woff2") format("woff2"); font-weight: 200 900; unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+  @font-face { font-family: "Unbounded"; src: url("assets/fonts/unbounded-lat.woff2") format("woff2"); font-weight: 200 900; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+20BD, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+  @font-face { font-family: "Manrope"; src: url("assets/fonts/manrope-cyr.woff2") format("woff2"); font-weight: 200 800; unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+  @font-face { font-family: "Manrope"; src: url("assets/fonts/manrope-lat.woff2") format("woff2"); font-weight: 200 800; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+20BD, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+  @font-face { font-family: "JBM"; src: url("assets/fonts/jbm-cyrillic-500.woff2") format("woff2"); font-weight: 500; unicode-range: U+0400-045F; }
+  @font-face { font-family: "JBM"; src: url("assets/fonts/jbm-latin-500.woff2") format("woff2"); font-weight: 500; }
+  @font-face { font-family: "JBM"; src: url("assets/fonts/jbm-cyrillic-700.woff2") format("woff2"); font-weight: 700; unicode-range: U+0400-045F; }
+  @font-face { font-family: "JBM"; src: url("assets/fonts/jbm-latin-700.woff2") format("woff2"); font-weight: 700; }
+  :root { --bg: #F3EEE5; --ink: #1F1B16; --mut: #776C5F; --acc: #D4693B; --acc2: #F0A06E; --ok: #2F8A5B; --bad: #C8463A; --card: #FFFDF9; --line: #E2D8C8; --term: #1C1915; --tink: #EDE6DA; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--bg); }
+  #root { width: 100%; height: 100%; position: relative; overflow: hidden; font-family: "Manrope", sans-serif; color: var(--ink); }
+  .abs { position: absolute; }
+  .mono { font-family: "JBM", monospace; }
+
+  /* ---------- background ---------- */
+  #bg { position: absolute; inset: 0; background: var(--bg); }
+  #dots { position: absolute; inset: -60px; background-image: radial-gradient(#D9CDB9 2.2px, transparent 2.4px); background-size: 44px 44px; opacity: .55; }
+  .blob { position: absolute; border-radius: 50%; filter: blur(90px); }
+  #b1 { width: 620px; height: 620px; left: -160px; top: 120px; background: #F6C9A8; opacity: .7; }
+  #b2 { width: 560px; height: 560px; left: 640px; top: 560px; background: #F2D7B5; opacity: .8; }
+  #b3 { width: 520px; height: 520px; left: 200px; top: 1300px; background: #EFD2BC; opacity: .6; }
+
+  /* series label */
+  #series { left: 70px; top: 214px; height: 56px; padding: 0 24px 0 16px; border-radius: 28px; background: var(--ink); color: #FFF4E8; display: flex; align-items: center; gap: 12px; font: 800 24px "Manrope"; letter-spacing: .02em; }
+  #series i { width: 28px; height: 28px; border-radius: 50%; background: var(--acc); display: flex; align-items: center; justify-content: center; font: 800 16px "Unbounded"; font-style: normal; color: #fff; }
+  #series span { color: var(--acc2); }
+
+  #stage { position: absolute; inset: 0; transform-origin: 540px 640px; }
+  .scene { position: absolute; inset: 0; opacity: 0; }
+  .card { background: var(--card); border: 2px solid var(--line); border-radius: 40px; box-shadow: 0 30px 70px rgba(80,55,30,.14); }
+  .star { width: 64px; height: 64px; border-radius: 50%; background: var(--acc); display: flex; align-items: center; justify-content: center; flex: 0 0 auto; }
+  .star svg { width: 38px; height: 38px; }
+
+  /* ---------- S1 hook ---------- */
+  .pick { position: absolute; top: 320px; width: 420px; height: 360px; padding: 40px 36px; display: flex; flex-direction: column; gap: 22px; }
+  #pa { left: 70px; } #pb { left: 530px; background: var(--term); border-color: #3A332B; color: var(--tink); }
+  .pick .ic { width: 96px; height: 96px; border-radius: 28px; display: flex; align-items: center; justify-content: center; }
+  #pa .ic { background: #FBE3D3; } #pb .ic { background: #2E2822; }
+  .pick b { font: 800 46px/1.05 "Unbounded"; letter-spacing: -.02em; }
+  .pick span { font: 700 30px "Manrope"; color: var(--mut); }
+  #pb span { color: #A99C8C; }
+  #lock { position: absolute; left: 530px; top: 320px; width: 420px; height: 360px; border-radius: 40px; background: #1C1915; display: flex; align-items: center; justify-content: center; font: 800 190px "Unbounded"; color: var(--acc2); }
+  #meter { left: 340px; top: 730px; width: 400px; height: 260px; }
+  #meter svg { position: absolute; left: 0; top: 0; }
+  #pct { position: absolute; left: 0; right: 0; top: 118px; text-align: center; font: 800 96px "Unbounded"; color: var(--ink); letter-spacing: -.03em; }
+
+  /* ---------- S2 chat ---------- */
+  #chat { left: 100px; top: 300px; width: 880px; height: 660px; padding: 0; overflow: hidden; transform-origin: 50% 0%; }
+  .chdr { height: 112px; display: flex; align-items: center; gap: 20px; padding: 0 34px; border-bottom: 2px solid var(--line); }
+  .chdr b { font: 800 36px "Unbounded"; }
+  .chdr span { margin-left: auto; font: 700 26px "Manrope"; color: var(--mut); background: #F1E9DD; padding: 8px 20px; border-radius: 22px; }
+  .cbody { padding: 30px 34px; display: flex; flex-direction: column; gap: 22px; }
+  .q { align-self: flex-end; background: var(--ink); color: #FFF4E8; font: 700 32px/1.3 "Manrope"; padding: 22px 30px; border-radius: 32px; border-bottom-right-radius: 10px; max-width: 640px; }
+  .a { align-self: flex-start; width: 740px; font: 600 30px/1.35 "Manrope"; }
+  .code { margin-top: 16px; background: #F5EEE3; border: 2px solid var(--line); border-radius: 24px; padding: 22px 26px 22px; position: relative; font: 500 25px/1.6 "JBM"; color: #4A3F33; }
+  .code .k { color: var(--acc); } .code .s { color: var(--ok); }
+  #copy { position: absolute; right: 18px; top: 16px; height: 50px; padding: 0 20px; border-radius: 16px; background: var(--card); border: 2px solid var(--line); font: 800 22px "Manrope"; display: flex; align-items: center; gap: 8px; overflow: hidden; }
+  #copied { position: absolute; inset: 0; background: var(--ok); color: #fff; display: flex; align-items: center; justify-content: center; }
+  #tap { position: absolute; width: 70px; height: 70px; border-radius: 50%; background: rgba(212,105,59,.45); border: 3px solid var(--acc); }
+  #editor { left: 300px; top: 700px; width: 620px; height: 300px; background: var(--term); border-radius: 30px; overflow: hidden; box-shadow: 0 40px 90px rgba(30,20,10,.35); }
+  .etab { height: 60px; display: flex; align-items: center; gap: 10px; padding: 0 24px; background: #26211C; font: 700 22px "JBM"; color: #CDBFAE; }
+  .etab i { width: 14px; height: 14px; border-radius: 50%; display: block; }
+  #eln { padding: 18px 26px; font: 500 24px/1.55 "JBM"; color: var(--tink); }
+  #eln div { opacity: 0; white-space: nowrap; }
+  #loop { left: 110px; top: 830px; height: 100px; padding: 0 30px; border-radius: 50px; background: var(--acc); color: #fff; display: flex; align-items: center; gap: 16px; font: 800 34px "JBM"; box-shadow: 0 20px 50px rgba(212,105,59,.4); }
+  #loopn { font: 800 44px "Unbounded"; min-width: 110px; }
+
+  /* ---------- S3-S4 terminal ---------- */
+  #term { left: 70px; top: 300px; width: 880px; height: 700px; background: var(--term); border-radius: 40px; overflow: hidden; box-shadow: 0 50px 110px rgba(30,20,10,.38); color: var(--tink); }
+  .tbar { height: 74px; display: flex; align-items: center; gap: 12px; padding: 0 28px; background: #25201B; }
+  .tbar i { width: 18px; height: 18px; border-radius: 50%; display: block; }
+  .tbar b { margin-left: 18px; font: 700 24px "JBM"; color: #B9AA97; }
+  #prompt { padding: 26px 32px 18px; font: 700 30px "JBM"; color: var(--tink); white-space: nowrap; border-bottom: 2px solid #2E2822; }
+  #prompt .p { color: var(--acc2); }
+  #caret { display: inline-block; width: 16px; height: 32px; background: var(--acc2); vertical-align: -5px; margin-left: 4px; }
+  #tree { position: absolute; left: 28px; top: 186px; width: 300px; font: 500 25px/1.75 "JBM"; color: #8E8172; }
+  #tree div { white-space: nowrap; padding-left: 10px; border-radius: 10px; }
+  #tree .d { color: #CDBFAE; font-weight: 700; }
+  #log { position: absolute; left: 350px; top: 186px; width: 510px; font: 500 25px/1.5 "JBM"; }
+  #log .l { white-space: nowrap; margin-bottom: 10px; opacity: 0; }
+  #log .dot { color: var(--acc2); }
+  #log .t { color: #fff; font-weight: 700; }
+  #log .g { color: #6FD39B; } #log .r { color: #F08A7E; } #log .m { color: #9C8F7E; }
+  .bar { height: 10px; width: 460px; background: #2E2822; border-radius: 5px; overflow: hidden; margin: 4px 0 6px; }
+  .bar div { height: 100%; width: 0; background: var(--acc2); }
+  .diff { background: #241F1A; border-radius: 12px; padding: 6px 12px; margin: 2px 0 12px; }
+  #sum { left: 380px; top: 860px; height: 100px; padding: 0 34px; border-radius: 30px; background: var(--card); color: var(--ink); display: flex; align-items: center; gap: 18px; font: 800 30px "Manrope"; box-shadow: 0 20px 60px rgba(0,0,0,.35); }
+  #sum .ok { width: 54px; height: 54px; border-radius: 50%; background: var(--ok); display: flex; align-items: center; justify-content: center; }
+  #sum em { font-style: normal; font: 700 26px "JBM"; } #sum .g { color: var(--ok); } #sum .r { color: var(--bad); }
+
+  /* ---------- S5 analogy ---------- */
+  .man { position: absolute; left: 90px; width: 860px; height: 300px; padding: 0 40px; display: flex; align-items: center; gap: 36px; }
+  #ma { top: 310px; } #mb { top: 660px; }
+  .man .ic { width: 170px; height: 170px; border-radius: 48px; display: flex; align-items: center; justify-content: center; flex: 0 0 auto; position: relative; }
+  #ma .ic { background: #F1E9DD; } #mb .ic { background: #FBE3D3; }
+  .man b { display: block; font: 800 40px/1.15 "Unbounded"; letter-spacing: -.02em; }
+  .man p { font: 700 30px/1.3 "Manrope"; color: var(--mut); margin-top: 10px; }
+  .tag { position: absolute; right: 30px; top: 26px; height: 46px; padding: 0 18px; border-radius: 23px; font: 800 22px "Manrope"; display: flex; align-items: center; }
+  #ma .tag { background: #F1E9DD; color: var(--mut); } #mb .tag { background: var(--term); color: var(--acc2); }
+  .wave { position: absolute; border: 4px solid var(--mut); border-left-color: transparent; border-bottom-color: transparent; border-radius: 50%; transform: rotate(45deg); }
+
+  /* ---------- S6 compare ---------- */
+  .col { position: absolute; top: 300px; width: 420px; height: 680px; border-radius: 40px; padding: 40px 34px; }
+  #ca { left: 70px; background: var(--card); border: 2px solid var(--line); }
+  #cb { left: 530px; background: var(--term); color: var(--tink); }
+  .col h3 { font: 800 42px/1.1 "Unbounded"; letter-spacing: -.02em; margin-bottom: 8px; }
+  .col h4 { font: 700 26px "Manrope"; color: var(--mut); margin-bottom: 34px; }
+  #cb h4 { color: #A99C8C; }
+  .it { display: flex; align-items: center; gap: 18px; height: 112px; border-radius: 26px; padding: 0 22px; margin-bottom: 18px; font: 800 31px/1.15 "Manrope"; }
+  #ca .it { background: #F6EFE4; } #cb .it { background: #2A241E; }
+  .it .n { font: 800 26px 'Unbounded'; width: 54px; height: 54px; border-radius: 16px; display: flex; align-items: center; justify-content: center; flex: 0 0 auto; }
+  #ca .n { background: #FBE3D3; } #cb .n { background: var(--acc); }
+
+  /* ---------- S7 CTA ---------- */
+  #cta { left: 70px; top: 300px; width: 880px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+  #ct1 { font: 800 50px "Unbounded"; letter-spacing: -.02em; }
+  #word { display: flex; gap: 22px; margin: 44px 0 40px; perspective: 1200px; }
+  #word div { width: 230px; height: 270px; border-radius: 44px; background: var(--term); color: var(--acc2); display: flex; align-items: center; justify-content: center; font: 800 180px "Unbounded"; box-shadow: 0 30px 70px rgba(30,20,10,.3); }
+  .gift { display: flex; gap: 24px; }
+  .gf { width: 420px; height: 150px; border-radius: 32px; background: var(--card); border: 2px solid var(--line); display: flex; align-items: center; gap: 20px; padding: 0 26px; text-align: left; box-shadow: 0 20px 50px rgba(80,55,30,.12); }
+  .gf .doc { width: 80px; height: 96px; border-radius: 14px; background: var(--acc); color: #fff; display: flex; align-items: center; justify-content: center; font: 800 22px "JBM"; flex: 0 0 auto; }
+  .gf b { font: 800 30px/1.2 "Manrope"; }
+  #cth { margin-top: 40px; font: 800 38px "Manrope"; color: var(--acc); }
+
+  /* ---------- subtitles ---------- */
+  #subs { left: 60px; width: 890px; top: 1040px; height: 150px; }
+  .chunk { position: absolute; left: 0; right: 0; top: 0; display: flex; justify-content: center; gap: 24px; font: 800 64px/1.1 "Unbounded"; letter-spacing: -0.02em; }
+  .chunk span { color: var(--ink); display: inline-block; }
+  #ens { left: 60px; width: 890px; top: 1128px; height: 60px; }
+  .en { position: absolute; left: 0; right: 0; top: 0; text-align: center; font: italic 700 36px "Manrope"; color: #8A7A66; }
+  #flash { position: absolute; inset: 0; background: #fff; opacity: 0; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-duration="/*DUR*/" data-width="1080" data-height="1920">
+  <audio id="vo" src="assets/golos.wav" data-start="0" data-duration="/*DUR*/" data-track-index="5" data-volume="1"></audio>
+
+  <div id="bg"><div id="dots"></div><div class="blob" id="b1"></div><div class="blob" id="b2"></div><div class="blob" id="b3"></div></div>
+
+  <div id="stage">
+  <!-- S1 -->
+  <div class="scene" id="s1">
+    <div class="pick card" id="pa"><div class="ic"><svg width="56" height="56" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-4.5 4v-4h0A1.5 1.5 0 0 1 4 14.5z" fill="#D4693B"/></svg></div><b>Claude</b><span>чат</span></div>
+    <div class="pick card" id="pb"><div class="ic"><svg width="60" height="60" viewBox="0 0 24 24"><path d="M5 7l5 5-5 5" fill="none" stroke="#F0A06E" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 17h7" stroke="#F0A06E" stroke-width="2.6" stroke-linecap="round"/></svg></div><b>Claude Code</b><span>агент</span></div>
+    <div id="lock">?</div>
+    <div id="meter" class="abs"><svg width="400" height="260" viewBox="0 0 400 260"><path d="M30 230 A170 170 0 0 1 370 230" fill="none" stroke="#E2D8C8" stroke-width="34" stroke-linecap="round"/><path id="arc" d="M30 230 A170 170 0 0 1 370 230" fill="none" stroke="#D4693B" stroke-width="34" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/></svg><div id="pct">0%</div></div>
+  </div>
+
+  <!-- S2 -->
+  <div class="scene" id="s2">
+    <div id="chat" class="abs card">
+      <div class="chdr"><div class="star"><svg viewBox="0 0 24 24"><g stroke="#fff" stroke-width="2.6" stroke-linecap="round"><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4"/></g></svg></div><b>Claude</b><span>чат</span></div>
+      <div class="cbody">
+        <div class="q" id="q1">Как добавить оплату на сайт?</div>
+        <div class="a" id="a1">Вот код, вставь его в <b>payment.js</b>:
+          <div class="code"><div><span class="k">const</span> pay = createPayment({</div><div>&nbsp;&nbsp;amount: order.total,</div><div>&nbsp;&nbsp;currency: <span class="s">"RUB"</span>,</div><div>});</div>
+            <div id="copy">Копировать<div id="copied">Скопировано</div></div>
+          </div>
+        </div>
+      </div>
+      <div id="tap"></div>
+    </div>
+    <div id="editor" class="abs"><div class="etab"><i style="background:#F08A7E"></i><i style="background:#F0C36E"></i><i style="background:#6FD39B"></i>&nbsp; payment.js</div>
+      <div id="eln"><div>const pay = createPayment({</div><div>&nbsp;&nbsp;amount: order.total,</div><div>&nbsp;&nbsp;currency: "RUB",</div></div></div>
+    <div id="loop" class="abs">Ctrl+C → Ctrl+V <span id="loopn">×1</span></div>
+  </div>
+
+  <!-- S3-S4 -->
+  <div class="scene" id="s3">
+    <div id="term" class="abs">
+      <div class="tbar"><i style="background:#F08A7E"></i><i style="background:#F0C36E"></i><i style="background:#6FD39B"></i><b>claude — ~/shop</b></div>
+      <div id="prompt"><span class="p">&gt;</span> <span id="ptxt"></span><span id="caret"></span></div>
+      <div id="tree">
+        <div class="d">shop/</div><div>&nbsp;├ index.html</div><div>&nbsp;├ cart.js</div><div>&nbsp;├ payment.js</div><div>&nbsp;├ orders.js</div><div class="d">&nbsp;├ api/</div><div>&nbsp;│ └ checkout.js</div><div class="d">&nbsp;└ tests/</div><div>&nbsp;&nbsp;&nbsp;└ pay.test.js</div>
+      </div>
+      <div id="log">
+        <div class="l" id="l1"><span class="dot">⏺</span> <span class="t">Read</span> <span class="m">24 files</span></div>
+        <div class="bar" id="bar1"><div></div></div>
+        <div class="l" id="l2"><span class="dot">⏺</span> <span class="t">Update</span> payment.js</div>
+        <div class="l diff" id="l3"><div class="r">- // TODO: оплата</div><div class="g">+ createPayment(order)</div><div class="g">+ await confirm(pay)</div></div>
+        <div class="l" id="l4"><span class="dot">⏺</span> <span class="t">Bash</span> npm test</div>
+        <div class="l" id="l5"><span class="g">&nbsp;&nbsp;✓ 32 passed</span></div>
+      </div>
+    </div>
+    <div id="sum" class="abs"><div class="ok"><svg width="32" height="32" viewBox="0 0 24 24"><path d="M4.5 12.5l5 5L19.5 7" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/></svg></div>Изменено 3 файла <em><span class="g">+48</span> <span class="r">−6</span></em></div>
+  </div>
+
+  <!-- S5 -->
+  <div class="scene" id="s5">
+    <div class="man card" id="ma"><div class="ic" id="maic"><svg width="90" height="90" viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2.5" fill="none" stroke="#776C5F" stroke-width="1.8"/><path d="M10.5 18.5h3" stroke="#776C5F" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <div class="wave" id="wv1" style="left:118px;top:42px;width:40px;height:40px"></div><div class="wave" id="wv2" style="left:122px;top:28px;width:66px;height:66px"></div></div>
+      <div><b>Мастер по телефону</b><p>«Крути левый вентиль…»</p></div><div class="tag">чат</div></div>
+    <div class="man card" id="mb"><div class="ic"><svg width="96" height="96" viewBox="0 0 24 24"><path d="M3.5 11L12 4l8.5 7" fill="none" stroke="#D4693B" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.5 9.5V20h13V9.5" fill="none" stroke="#D4693B" stroke-width="1.9" stroke-linejoin="round"/></svg>
+      <svg id="wrench" style="position:absolute;left:62px;top:78px" width="46" height="46" viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.1L4 16.7 7.3 20l5.3-5.3a4 4 0 0 0 5.1-5.4l-2.5 2.5-2.5-.6-.6-2.5z" fill="#1F1B16"/></svg></div>
+      <div><b>Мастер у тебя дома</b><p>Чинит сам</p></div><div class="tag">Claude Code</div></div>
+  </div>
+
+  <!-- S6 -->
+  <div class="scene" id="s6">
+    <div class="col" id="ca"><h3>Чат</h3><h4>Claude на сайте</h4>
+      <div class="it" id="i1"><div class="n">1</div>Думать</div>
+      <div class="it" id="i2"><div class="n">2</div>Писать тексты</div>
+      <div class="it" id="i3"><div class="n">3</div>Разбирать документы</div></div>
+    <div class="col" id="cb"><h3>Claude Code</h3><h4>в твоём проекте</h4>
+      <div class="it" id="i4"><div class="n">1</div>Править код</div>
+      <div class="it" id="i5"><div class="n">2</div>Запускать тесты</div>
+      <div class="it" id="i6"><div class="n">3</div>Работать с файлами</div></div>
+  </div>
+
+  <!-- S7 -->
+  <div class="scene" id="s7">
+    <div id="cta" class="abs">
+      <div id="ct1">Напиши в директ</div>
+      <div id="word"><div>К</div><div>О</div><div>Д</div></div>
+      <div class="gift"><div class="gf" id="g1"><div class="doc">PDF</div><b>5 первых задач для Claude Code</b></div><div class="gf" id="g2"><div class="doc">.md</div><b>Готовый файл с правилами</b></div></div>
+      <div id="cth">@islam.devai</div>
+    </div>
+  </div>
+  </div>
+
+  <div id="series" class="abs"><i>1</i>AI по-честному <span>· выпуск 1</span></div>
+  <div id="subs" class="abs"></div>
+  <div id="ens" class="abs"></div>
+  <div id="flash"></div>
+</div>
+
+<script>
+const DATA = /*WORDS*/;
+const EN = /*EN*/;
+const W = DATA.words, DUR = DATA.duration;
+const T = i => W[i].s;
+const $ = s => document.querySelector(s);
+const OUT = "expo.out", SOFT = "power3.out", IN = "power2.in";
+const tl = gsap.timeline({ paused: true });
+
+/* initial states first, so later tweens at the same time win */
+["#s1", "#s2", "#s3", "#s5", "#s6", "#s7"].forEach(id => tl.set(id, { opacity: 0 }, 0));
+
+/* ---------- subtitles: 2-3 words per chunk ---------- */
+const subs = $("#subs"), chunks = [];
+let cur = [];
+W.forEach((w, i) => {
+  cur.push(i);
+  const end = /[.,!?—»]$/.test(w.w) || i === W.length - 1 || W[i + 1].p !== w.p;
+  if (end || cur.length === 3 || (cur.length === 2 && W[i + 1].w.length > 9)) { chunks.push(cur); cur = []; }
+});
+chunks.forEach((c, k) => {
+  const el = document.createElement("div"); el.className = "chunk";
+  c.forEach(i => { const s = document.createElement("span"); s.textContent = W[i].w.replace(/[.,—]+$/, "").trim(); s.id = "w" + i; el.appendChild(s); });
+  subs.appendChild(el);
+  const t0 = T(c[0]) - 0.06, next = chunks[k + 1];
+  const t1 = next && W[next[0]].p === W[c[0]].p ? T(next[0]) - 0.06 : W[c[c.length - 1]].e + 0.25;
+  tl.fromTo(el, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: .2, ease: OUT }, t0);
+  tl.to(el, { opacity: 0, duration: .08, ease: "none" }, t1 - 0.08);
+  c.forEach(i => {
+    tl.fromTo("#w" + i, { color: "#1F1B16" }, { color: "#D4693B", duration: .1, ease: OUT }, T(i));
+    tl.to("#w" + i, { color: "#1F1B16", duration: .15 }, W[i].e + 0.02);
+  });
+});
+const ens = $("#ens");
+EN.forEach(([i0, txt], k) => {
+  const el = document.createElement("div"); el.className = "en"; el.textContent = txt; ens.appendChild(el);
+  const nx = EN[k + 1];
+  const t1 = nx && W[nx[0]].p === W[i0].p ? T(nx[0]) - 0.06 : (() => { let j = i0; while (W[j + 1] && W[j + 1].p === W[i0].p) j++; return W[j].e + 0.25; })();
+  tl.fromTo(el, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: .25, ease: SOFT }, T(i0) - 0.04);
+  tl.to(el, { opacity: 0, duration: .1 }, t1 - 0.1);
+});
+
+/* ---------- ambient ---------- */
+tl.fromTo("#b1", { x: 0, y: 0 }, { x: 160, y: 120, duration: DUR, ease: "sine.inOut" }, 0);
+tl.fromTo("#b2", { x: 0, y: 0 }, { x: -200, y: -80, duration: DUR, ease: "sine.inOut" }, 0);
+tl.fromTo("#dots", { y: 0 }, { y: 44, duration: DUR, ease: "none" }, 0);
+tl.fromTo("#series", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: .5, ease: OUT }, 0.1);
+const drift = (from, to) => tl.fromTo("#stage", { scale: 1.0 }, { scale: 1.035, duration: to - from, ease: "sine.inOut" }, from);
+
+/* ---------- S1 hook ---------- */
+tl.set("#s1", { opacity: 1 }, 0);
+tl.fromTo("#pa", { y: 120, opacity: 0, rotation: -6 }, { y: 0, opacity: 1, rotation: 0, duration: .55, ease: "back.out(1.5)" }, 0.05);
+tl.fromTo("#pb", { y: 120, opacity: 0, rotation: 6 }, { y: 0, opacity: 1, rotation: 0, duration: .55, ease: "back.out(1.5)" }, 0.15);
+tl.set("#lock", { opacity: 0 }, 0);
+tl.to("#pa", { scale: 1.05, borderColor: "#D4693B", duration: .3, ease: OUT }, T(2));
+tl.fromTo("#lock", { opacity: 0, scale: .8 }, { opacity: 1, scale: 1, duration: .35, ease: OUT }, T(4) - .05);
+tl.fromTo("#meter", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: .4, ease: OUT }, T(6));
+const pc = { v: 0 };
+tl.to(pc, { v: 50, duration: .55, ease: "power3.out", onUpdate: () => { $("#pct").textContent = Math.round(pc.v) + "%"; } }, T(8));
+tl.to("#arc", { attr: { "stroke-dashoffset": .5 }, duration: .55, ease: "power3.out" }, T(8));
+tl.to("#pct", { scale: 1.15, color: "#D4693B", duration: .2, yoyo: true, repeat: 1 }, T(9) + .1);
+tl.to("#lock", { rotation: 8, duration: .08, yoyo: true, repeat: 5, ease: "none" }, T(9));
+
+/* ---------- S2 chat ---------- */
+tl.to(["#pa", "#pb", "#lock", "#meter"], { y: -160, opacity: 0, duration: .32, ease: IN, stagger: .03 }, T(10) - .4);
+tl.set("#s1", { opacity: 0 }, T(10) - .02);
+tl.set("#s2", { opacity: 1 }, T(10) - .25);
+["#q1", "#a1", "#editor", "#loop", "#tap", "#copied"].forEach(id => tl.set(id, { opacity: 0 }, 0));
+tl.fromTo("#chat", { y: 500, opacity: 0, rotationX: 20 }, { y: 0, opacity: 1, rotationX: 0, duration: .6, ease: OUT }, T(10) - .25);
+tl.fromTo("#q1", { opacity: 0, y: 30, scale: .9 }, { opacity: 1, y: 0, scale: 1, duration: .35, ease: "back.out(1.6)" }, T(14) - .05);
+tl.fromTo("#a1", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .4, ease: SOFT }, T(17) - .1);
+tl.set("#tap", { left: 690, top: 395 }, 0);
+tl.fromTo("#tap", { opacity: 1, scale: .2 }, { opacity: 0, scale: 1.6, duration: .45, ease: "power2.out" }, T(19));
+tl.fromTo("#copied", { opacity: 1, yPercent: 100 }, { yPercent: 0, duration: .25, ease: OUT }, T(19) + .05);
+tl.to("#chat", { scale: .82, y: -30, duration: .5, ease: "power3.inOut" }, T(20) - .1);
+tl.fromTo("#editor", { opacity: 0, y: 260, rotation: 4 }, { opacity: 1, y: 0, rotation: 0, duration: .5, ease: OUT }, T(21) - .15);
+document.querySelectorAll("#eln div").forEach((d, i) => tl.to(d, { opacity: 1, duration: .05 }, T(21) + .25 + i * .07));
+tl.fromTo("#loop", { opacity: 0, x: -120 }, { opacity: 1, x: 0, duration: .4, ease: "back.out(1.6)" }, T(22) - .2);
+const lc = { v: 1 };
+tl.to(lc, { v: 27, duration: 1.4, ease: "power2.in", onUpdate: () => { $("#loopn").textContent = "×" + Math.round(lc.v); } }, T(22));
+tl.to("#loop", { x: 8, duration: .05, yoyo: true, repeat: 7, ease: "none" }, T(23) + .2);
+
+/* ---------- S3 terminal ---------- */
+tl.to(["#chat", "#editor", "#loop"], { x: -1100, opacity: 0, duration: .38, ease: "power3.in", stagger: .03 }, T(24) - .45);
+tl.set("#s2", { opacity: 0 }, T(24) - .02);
+tl.set("#s3", { opacity: 1 }, T(24) - .3);
+tl.set(["#sum"], { opacity: 0 }, 0);
+tl.fromTo("#term", { x: 1100, rotationY: -20, filter: "blur(10px)" }, { x: 0, rotationY: 0, filter: "blur(0px)", duration: .55, ease: OUT }, T(24) - .3);
+const ptxt = "добавь оплату на сайт", pt = { n: 0 };
+tl.to(pt, { n: ptxt.length, duration: 1.0, ease: "none", onUpdate: () => { $("#ptxt").textContent = ptxt.slice(0, Math.round(pt.n)); } }, T(25));
+tl.to("#caret", { opacity: 0, duration: .3, yoyo: true, repeat: 15, ease: "steps(1)" }, T(24));
+const tree = [...document.querySelectorAll("#tree div")];
+tree.forEach((d, i) => tl.fromTo(d, { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: .25, ease: OUT }, T(28) + i * .09));
+tree.forEach((d, i) => {
+  tl.to(d, { backgroundColor: "rgba(240,160,110,.22)", color: "#FFE3CC", duration: .12 }, T(30) + i * .12);
+  tl.to(d, { backgroundColor: "rgba(240,160,110,0)", duration: .3 }, T(30) + i * .12 + .2);
+});
+
+/* ---------- S4 the work ---------- */
+tl.fromTo("#l1", { opacity: 0, x: 30 }, { opacity: 1, x: 0, duration: .3, ease: OUT }, T(33) - .1);
+tl.to("#bar1 div", { width: "100%", duration: .7, ease: "power2.inOut" }, T(33));
+tl.fromTo("#l2", { opacity: 0, x: 30 }, { opacity: 1, x: 0, duration: .3, ease: OUT }, T(35) - .05);
+tl.to(tree[3], { backgroundColor: "rgba(240,160,110,.3)", color: "#FFE3CC", duration: .2 }, T(35));
+tl.fromTo("#l3", { opacity: 0, scaleY: .3, transformOrigin: "50% 0%" }, { opacity: 1, scaleY: 1, duration: .35, ease: OUT }, T(36));
+tl.fromTo("#l4", { opacity: 0, x: 30 }, { opacity: 1, x: 0, duration: .3, ease: OUT }, T(37) - .05);
+tl.fromTo("#l5", { opacity: 0, scale: .6, transformOrigin: "0% 50%" }, { opacity: 1, scale: 1, duration: .35, ease: "back.out(2)" }, T(38) + .3);
+tl.fromTo("#sum", { opacity: 0, y: 80, scale: .8 }, { opacity: 1, y: 0, scale: 1, duration: .45, ease: "back.out(1.7)" }, T(40) - .1);
+tl.fromTo("#sum path", { strokeDasharray: 1, strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: .3 }, T(40) + .2);
+drift(T(24), T(43));
+
+/* ---------- S5 analogy ---------- */
+tl.to(["#term", "#sum"], { scale: .85, opacity: 0, duration: .35, ease: IN }, T(43) - .4);
+tl.set("#s3", { opacity: 0 }, T(43) - .03);
+tl.set("#s5", { opacity: 1 }, T(43) - .1);
+tl.set("#stage", { scale: 1 }, T(43) - .1);
+tl.set(["#ma", "#mb"], { opacity: 0 }, 0);
+tl.fromTo("#ma", { opacity: 0, x: -160 }, { opacity: 1, x: 0, duration: .45, ease: OUT }, T(46) - .25);
+["#wv1", "#wv2"].forEach((w, i) => tl.fromTo(w, { opacity: 0 }, { opacity: 1, duration: .25, yoyo: true, repeat: 5, ease: "sine.inOut" }, T(48) + i * .15));
+tl.fromTo("#mb", { opacity: 0, x: 160 }, { opacity: 1, x: 0, duration: .45, ease: OUT }, T(52) - .2);
+tl.to("#ma", { opacity: .45, scale: .96, duration: .4 }, T(54));
+tl.to("#mb", { scale: 1.04, borderColor: "#D4693B", duration: .4, ease: OUT }, T(56));
+tl.fromTo("#wrench", { rotation: -30 }, { rotation: 30, duration: .22, yoyo: true, repeat: 7, ease: "sine.inOut", transformOrigin: "30% 70%" }, T(58));
+
+/* ---------- S6 compare ---------- */
+tl.to(["#ma", "#mb"], { y: -120, opacity: 0, duration: .3, ease: IN, stagger: .05 }, T(61) - .4);
+tl.set("#s5", { opacity: 0 }, T(61) - .03);
+tl.set("#s6", { opacity: 1 }, T(61) - .25);
+tl.fromTo("#ca", { opacity: 0, y: 100 }, { opacity: 1, y: 0, duration: .45, ease: OUT }, T(61) - .25);
+tl.fromTo("#cb", { opacity: 0, y: 100 }, { opacity: 1, y: 0, duration: .45, ease: OUT }, T(61) - .15);
+["#i1", "#i2", "#i3", "#i4", "#i5", "#i6"].forEach(id => tl.set(id, { opacity: 0 }, 0));
+[["#i1", 61], ["#i2", 62], ["#i3", 64], ["#i4", 68], ["#i5", 69], ["#i6", 71]].forEach(([id, wi]) =>
+  tl.fromTo(id, { opacity: 0, x: -40, scale: .9 }, { opacity: 1, x: 0, scale: 1, duration: .35, ease: "back.out(1.7)" }, T(wi)));
+tl.to("#ca", { opacity: .5, duration: .3 }, T(68) - .1);
+tl.to("#cb", { scale: 1.04, boxShadow: "0 40px 100px rgba(212,105,59,.45)", duration: .4, ease: OUT }, T(73));
+
+/* ---------- S7 CTA ---------- */
+tl.to(["#ca", "#cb"], { opacity: 0, scale: .9, duration: .3, ease: IN }, T(74) - .35);
+tl.set("#s6", { opacity: 0 }, T(74) - .03);
+tl.fromTo("#flash", { opacity: 0 }, { opacity: .5, duration: .06, yoyo: true, repeat: 1 }, T(74) - .06);
+tl.set("#s7", { opacity: 1 }, T(74) - .05);
+["#ct1", "#g1", "#g2", "#cth"].forEach(id => tl.set(id, { opacity: 0 }, 0));
+tl.set("#word div", { opacity: 0 }, 0);
+tl.fromTo("#ct1", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .4, ease: OUT }, T(74) - .05);
+document.querySelectorAll("#word div").forEach((d, i) => tl.fromTo(d, { opacity: 0, rotationX: -90, y: 60 }, { opacity: 1, rotationX: 0, y: 0, duration: .55, ease: "back.out(1.8)" }, T(79) - .25 + i * .09));
+tl.fromTo("#g1", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: .4, ease: SOFT }, T(83) - .05);
+tl.fromTo("#g2", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: .4, ease: SOFT }, T(89));
+tl.fromTo("#cth", { opacity: 0 }, { opacity: 1, duration: .4 }, T(92) - .2);
+tl.to("#word div", { y: -14, duration: .45, yoyo: true, repeat: 3, ease: "sine.inOut", stagger: .1 }, T(84));
+
+window.__timelines = window.__timelines || {};
+window.__timelines["main"] = tl;
+tl.seek(0);
+</script>
+</body>
+</html>
