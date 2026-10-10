@@ -1,0 +1,25 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+@font-face { font-family: "Unbounded"; src: url("assets/fonts/unbounded-cyr.woff2") format("woff2"); font-weight: 200 900; unicode-range: U+0400-045F; }
+@font-face { font-family: "Unbounded"; src: url("assets/fonts/unbounded-lat.woff2") format("woff2"); font-weight: 200 900; }
+@font-face { font-family: "Manrope"; src: url("assets/fonts/manrope-cyr.woff2") format("woff2"); font-weight: 200 800; unicode-range: U+0400-045F; }
+@font-face { font-family: "Manrope"; src: url("assets/fonts/manrope-lat.woff2") format("woff2"); font-weight: 200 800; }
+*{margin:0;padding:0;box-sizing:border-box}
+body{width:1080px;height:1920px;position:relative;overflow:hidden;background:#070605;font-family:Manrope;color:#fff}
+#bg{position:absolute;inset:0;background:url(assets/cover-bg3.png) center/cover}
+#dim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,6,10,.92) 0,rgba(5,6,10,.82) 38%,rgba(5,6,10,.15) 52%,rgba(5,6,10,0) 60%)}
+.v{position:absolute;left:60px;right:60px;top:320px;text-align:center;display:none}
+.strike{position:relative;display:inline-block;font:800 74px/1 Unbounded;color:#9BA6C4;letter-spacing:-.01em;padding:0 10px}
+.strike:after{content:"";position:absolute;left:-14px;right:-14px;top:48%;height:12px;border-radius:6px;background:#FF3B3B;transform:rotate(-4deg);box-shadow:0 0 30px rgba(255,59,59,.6)}
+.big{margin-top:34px;font:900 122px/0.98 Unbounded;letter-spacing:-.03em;text-transform:uppercase}
+.big b{color:#FF6B3D}
+.mid{font:900 96px/1.02 Unbounded;letter-spacing:-.03em;text-transform:uppercase}
+.mid b{color:#FF6B3D}
+.pill{margin-top:44px;display:inline-block;padding:20px 38px;border-radius:44px;background:#FF6B3D;color:#170804;font:800 46px Manrope}
+.ae{display:inline-flex;width:120px;height:120px;border-radius:28px;background:#00005B;border:4px solid #9999FF;color:#9999FF;font:800 60px Manrope;align-items:center;justify-content:center;position:relative;margin-bottom:28px;box-shadow:0 14px 40px rgba(0,0,0,.6)}
+.ae:after{content:"";position:absolute;left:-14px;right:-14px;top:52px;height:12px;border-radius:6px;background:#FF3B3B;transform:rotate(-45deg)}
+</style></head><body><div id="bg"></div><div id="dim"></div>
+<div class="v" id="A"><div class="strike">AFTER EFFECTS</div><div class="big">больше<br><b>не нужен</b></div><div class="pill">Анимацию пишет Claude →</div></div>
+<div class="v" id="B"><div class="ae">Ae</div><div class="mid">Монтажёром<br>быть<br><b>не нужно</b></div><div class="pill">Анимация одним промптом →</div></div>
+<div class="v" id="C"><div class="mid" style="font-size:88px">Ты всё ещё<br>двигаешь<br><b>ключевые кадры?</b></div><div class="pill">Claude делает это кодом →</div></div>
+<script>document.getElementById(location.hash.slice(1)||'A').style.display='block'</script>
+</body></html>
