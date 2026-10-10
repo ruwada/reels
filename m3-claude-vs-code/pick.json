@@ -1,0 +1,34 @@
+{
+ "0": {
+  "best": 0,
+  "by": "likeness to real voice (likeness.py) among ASR-clean takes"
+ },
+ "1": {
+  "best": 7,
+  "by": "likeness to real voice (likeness.py) among ASR-clean takes"
+ },
+ "2": {
+  "best": 10,
+  "by": "likeness to real voice (likeness.py) among ASR-clean takes"
+ },
+ "3": {
+  "best": 3,
+  "by": "likeness to real voice (likeness.py) among ASR-clean takes"
+ },
+ "4": {
+  "best": 11,
+  "by": "likeness to real voice (likeness.py) among ASR-clean takes"
+ },
+ "5": {
+  "best": 7,
+  "by": "likeness to real voice (likeness.py) among ASR-clean takes"
+ },
+ "6": {
+  "best": 11,
+  "by": "likeness to real voice (likeness.py) among ASR-clean takes"
+ },
+ "7": {
+  "best": 6,
+  "by": "likeness to real voice (likeness.py) among ASR-clean takes"
+ }
+}
