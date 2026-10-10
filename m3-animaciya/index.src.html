@@ -1,0 +1,693 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<script src="assets/gsap.min.js"></script>
+<style>
+  @font-face { font-family: "Unbounded"; src: url("assets/fonts/unbounded-cyr.woff2") format("woff2"); font-weight: 200 900; unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+  @font-face { font-family: "Unbounded"; src: url("assets/fonts/unbounded-lat.woff2") format("woff2"); font-weight: 200 900; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+20BD, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+  @font-face { font-family: "Manrope"; src: url("assets/fonts/manrope-cyr.woff2") format("woff2"); font-weight: 200 800; unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+  @font-face { font-family: "Manrope"; src: url("assets/fonts/manrope-lat.woff2") format("woff2"); font-weight: 200 800; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+20BD, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+  @font-face { font-family: "JBM"; src: url("assets/fonts/jetbrains-mono-cyrillic-500-normal.woff2") format("woff2"); font-weight: 500; unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+  @font-face { font-family: "JBM"; src: url("assets/fonts/jetbrains-mono-latin-500-normal.woff2") format("woff2"); font-weight: 500; }
+  @font-face { font-family: "JBM"; src: url("assets/fonts/jetbrains-mono-cyrillic-700-normal.woff2") format("woff2"); font-weight: 700; unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+  @font-face { font-family: "JBM"; src: url("assets/fonts/jetbrains-mono-latin-700-normal.woff2") format("woff2"); font-weight: 700; }
+  :root { --co: #FF6B3D; --ice: #EAF2FF; --mint: #5CF2B5; --mut: #7C8AA8; --bg: #0A0E17; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: #070605; }
+  #root { width: 100%; height: 100%; position: relative; overflow: hidden; font-family: "Manrope", sans-serif; color: var(--ice); }
+  .abs { position: absolute; }
+
+  /* ---------- the room ---------- */
+  #room { position: absolute; inset: -60px; background:
+      radial-gradient(700px 520px at 18% 12%, rgba(255,170,90,.38), rgba(255,140,60,0) 70%),
+      radial-gradient(900px 700px at 85% 20%, rgba(120,90,60,.30), rgba(0,0,0,0) 70%),
+      linear-gradient(180deg, #2A1E14 0%, #17110C 45%, #0C0907 70%, #060504 100%); }
+  .bok { position: absolute; border-radius: 50%; filter: blur(14px); }
+  #desk { position: absolute; left: -60px; right: -60px; top: 1020px; bottom: -60px;
+    background: linear-gradient(180deg, #1A130D 0%, #0E0A07 40%, #050403 100%); }
+
+  /* ---------- laptop rig ---------- */
+  #cam { position: absolute; inset: 0; transform-origin: 540px 700px; }
+  #rig { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; perspective: 1700px; perspective-origin: 540px 300px; }
+  #lap { position: absolute; left: 50px; top: 420px; width: 980px; height: 620px; transform-style: preserve-3d; transform-origin: 490px 620px;
+    transform: rotateX(4deg) rotateY(-11deg) rotateZ(-1.2deg); }
+  #lid { position: absolute; left: 0; top: 0; width: 980px; height: 620px; border-radius: 26px 26px 8px 8px; background: #0B0B0E;
+    border: 2px solid #2C2C33; box-shadow: 0 0 0 1px #000, 0 30px 80px rgba(0,0,0,.7); transform-origin: 50% 100%; }
+  #scr { position: absolute; left: 22px; top: 22px; width: 936px; height: 585px; overflow: hidden; border-radius: 6px; background: var(--bg); }
+  #S { position: absolute; left: 0; top: 0; width: 1280px; height: 800px; transform: scale(0.73125); transform-origin: 0 0; overflow: hidden; background: var(--bg); }
+  #glare { position: absolute; inset: 0; pointer-events: none; background:
+      linear-gradient(115deg, rgba(255,255,255,0) 30%, rgba(255,255,255,.07) 42%, rgba(255,255,255,0) 55%),
+      repeating-linear-gradient(0deg, rgba(0,0,0,.10) 0 2px, rgba(0,0,0,0) 2px 4px); mix-blend-mode: screen; }
+  #moire { position: absolute; inset: 0; pointer-events: none; opacity: .18;
+    background: repeating-linear-gradient(83deg, rgba(255,255,255,.06) 0 3px, rgba(0,0,0,0) 3px 7px); }
+  #base { position: absolute; left: -40px; top: 618px; width: 1060px; height: 520px; transform-origin: 50% 0; transform: rotateX(80deg);
+    border-radius: 6px 6px 40px 40px; background: linear-gradient(180deg, #2A2A31, #1B1B21); border: 2px solid #34343C; }
+  #keys { position: absolute; left: 90px; top: 40px; width: 880px; height: 300px; display: grid; grid-template-columns: repeat(15, 1fr); gap: 8px; }
+  #keys i { display: block; height: 52px; border-radius: 8px; background: #121216; box-shadow: inset 0 0 0 1px rgba(170,140,255,.35), 0 0 10px rgba(150,110,255,.25); }
+  #pad { position: absolute; left: 380px; top: 360px; width: 300px; height: 140px; border-radius: 14px; background: #24242B; border: 1px solid #3A3A44; }
+  #spill { position: absolute; left: 60px; top: 990px; width: 960px; height: 300px; border-radius: 50%; filter: blur(60px); opacity: .35; background: #6E8BFF; }
+
+  /* ---------- top label ---------- */
+  #label { left: 0; width: 1080px; top: 215px; display: flex; flex-direction: column; align-items: center; gap: 18px; }
+  #label .q { font: 700 64px "Manrope"; color: #fff; text-shadow: 0 4px 24px rgba(0,0,0,.6); letter-spacing: -0.01em; }
+  #label .ic { display: flex; gap: 26px; }
+  .app { width: 92px; height: 92px; border-radius: 22px; display: flex; align-items: center; justify-content: center; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,.5); }
+  .ae { background: #00005B; border: 3px solid #9999FF; font: 800 46px "Manrope"; color: #9999FF; }
+  .ae .x { position: absolute; left: -10px; top: 42px; width: 112px; height: 8px; background: #FF3B3B; border-radius: 4px; transform: rotate(-45deg); }
+  .cl { background: #D97757; }
+  .cl svg { width: 64px; height: 64px; }
+
+  /* ---------- screen scenes (inside #S, 1280x800) ---------- */
+  #gridbg { position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(140,170,255,.075) 1px, transparent 1px), linear-gradient(90deg, rgba(140,170,255,.075) 1px, transparent 1px);
+    background-size: 64px 64px; }
+  #gridbg::after { content: ""; position: absolute; inset: 0; background: radial-gradient(900px 600px at 50% 45%, rgba(10,14,23,0) 30%, rgba(10,14,23,.85) 100%); }
+  #floor { position: absolute; left: -400px; right: -400px; top: 430px; height: 700px; transform-origin: 50% 0; transform: perspective(700px) rotateX(70deg);
+    background-image: linear-gradient(rgba(255,107,61,.35) 2px, transparent 2px), linear-gradient(90deg, rgba(255,107,61,.35) 2px, transparent 2px); background-size: 90px 90px; opacity: 0; }
+  .sc { position: absolute; inset: 0; opacity: 0; }
+  .mono { font-family: "JBM", monospace; }
+  .tag { font: 500 30px "JBM"; color: var(--mut); }
+  .big { font: 800 150px/1 "Unbounded"; letter-spacing: -0.02em; }
+  .co { color: var(--co); } .mint { color: var(--mint); }
+  .ch { display: inline-block; }
+  .panel { position: absolute; border-radius: 22px; background: rgba(16,22,36,.92); border: 2px solid rgba(140,170,255,.22); box-shadow: 0 30px 80px rgba(0,0,0,.5); }
+  .panel .bar { height: 46px; border-bottom: 1px solid rgba(140,170,255,.18); display: flex; align-items: center; gap: 10px; padding: 0 18px; }
+  .panel .bar i { width: 14px; height: 14px; border-radius: 50%; background: #3A4562; display: block; }
+  .panel .bar span { margin-left: 10px; font: 500 22px "JBM"; color: var(--mut); }
+  .code { padding: 22px 26px; font: 500 30px/1.5 "JBM"; color: #C9D6F2; white-space: pre; }
+  .k { color: #FF8F6B; } .s { color: var(--mint); } .n { color: #9CC2FF; } .c { color: #5A6787; }
+  .caret { display: inline-block; width: 16px; height: 32px; background: var(--co); vertical-align: -6px; margin-left: 4px; }
+
+  /* s0 */
+  #s0 .l0 { position: absolute; left: 104px; top: 150px; font: 800 64px "Unbounded"; color: #B9C6E4; }
+  #s0 .l1 { position: absolute; left: 100px; top: 250px; }
+  #s0 .l2 { position: absolute; left: 100px; top: 430px; font-size: 104px; }
+  #pen { position: absolute; left: 1010px; top: 150px; width: 170px; height: 170px; }
+  #powline { position: absolute; left: 0; top: 398px; width: 1280px; height: 4px; background: #fff; box-shadow: 0 0 30px #fff; }
+
+  /* s1 */
+  #codeRain { position: absolute; inset: 0; padding: 30px 40px; font: 500 26px/1.45 "JBM"; color: rgba(150,175,230,.22); white-space: pre; overflow: hidden; }
+  #s1 .star { position: absolute; left: 140px; top: 230px; width: 260px; height: 260px; border-radius: 60px; background: #D97757; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 120px rgba(217,119,87,.55); }
+  #s1 .star svg { width: 180px; height: 180px; }
+  #s1 .t { position: absolute; left: 460px; top: 250px; }
+  #s1 .t .tag { display: block; margin-bottom: 10px; }
+  #s1 .t b { display: block; font: 800 120px/1 "Unbounded"; }
+  #s1 .t em { display: block; margin-top: 26px; font: 700 66px "JBM"; font-style: normal; color: var(--co); }
+
+  /* s2 */
+  #bigAe { position: absolute; left: 470px; top: 170px; width: 340px; height: 340px; border-radius: 76px; background: #00005B; border: 8px solid #9999FF; display: flex; align-items: center; justify-content: center; font: 800 170px "Manrope"; color: #9999FF; }
+  #aeX { position: absolute; left: 400px; top: 330px; width: 480px; height: 26px; border-radius: 13px; background: #FF3B3B; transform: rotate(-38deg); box-shadow: 0 0 40px rgba(255,59,59,.6); }
+  #s2 .cnt { position: absolute; left: 0; width: 1280px; top: 590px; text-align: center; font: 700 52px "JBM"; }
+
+  /* s3 */
+  #s3a { position: absolute; inset: 0; }
+  #film { position: absolute; left: 520px; top: 200px; width: 240px; height: 300px; border-radius: 18px; border: 6px solid var(--mut); }
+  #film::before, #film::after { content: ""; position: absolute; top: 14px; bottom: 14px; width: 26px; background: repeating-linear-gradient(180deg, var(--mut) 0 18px, transparent 18px 34px); }
+  #film::before { left: 10px; } #film::after { right: 10px; }
+  #brush { position: absolute; left: 700px; top: 150px; width: 160px; height: 160px; }
+  #s3x { position: absolute; left: 470px; top: 330px; width: 360px; height: 20px; border-radius: 10px; background: #FF3B3B; transform: rotate(-35deg); }
+  #s3a .cap { position: absolute; left: 0; width: 1280px; top: 560px; text-align: center; font: 800 64px "Unbounded"; }
+  #edA { left: 60px; top: 90px; width: 600px; height: 560px; }
+  #canA { position: absolute; left: 700px; top: 90px; width: 520px; height: 560px; border-radius: 22px; border: 2px dashed rgba(140,170,255,.35); overflow: hidden; }
+  #canA .lbl { position: absolute; left: 18px; top: 14px; font: 500 22px "JBM"; color: var(--mut); }
+  #hello { position: absolute; left: 60px; top: 110px; font: 800 72px "Unbounded"; }
+  #sq { position: absolute; left: 60px; top: 300px; width: 110px; height: 110px; border-radius: 22px; background: var(--co); box-shadow: 0 0 50px rgba(255,107,61,.5); }
+  #ecurve { position: absolute; left: 250px; top: 420px; width: 240px; height: 120px; }
+  .ln { opacity: 0; }
+
+  /* s4 */
+  #graph { position: absolute; left: 140px; top: 90px; width: 1000px; height: 560px; }
+  #s4 .read { position: absolute; left: 820px; top: 110px; font: 700 34px/1.5 "JBM"; text-align: right; }
+  #s4 .cap { position: absolute; left: 0; width: 1280px; top: 670px; text-align: center; font: 800 56px "Unbounded"; }
+
+  /* s5 */
+  #strip { position: absolute; left: 0; top: 200px; height: 300px; display: flex; gap: 22px; }
+  .fr { width: 300px; height: 300px; border-radius: 16px; background: #111A2C; border: 3px solid rgba(140,170,255,.3); position: relative; overflow: hidden; flex: 0 0 300px; }
+  .fr .d { position: absolute; width: 70px; height: 70px; border-radius: 16px; background: var(--co); top: 115px; }
+  .fr small { position: absolute; left: 12px; bottom: 8px; font: 500 22px "JBM"; color: var(--mut); }
+  #frc { position: absolute; left: 0; width: 1280px; top: 560px; text-align: center; font: 700 64px "JBM"; }
+  #mp4 { position: absolute; left: 440px; top: 200px; width: 400px; height: 300px; border-radius: 30px; background: linear-gradient(135deg, #FF6B3D, #FF9A5C); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 100px rgba(255,107,61,.5); }
+  #mp4 svg { width: 130px; height: 130px; }
+  #mp4n { position: absolute; left: 0; width: 1280px; top: 560px; text-align: center; font: 700 56px "JBM"; color: var(--mint); }
+
+  /* s6 */
+  #s6 .q { position: absolute; left: 0; width: 1280px; top: 150px; text-align: center; font: 700 56px "Manrope"; color: #B9C6E4; }
+  #steps { position: absolute; left: 0; width: 1280px; top: 290px; display: flex; justify-content: center; gap: 40px; perspective: 1200px; }
+  #steps div { width: 250px; height: 300px; border-radius: 40px; display: flex; align-items: center; justify-content: center; font: 800 190px "Unbounded"; background: #131B2E; border: 3px solid rgba(255,107,61,.6); color: var(--co); }
+
+  /* step chip */
+  .stp { position: absolute; left: 60px; top: 50px; display: flex; align-items: center; gap: 20px; }
+  .stp b { width: 96px; height: 96px; border-radius: 26px; background: var(--co); color: #140A05; display: flex; align-items: center; justify-content: center; font: 800 54px "Unbounded"; }
+  .stp span { font: 800 50px "Unbounded"; }
+
+  /* s7 */
+  #term { left: 60px; top: 190px; width: 1160px; height: 260px; }
+  #term .code { font-size: 40px; }
+  #chips { position: absolute; left: 0; width: 1280px; top: 500px; display: flex; justify-content: center; gap: 40px; }
+  .chip { height: 110px; padding: 0 46px; border-radius: 55px; display: flex; align-items: center; gap: 18px; font: 800 52px "Manrope"; background: #131B2E; border: 3px solid rgba(140,170,255,.3); }
+  .chip i { width: 26px; height: 26px; border-radius: 50%; display: block; }
+  #flow7 { position: absolute; left: 0; width: 1280px; top: 650px; display: flex; justify-content: center; align-items: center; gap: 30px; font: 700 52px "JBM"; }
+  #flow7 .ar { color: var(--co); }
+
+  /* s8 */
+  #prompt { left: 60px; top: 180px; width: 640px; height: 520px; }
+  #prompt .code { white-space: pre-wrap; font-size: 38px; line-height: 1.45; color: var(--ice); }
+  #prev { position: absolute; left: 740px; top: 180px; width: 480px; height: 520px; border-radius: 22px; overflow: hidden; background: #05070D; border: 2px solid rgba(140,170,255,.25); }
+  #pgrid { position: absolute; inset: 0; opacity: 0; background-image: linear-gradient(rgba(92,242,181,.22) 1px, transparent 1px), linear-gradient(90deg, rgba(92,242,181,.22) 1px, transparent 1px); background-size: 40px 40px; }
+  #ptime { position: absolute; right: 18px; top: 14px; font: 700 34px "JBM"; color: var(--mint); }
+  #ptext { position: absolute; left: 30px; top: 170px; font: 800 96px/1 "Unbounded"; }
+  #pwipe { position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: var(--co); transform: scaleX(0); transform-origin: 0 50%; }
+
+  /* s9 */
+  #track { position: absolute; left: 60px; top: 360px; width: 700px; height: 8px; border-radius: 4px; background: rgba(140,170,255,.25); }
+  #mover { position: absolute; left: 60px; top: 290px; width: 150px; height: 150px; border-radius: 34px; background: var(--co); box-shadow: 0 0 60px rgba(255,107,61,.55); }
+  #loop9 { position: absolute; left: 330px; top: 500px; width: 160px; height: 160px; }
+  #bubs { position: absolute; left: 820px; top: 170px; width: 420px; display: flex; flex-direction: column; gap: 22px; align-items: flex-end; }
+  .bub { padding: 22px 30px; border-radius: 30px; border-bottom-right-radius: 8px; background: #2A3550; font: 700 40px "Manrope"; }
+
+  /* s10 */
+  #tlw { position: absolute; left: 60px; top: 160px; width: 1160px; height: 470px; border-radius: 22px; background: #0F1524; border: 2px solid rgba(140,170,255,.22); overflow: hidden; }
+  #tlw .row { position: absolute; left: 0; right: 0; height: 1px; background: rgba(140,170,255,.12); }
+  .kf { position: absolute; width: 18px; height: 18px; background: #F7C948; transform: rotate(45deg); }
+  #ph { position: absolute; top: 0; bottom: 0; width: 4px; background: var(--co); left: 300px; }
+  #s10 .cap { position: absolute; left: 0; width: 1280px; top: 660px; text-align: center; font: 800 60px "Unbounded"; }
+  #nox { position: absolute; left: 140px; top: 380px; width: 1000px; height: 22px; border-radius: 11px; background: #FF3B3B; transform: rotate(-12deg); }
+
+  /* s11: paper form */
+  #form { position: absolute; inset: 0; background: #EDEFF3; color: #1A2030; }
+  #form .hd { height: 120px; background: #D5D9E1; display: flex; align-items: center; padding: 0 60px; gap: 30px; }
+  #form .hd b { font: 800 50px "Unbounded"; }
+  #form .hd span { font: 500 24px "JBM"; color: #59627A; }
+  #form .qq { position: absolute; left: 70px; top: 190px; font: 700 64px "Manrope"; }
+  .opt { position: absolute; left: 90px; display: flex; align-items: center; gap: 28px; font: 700 54px "Manrope"; }
+  .box { width: 66px; height: 66px; border: 5px solid #1A2030; border-radius: 12px; position: relative; }
+  .box svg { position: absolute; left: -6px; top: -16px; width: 90px; height: 90px; }
+
+  /* s12 */
+  #arc12 { position: absolute; left: 0; top: 0; width: 1280px; height: 800px; }
+  .node { position: absolute; width: 170px; height: 170px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+  .node svg { width: 90px; height: 90px; }
+  .nl { position: absolute; width: 300px; text-align: center; font: 800 44px "Unbounded"; }
+  #wow { position: absolute; left: 0; width: 1280px; top: 300px; text-align: center; font: 800 150px "Unbounded"; color: var(--co); text-shadow: 0 0 60px rgba(255,107,61,.45); }
+  #notl { position: absolute; left: 0; width: 1280px; top: 600px; text-align: center; font: 700 46px "JBM"; color: #B9C6E4; }
+
+  /* s13 CTA */
+  #s13 .t1 { position: absolute; left: 0; width: 1280px; top: 110px; text-align: center; font: 700 60px "Manrope"; color: #B9C6E4; }
+  #word { position: absolute; left: 0; width: 1280px; top: 240px; display: flex; justify-content: center; gap: 12px; perspective: 1200px; }
+  #word div { width: 132px; height: 190px; border-radius: 28px; background: linear-gradient(160deg, #FF8A5C, #FF5A2A); color: #170804; display: flex; align-items: center; justify-content: center; font: 800 110px "Unbounded"; box-shadow: 0 20px 60px rgba(255,107,61,.35); }
+  #s13 .t2 { position: absolute; left: 0; width: 1280px; top: 490px; text-align: center; font: 700 56px "Manrope"; }
+  #s13 .h { position: absolute; left: 0; width: 1280px; top: 610px; text-align: center; font: 800 52px "JBM"; color: var(--co); }
+
+  #sflash { position: absolute; inset: 0; background: #fff; opacity: 0; }
+
+  /* ---------- subtitles ---------- */
+  #subs { left: 40px; width: 1000px; top: 1068px; height: 120px; }
+  .chunk { position: absolute; left: 0; right: 0; top: 0; display: flex; justify-content: center; }
+  .chunk .bx { display: flex; gap: 22px; padding: 12px 30px 16px; border-radius: 26px; background: rgba(9,12,20,.82); border: 2px solid rgba(255,107,61,.35); font: 800 62px/1.1 "Manrope"; letter-spacing: -0.01em; }
+  .chunk span { color: #FFFFFF; display: inline-block; }
+  #ens { left: 40px; width: 1000px; top: 1180px; height: 60px; }
+  .en { position: absolute; left: 0; right: 0; top: 0; text-align: center; font: italic 600 36px "Manrope"; color: #C4D2EE; text-shadow: 0 3px 16px rgba(0,0,0,.9); }
+
+  #grain { position: absolute; inset: 0; opacity: .09; mix-blend-mode: overlay; pointer-events: none; }
+  #vig { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(1000px 1400px at 50% 42%, rgba(0,0,0,0) 50%, rgba(0,0,0,.6) 100%); }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-duration="/*DUR*/" data-width="1080" data-height="1920">
+  <audio id="vo" src="assets/golos.wav" data-start="0" data-duration="/*DUR*/" data-track-index="5" data-volume="1"></audio>
+
+  <div id="cam">
+    <div id="room"></div>
+    <div id="bokeh"></div>
+    <div id="desk"></div>
+    <div id="spill"></div>
+    <div id="rig"><div id="lap">
+      <div id="base"><div id="keys"></div><div id="pad"></div></div>
+      <div id="lid"><div id="scr"><div id="S">
+        <div id="gridbg"></div>
+        <div id="floor"></div>
+
+        <!-- s0: hook -->
+        <div class="sc" id="s0">
+          <div class="tag l0" id="l0">ЭТУ АНИМАЦИЮ</div>
+          <div class="big l1" id="nikto"></div>
+          <div class="big l2" id="nerisoval"></div>
+          <svg id="pen" viewBox="0 0 24 24"><path d="M4 20l1-4L16 5l3 3L8 19z" fill="none" stroke="#7C8AA8" stroke-width="1.6" stroke-linejoin="round"/><path id="penx" d="M3 3l18 18" stroke="#FF3B3B" stroke-width="2.4" stroke-linecap="round" pathLength="1"/></svg>
+          <div id="powline"></div>
+        </div>
+
+        <!-- s1: Claude wrote it -->
+        <div class="sc" id="s1">
+          <div id="codeRain"></div>
+          <div class="star" id="star1"><svg viewBox="0 0 100 100" id="starsvg"></svg></div>
+          <div class="t"><span class="tag">// автор</span><b id="clname">Claude</b><em id="kodom">&lt;/кодом&gt;</em></div>
+        </div>
+
+        <!-- s2: never opened After Effects -->
+        <div class="sc" id="s2">
+          <div id="bigAe">Ae</div>
+          <div id="aeX"></div>
+          <div class="cnt"><span class="co" id="aeMin">0</span> минут в After&nbsp;Effects</div>
+        </div>
+
+        <!-- s3: doesn't draw, writes code -->
+        <div class="sc" id="s3">
+          <div id="s3a">
+            <div id="film"></div>
+            <svg id="brush" viewBox="0 0 24 24"><path d="M14 4l6 6-8 8-6-6z" fill="#7C8AA8"/><path d="M6 12c-3 0-4 3-4 6 3 0 6-1 6-4z" fill="#7C8AA8"/></svg>
+            <div id="s3x"></div>
+            <div class="cap">Claude <span class="co">не рисует</span> видео</div>
+          </div>
+          <div class="panel" id="edA"><div class="bar"><i></i><i></i><i></i><span>scene.js</span></div>
+            <div class="code"><div class="ln" id="la1"><span class="c">// Claude пишет:</span></div><div class="ln" id="la2"><span class="k">text</span>(<span class="s">"Привет"</span>)</div><div class="ln" id="la3"><span class="k">rect</span>(<span class="n">110</span>, <span class="n">110</span>)</div><div class="ln" id="la4"><span class="k">move</span>({ x: <span class="n">0</span> → <span class="n">300</span> })</div><div class="ln" id="la5">ease: <span class="s">"expo.out"</span></div></div></div>
+          <div id="canA"><div class="lbl">canvas</div><div id="hello">Привет</div><div id="sq"></div>
+            <svg id="ecurve" viewBox="0 0 240 120"><path d="M0 0H240V120H0z" fill="none" stroke="rgba(140,170,255,.25)" stroke-width="2"/><path id="ecp" d="M0 120 C 30 10, 80 0, 240 0" fill="none" stroke="#5CF2B5" stroke-width="5" pathLength="1"/></svg></div>
+        </div>
+
+        <!-- s4: numbers over time -->
+        <div class="sc" id="s4">
+          <svg id="graph" viewBox="0 0 1000 560"></svg>
+          <div class="read mono"><div>t = <span class="mint" id="rt">0.00</span> s</div><div>x = <span class="co" id="rx">0</span> px</div></div>
+          <div class="cap">цифры <span class="co">×</span> время</div>
+        </div>
+
+        <!-- s5: frame by frame -->
+        <div class="sc" id="s5">
+          <div id="strip"></div>
+          <div id="frc">кадр <span class="co" id="frn">001</span> / 300</div>
+          <div id="mp4"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></div>
+          <div id="mp4n">reel.mp4 ✓</div>
+        </div>
+
+        <!-- s6: three steps -->
+        <div class="sc" id="s6">
+          <div class="q">Как этому научиться?</div>
+          <div id="steps"><div>1</div><div>2</div><div>3</div></div>
+        </div>
+
+        <!-- s7: step 1 -->
+        <div class="sc" id="s7">
+          <div class="stp"><b>1</b><span>Поставь движок</span></div>
+          <div class="panel" id="term"><div class="bar"><i></i><i></i><i></i><span>terminal</span></div><div class="code"><span class="mint">$</span> <span id="cmd"></span><span class="caret" id="car7"></span></div></div>
+          <div id="chips"><div class="chip" id="chHF"><i style="background:#FF6B3D"></i>HyperFrames</div><div class="chip" id="chRM"><i style="background:#5CA8FF"></i>Remotion</div></div>
+          <div id="flow7"><span id="f7a">код</span><span class="ar" id="f7b">→</span><span id="f7c" class="mint">▶ видео</span><span id="f7d" class="mut" style="color:#7C8AA8;font-size:40px">· бесплатно</span></div>
+        </div>
+
+        <!-- s8: step 2 -->
+        <div class="sc" id="s8">
+          <div class="stp"><b>2</b><span>Опиши словами</span></div>
+          <div class="panel" id="prompt"><div class="bar"><i></i><i></i><i></i><span>промпт для Claude</span></div><div class="code" id="ptxt"></div></div>
+          <div id="prev"><div id="pgrid"></div><div id="ptime">0:15</div><div id="ptext">Твой<br>текст</div><div id="pwipe"></div></div>
+        </div>
+
+        <!-- s9: step 3 -->
+        <div class="sc" id="s9">
+          <div class="stp"><b>3</b><span>Правь словами</span></div>
+          <div id="track"></div>
+          <div id="mover"></div>
+          <svg id="loop9" viewBox="0 0 24 24"><path d="M17 2l4 4-4 4" fill="none" stroke="#5CF2B5" stroke-width="2" stroke-linecap="round"/><path d="M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4" fill="none" stroke="#5CF2B5" stroke-width="2" stroke-linecap="round"/><path d="M21 13v2a3 3 0 0 1-3 3H3" fill="none" stroke="#5CF2B5" stroke-width="2" stroke-linecap="round"/></svg>
+          <div id="bubs"><div class="bub" id="b1">медленнее</div><div class="bub" id="b2">поменяй цвет</div><div class="bub" id="b3">зацикли</div></div>
+        </div>
+
+        <!-- s10: hundreds of keyframes -->
+        <div class="sc" id="s10">
+          <div id="tlw"><div id="ph"></div></div>
+          <div id="nox"></div>
+          <div class="cap"><span class="co">сотни</span> ключевых кадров</div>
+        </div>
+
+        <!-- s11: the question -->
+        <div class="sc" id="s11"><div id="form">
+          <div class="hd"><b>ВОПРОС 9</b><span>// честно</span></div>
+          <div class="qq">Это заменяет After Effects?</div>
+          <div class="opt" style="top:340px"><div class="box"></div>Да</div>
+          <div class="opt" style="top:450px"><div class="box"></div>Нет</div>
+          <div class="opt" style="top:560px"><div class="box"><svg viewBox="0 0 24 24"><path id="tick" d="M4 12l5 6L21 3" fill="none" stroke="#E5482A" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/></svg></div><span id="nesov">Не совсем</span></div>
+        </div></div>
+
+        <!-- s12: idea -> animation -->
+        <div class="sc" id="s12">
+          <svg id="arc12" viewBox="0 0 1280 800"><path id="arcp" d="M230 420 C 420 40, 860 40, 1050 420" fill="none" stroke="rgba(234,242,255,.7)" stroke-width="5" stroke-dasharray="1" stroke-dashoffset="1" pathLength="1"/></svg>
+          <div class="node" id="nA" style="left:145px;top:335px;background:#131B2E;border:4px solid #F7C948"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9V16h7v-2.1A6 6 0 0 0 12 3z" fill="none" stroke="#F7C948" stroke-width="1.8" stroke-linejoin="round"/></svg></div>
+          <div class="nl" id="nAl" style="left:80px;top:530px">идея</div>
+          <div class="node" id="nB" style="left:965px;top:335px;background:#FF6B3D"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></div>
+          <div class="nl" id="nBl" style="left:900px;top:530px">анимация</div>
+          <div id="dot12" style="position:absolute;left:-14px;top:-14px;width:28px;height:28px;border-radius:50%;background:#fff;box-shadow:0 0 30px #fff"></div>
+          <div id="notl">без единого таймлайна</div>
+          <div id="wow">МОЩНО</div>
+        </div>
+
+        <!-- s13: CTA -->
+        <div class="sc" id="s13">
+          <div class="t1" id="ct1">Напиши в директ слово</div>
+          <div id="word"><div>А</div><div>Н</div><div>И</div><div>М</div><div>А</div><div>Ц</div><div>И</div><div>Я</div></div>
+          <div class="t2" id="ct2">пришлю промпты, с которых я начинал</div>
+          <div class="h" id="cth">@islam.devai</div>
+        </div>
+
+        <div id="sflash"></div>
+      </div><div id="moire"></div><div id="glare"></div></div></div>
+    </div></div>
+
+    <div id="label" class="abs">
+      <div class="q">Анимация кодом?</div>
+      <div class="ic"><div class="app ae">Ae<div class="x"></div></div><div class="app cl"><svg viewBox="0 0 100 100" id="clsvg"></svg></div></div>
+    </div>
+  </div>
+
+  <div id="subs" class="abs"></div>
+  <div id="ens" class="abs"></div>
+  <canvas id="grain" width="540" height="960"></canvas>
+  <div id="vig"></div>
+</div>
+
+<script>
+const DATA = /*WORDS*/;
+const EN = /*EN*/;
+const W = DATA.words, DUR = DATA.duration;
+const T = i => W[i].s, E = i => W[i].e;
+const PH = DATA.phrases;
+const P0 = p => PH[p].s, P1 = p => PH[p].e;
+let seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const OUT = "expo.out", SOFT = "power3.out", IN = "power2.in";
+const tl = gsap.timeline({ paused: true });
+const NS = "http://www.w3.org/2000/svg";
+
+/* ---------- static build ---------- */
+// Claude-style starburst (generic 12-ray asterisk)
+const starPath = (() => { let d = ""; for (let i = 0; i < 12; i++) { const a = i / 12 * Math.PI * 2, r1 = 10, r2 = 44 - (i % 2) * 6;
+  const w = 4.2; const ax = Math.cos(a), ay = Math.sin(a), px = -ay * w, py = ax * w;
+  d += `M${50 + ax * r1 + px} ${50 + ay * r1 + py}L${50 + ax * r2} ${50 + ay * r2}L${50 + ax * r1 - px} ${50 + ay * r1 - py}Z`; } return d; })();
+$("#clsvg").innerHTML = `<g id="clg"><path d="${starPath}" fill="#fff"/><circle cx="50" cy="50" r="12" fill="#fff"/></g>`;
+$("#starsvg").innerHTML = `<g id="stg"><path d="${starPath}" fill="#fff"/><circle cx="50" cy="50" r="12" fill="#fff"/></g>`;
+
+// keyboard
+for (let i = 0; i < 75; i++) $("#keys").appendChild(document.createElement("i"));
+// bokeh
+[["#FFB36B", 120, 90, 160, .35], ["#FFCF8A", 880, 150, 110, .25], ["#FF9A5C", 960, 640, 90, .18], ["#C8A2FF", 60, 880, 130, .12], ["#FFD9A0", 300, 60, 70, .3]].forEach(([c, x, y, s, o]) => {
+  const b = document.createElement("div"); b.className = "bok"; Object.assign(b.style, { left: x + "px", top: y + "px", width: s + "px", height: s + "px", background: c, opacity: o }); $("#bokeh").appendChild(b); });
+
+// code rain
+const CODE = [`const tl = gsap.timeline();`, `tl.from(".title", { y: 80, opacity: 0 })`, `  .to(".dot", { x: 640, ease: "expo.out" })`, `  .to(".grid", { opacity: 1 }, "<");`,
+  `for (let i = 0; i < 300; i++) frame(i);`, `scene.add(text("Привет"));`, `rect(110, 110).fill("#FF6B3D");`, `ease: "power3.inOut", duration: 0.6`, `render({ fps: 30, out: "reel.mp4" });`];
+let rain = ""; for (let i = 0; i < 40; i++) rain += CODE[i % CODE.length] + "\n"; $("#codeRain").textContent = rain;
+
+// split text into chars
+const spl = (el, txt) => { el.innerHTML = ""; [...txt].forEach(c => { const s = document.createElement("span"); s.className = "ch"; s.textContent = c === " " ? " " : c; el.appendChild(s); }); return el.children; };
+const nikto = spl($("#nikto"), "НИКТО");
+const neris = spl($("#nerisoval"), "НЕ РИСОВАЛ");
+
+// graph s4
+const gx = t => 60 + t * 880, gy = v => 480 - v * 400;
+const ease = t => 1 - Math.pow(2, -10 * t);
+let gd = `M${gx(0)} ${gy(0)}`; for (let k = 1; k <= 60; k++) { const t = k / 60; gd += ` L${gx(t)} ${gy(ease(t))}`; }
+$("#graph").innerHTML = `
+  <line x1="60" y1="480" x2="960" y2="480" stroke="rgba(140,170,255,.5)" stroke-width="3"/><line x1="60" y1="60" x2="60" y2="480" stroke="rgba(140,170,255,.5)" stroke-width="3"/>
+  ${[0, 1, 2, 3, 4].map(k => `<text x="${gx(k / 4)}" y="525" fill="#7C8AA8" font-family="JBM" font-size="26" text-anchor="middle">${(k * 0.25).toFixed(2)}s</text>`).join("")}
+  <text x="40" y="70" fill="#7C8AA8" font-family="JBM" font-size="26" text-anchor="end">x</text>
+  <path id="gcurve" d="${gd}" fill="none" stroke="#FF6B3D" stroke-width="7" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>
+  <circle id="gdot" r="16" fill="#fff" cx="${gx(0)}" cy="${gy(0)}"/>`;
+
+// film strip s5
+for (let i = 0; i < 12; i++) { const f = document.createElement("div"); f.className = "fr";
+  f.innerHTML = `<div class="d" style="left:${30 + ease(i / 11) * 170}px"></div><small>${String(1 + i * 27).padStart(3, "0")}</small>`; $("#strip").appendChild(f); }
+
+// keyframes s10
+const kfs = [];
+for (let r = 0; r < 8; r++) { const row = document.createElement("div"); row.className = "row"; row.style.top = (40 + r * 56) + "px"; $("#tlw").appendChild(row);
+  for (let k = 0; k < 26; k++) { const d = document.createElement("div"); d.className = "kf"; d.style.left = (40 + k * 42 + rnd() * 18) + "px"; d.style.top = (31 + r * 56) + "px";
+    $("#tlw").appendChild(d); kfs.push(d); } }
+
+// grain
+const gctx = $("#grain").getContext("2d"); const grainFrames = [];
+for (let f = 0; f < 6; f++) { const id = gctx.createImageData(540, 960); for (let i = 0; i < id.data.length; i += 4) { const v = rnd() * 255; id.data[i] = id.data[i + 1] = id.data[i + 2] = v; id.data[i + 3] = 255; } grainFrames.push(id); }
+
+/* ---------- helpers ---------- */
+const show = (id, at, how = "fade") => {
+  if (how === "fade") tl.fromTo(id, { opacity: 0 }, { opacity: 1, duration: .25, ease: "none" }, at);
+  else if (how === "zoom") tl.fromTo(id, { opacity: 0, scale: 1.25, filter: "blur(12px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: .4, ease: OUT }, at);
+  else if (how === "slide") tl.fromTo(id, { opacity: 1, xPercent: 100 }, { opacity: 1, xPercent: 0, duration: .4, ease: "power4.out" }, at);
+  else if (how === "cut") tl.set(id, { opacity: 1 }, at);
+};
+const hide = (id, at, how = "fade") => {
+  if (how === "fade") tl.to(id, { opacity: 0, duration: .2, ease: "none" }, at - .2);
+  else if (how === "zoom") tl.to(id, { opacity: 0, scale: .85, filter: "blur(10px)", duration: .3, ease: IN }, at - .3);
+  else if (how === "slide") tl.to(id, { xPercent: -100, duration: .35, ease: "power4.in" }, at - .35);
+  else if (how === "cut") tl.set(id, { opacity: 0 }, at);
+};
+const flash = (at, o = .5) => tl.fromTo("#sflash", { opacity: 0 }, { opacity: o, duration: .05, yoyo: true, repeat: 1, ease: "none", immediateRender: false }, at);
+const type = (el, txt, at, dur) => { const st = { n: 0 }; el.textContent = "";
+  tl.fromTo(st, { n: 0 }, { n: txt.length, duration: dur, ease: "none", immediateRender: false, onUpdate: () => { el.textContent = txt.slice(0, Math.round(st.n)); } }, at); };
+const pop = (id, at, extra = {}) => tl.fromTo(id, { opacity: 0, y: 30, scale: .9 }, { opacity: 1, y: 0, scale: 1, duration: .4, ease: "back.out(1.8)", ...extra }, at);
+const spillTo = (c, at) => tl.to("#spill", { backgroundColor: c, duration: .4 }, at);
+
+/* ---------- subtitles ---------- */
+const subs = $("#subs"), chunks = []; let cur = [];
+W.forEach((w, i) => { cur.push(i);
+  const end = /[.,!?:]$/.test(w.w) || i === W.length - 1 || W[i + 1].p !== w.p;
+  if (end || cur.length === 3) { chunks.push(cur); cur = []; } });
+chunks.forEach((c, k) => {
+  const el = document.createElement("div"); el.className = "chunk"; const bx = document.createElement("div"); bx.className = "bx"; el.appendChild(bx);
+  c.forEach(i => { const s = document.createElement("span"); s.textContent = W[i].w.replace(/[.,:]$/, ""); s.id = "w" + i; bx.appendChild(s); });
+  subs.appendChild(el);
+  const t0 = T(c[0]) - 0.06, next = chunks[k + 1];
+  const t1 = next && W[next[0]].p === W[c[0]].p ? T(next[0]) - 0.06 : E(c[c.length - 1]) + 0.25;
+  tl.fromTo(el, { opacity: 0, y: 18, scale: .95 }, { opacity: 1, y: 0, scale: 1, duration: .18, ease: OUT }, t0);
+  tl.to(el, { opacity: 0, duration: .07, ease: "none" }, t1 - .07);
+  c.forEach(i => { tl.fromTo("#w" + i, { color: "#FFFFFF" }, { color: "#FF6B3D", duration: .1, ease: "none" }, T(i));
+    tl.to("#w" + i, { color: "#FFFFFF", duration: .12 }, E(i) + .02); });
+});
+const ens = $("#ens");
+EN.forEach(([i0, txt], k) => { const el = document.createElement("div"); el.className = "en"; el.textContent = txt; ens.appendChild(el);
+  const nx = EN[k + 1];
+  const t1 = nx && W[nx[0]].p === W[i0].p ? T(nx[0]) - .06 : (() => { let j = i0; while (W[j + 1] && W[j + 1].p === W[i0].p) j++; return E(j) + .25; })();
+  tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: .2 }, T(i0) - .04); tl.to(el, { opacity: 0, duration: .08 }, t1 - .08); });
+
+/* ---------- camera: handheld phone + slow drift ---------- */
+const hand = { t: 0 }, camEl = $("#cam"), zoomS = { z: 1, y: 0 };
+tl.to(hand, { t: DUR, duration: DUR, ease: "none", onUpdate: () => {
+  const t = hand.t;
+  const x = Math.sin(t * 1.3) * 5 + Math.sin(t * 3.1 + 1) * 2.2, y = Math.sin(t * 1.7 + 2) * 4 + Math.sin(t * 2.9) * 1.8, r = Math.sin(t * .9 + 1) * .35 + Math.sin(t * 2.3) * .12;
+  camEl.style.transform = `translate(${x}px, ${y + zoomS.y}px) rotate(${r}deg) scale(${zoomS.z})`;
+  gctx.putImageData(grainFrames[Math.floor(t * 30) % 6], 0, 0);
+} }, 0);
+tl.fromTo(zoomS, { z: 1.18, y: 60 }, { z: 1.0, y: 0, duration: 2.2, ease: "power3.out" }, 0);
+tl.to(zoomS, { z: 1.05, duration: 16, ease: "sine.inOut" }, 3);
+tl.to(zoomS, { z: 1.0, duration: 12, ease: "sine.inOut" }, 19.5);
+tl.to(zoomS, { z: 1.1, y: 70, duration: 1.2, ease: "power3.inOut" }, P0(13) - .6);
+
+/* ---------- label ---------- */
+tl.fromTo("#label .q", { opacity: 0, y: -30 }, { opacity: 1, y: 0, duration: .45, ease: OUT }, .1);
+$$("#label .app").forEach((a, i) => tl.fromTo(a, { opacity: 0, scale: .4 }, { opacity: 1, scale: 1, duration: .45, ease: "back.out(2)" }, .25 + i * .12));
+tl.fromTo("#label .x", { scaleX: 0 }, { scaleX: 1, duration: .25, ease: OUT }, .6);
+tl.to("#clg", { rotation: 360, svgOrigin: "50 50", duration: DUR, ease: "none" }, 0);
+
+/* ---------- S0 hook: screen power-on + НИКТО НЕ РИСОВАЛ ---------- */
+tl.set("#s0", { opacity: 1 }, 0);
+tl.fromTo("#powline", { scaleX: 0, opacity: 1 }, { scaleX: 1, duration: .08, ease: "none" }, 0);
+tl.to("#powline", { scaleY: 200, opacity: 0, duration: .15, ease: "power2.in" }, .08);
+tl.fromTo("#l0", { opacity: 0, x: -60, filter: "blur(10px)" }, { opacity: 1, x: 0, filter: "blur(0px)", duration: .35, ease: OUT }, .05);
+[...nikto].forEach((c, i) => tl.fromTo(c, { opacity: 0, y: -160, rotation: (i % 2 ? 1 : -1) * 25 }, { opacity: 1, y: 0, rotation: 0, duration: .45, ease: "back.out(2)" }, T(2) - .12 + i * .045));
+[...neris].forEach((c, i) => tl.fromTo(c, { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: .3, ease: OUT }, T(3) - .05 + i * .03));
+tl.fromTo("#pen", { opacity: 0, scale: .5, rotation: -30 }, { opacity: 1, scale: 1, rotation: 0, duration: .35, ease: "back.out(2)" }, T(4));
+tl.fromTo("#penx", { strokeDasharray: 1, strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: .25, ease: OUT }, T(4) + .3);
+tl.to("#nikto .ch", { color: "#FF6B3D", duration: .15, stagger: .03 }, T(4));
+hide("#s0", P0(1), "zoom");
+flash(P0(1) - .02, .45);
+
+/* ---------- S1 Claude wrote it, in code ---------- */
+show("#s1", P0(1) - .02, "zoom");
+tl.fromTo("#star1", { scale: 0, rotation: -120 }, { scale: 1, rotation: 0, duration: .55, ease: "back.out(1.7)" }, P0(1));
+tl.to("#stg", { rotation: 180, svgOrigin: "50 50", duration: 3, ease: "power1.out" }, P0(1));
+tl.fromTo("#clname", { opacity: 0, x: 60 }, { opacity: 1, x: 0, duration: .35, ease: OUT }, T(7) - .1);
+tl.fromTo("#kodom", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .3, ease: OUT }, T(8) - .05);
+tl.fromTo("#codeRain", { y: 0, opacity: .3 }, { y: -500, opacity: 1, duration: 2.5, ease: "none" }, P0(1));
+tl.to("#codeRain", { color: "rgba(255,140,100,.35)", duration: .3 }, T(8));
+hide("#s1", P0(2), "slide");
+
+/* ---------- S2 After Effects never opened ---------- */
+show("#s2", P0(2) - .05, "slide");
+tl.fromTo("#bigAe", { scale: .5, opacity: 0 }, { scale: 1, opacity: 1, duration: .4, ease: "back.out(1.8)" }, P0(2));
+tl.fromTo("#aeX", { scaleX: 0 }, { scaleX: 1, duration: .25, ease: OUT }, T(13) - .05);
+tl.to("#bigAe", { filter: "grayscale(1) brightness(.5)", duration: .3 }, T(13));
+tl.to("#bigAe", { x: 12, duration: .05, yoyo: true, repeat: 5, ease: "none" }, T(13) + .1);
+tl.fromTo("#s2 .cnt", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .3 }, T(11));
+spillTo("#5A5AFF", P0(2));
+hide("#s2", P0(3), "fade");
+
+/* ---------- S3 not drawing; writing code ---------- */
+spillTo("#6E8BFF", P0(3));
+show("#s3", P0(3) - .05, "fade");
+tl.fromTo("#film", { opacity: 0, scale: .7 }, { opacity: 1, scale: 1, duration: .35, ease: OUT }, P0(3));
+tl.fromTo("#brush", { opacity: 0, x: 60, y: -60 }, { opacity: 1, x: 0, y: 0, duration: .35, ease: OUT }, T(19));
+tl.fromTo("#s3x", { scaleX: 0 }, { scaleX: 1, duration: .2, ease: OUT }, T(20));
+tl.fromTo("#s3a .cap", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .3 }, T(19));
+tl.to("#s3a", { opacity: 0, scale: .9, duration: .25, ease: IN }, T(23) - .25);
+tl.set(["#edA", "#canA"], { opacity: 0 }, 0);
+tl.fromTo("#edA", { opacity: 0, x: -80 }, { opacity: 1, x: 0, duration: .4, ease: OUT }, T(23) - .05);
+tl.fromTo("#canA", { opacity: 0, x: 80 }, { opacity: 1, x: 0, duration: .4, ease: OUT }, T(23));
+tl.fromTo("#la1", { opacity: 0 }, { opacity: 1, duration: .2 }, T(24));
+[["#la2", 27, "#hello"], ["#la3", 28, "#sq"]].forEach(([l, wi, o]) => { tl.fromTo(l, { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: .2 }, T(wi) - .1);
+  tl.fromTo(o, { opacity: 0, scale: .3 }, { opacity: 1, scale: 1, duration: .35, ease: "back.out(2)" }, T(wi)); });
+tl.set("#hello", { opacity: 0 }, 0); tl.set("#sq", { opacity: 0 }, 0); tl.set("#ecurve", { opacity: 0 }, 0);
+tl.fromTo("#la4", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: .2 }, T(29) - .1);
+tl.to("#sq", { x: 300, rotation: 90, duration: .7, ease: "power2.inOut" }, T(29));
+tl.fromTo("#la5", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: .2 }, T(30) - .1);
+tl.set("#sq", { x: 0, rotation: 0 }, T(30));
+tl.to("#sq", { x: 300, rotation: 90, duration: .8, ease: "expo.out" }, T(30) + .02);
+tl.to("#ecurve", { opacity: 1, duration: .2 }, T(30));
+tl.fromTo("#ecp", { strokeDasharray: 1, strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: .6, ease: "power2.out" }, T(30));
+hide("#s3", P0(4), "zoom");
+
+/* ---------- S4 numbers over time ---------- */
+show("#s4", P0(4) - .05, "zoom");
+const rd = { t: 0 };
+tl.fromTo("#gcurve", { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 1.6, ease: "none" }, T(32));
+tl.fromTo(rd, { t: 0 }, { t: 1, duration: 1.6, ease: "none", immediateRender: false, onUpdate: () => {
+  const t = rd.t, v = ease(t); const d = $("#gdot"); d.setAttribute("cx", gx(t)); d.setAttribute("cy", gy(v));
+  $("#rt").textContent = t.toFixed(2); $("#rx").textContent = Math.round(v * 640); } }, T(32));
+tl.fromTo("#s4 .read", { opacity: 0 }, { opacity: 1, duration: .2 }, T(32));
+tl.fromTo("#s4 .cap", { opacity: 0, scale: 1.3 }, { opacity: 1, scale: 1, duration: .35, ease: OUT }, T(34));
+hide("#s4", P0(5), "slide");
+
+/* ---------- S5 frame by frame -> video ---------- */
+spillTo("#FF8A5C", P0(5));
+show("#s5", P0(5) - .05, "slide");
+tl.set("#strip", { x: 1280 }, 0);
+tl.to("#strip", { x: -2900, duration: 2.6, ease: "power1.in" }, T(39));
+const fc = { n: 1 };
+tl.fromTo(fc, { n: 1 }, { n: 300, duration: 2.2, ease: "power2.in", immediateRender: false, onUpdate: () => { $("#frn").textContent = String(Math.round(fc.n)).padStart(3, "0"); } }, T(40));
+tl.set(["#mp4", "#mp4n"], { opacity: 0 }, 0);
+tl.to("#frc", { opacity: 0, duration: .15 }, T(45) - .15);
+flash(T(45) - .03, .5);
+tl.fromTo("#mp4", { opacity: 0, scale: .2, rotation: -20 }, { opacity: 1, scale: 1, rotation: 0, duration: .5, ease: "back.out(1.7)" }, T(45));
+tl.fromTo("#mp4n", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .3 }, T(46));
+hide("#s5", P0(6), "zoom");
+
+/* ---------- S6 three steps ---------- */
+spillTo("#6E8BFF", P0(6));
+show("#s6", P0(6) - .05, "fade");
+tl.fromTo("#s6 .q", { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: .3 }, P0(6));
+$$("#steps div").forEach((d, i) => tl.fromTo(d, { opacity: 0, rotationY: -90, y: 40 }, { opacity: 1, rotationY: 0, y: 0, duration: .45, ease: "back.out(1.6)" }, T(51) - .1 + i * .12));
+tl.to("#floor", { opacity: .8, duration: .4 }, T(51));
+tl.to("#floor", { backgroundPositionY: "180px", duration: 2, ease: "none" }, T(51));
+tl.to("#floor", { opacity: 0, duration: .3 }, P0(7));
+hide("#s6", P0(7), "zoom");
+
+/* ---------- S7 step 1: install ---------- */
+show("#s7", P0(7) - .05, "zoom");
+pop("#s7 .stp", P0(7));
+tl.fromTo("#term", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: .35, ease: OUT }, T(54) - .1);
+type($("#cmd"), "npx hyperframes init my-reel", T(54), 1.0);
+tl.to("#car7", { opacity: 0, duration: .01, yoyo: true, repeat: 9, repeatDelay: .25 }, T(54));
+tl.set(["#chHF", "#chRM", "#f7a", "#f7b", "#f7c", "#f7d"], { opacity: 0 }, 0);
+pop("#chHF", T(57) - .05); pop("#chRM", T(59) - .05);
+tl.to("#chHF", { borderColor: "#FF6B3D", duration: .2 }, T(57));
+tl.to("#chRM", { borderColor: "#5CA8FF", duration: .2 }, T(59));
+[["#f7a", 62], ["#f7b", 62], ["#f7c", 64]].forEach(([id, wi], k) => pop(id, T(wi) + k * .08));
+pop("#f7d", T(56) + 0.05 + 0 * 0, {});
+tl.set("#f7d", { opacity: 0 }, T(60));
+tl.to("#f7d", { opacity: 1, duration: .2 }, T(64) + .3);
+hide("#s7", P0(8), "slide");
+
+/* ---------- S8 step 2: describe ---------- */
+show("#s8", P0(8) - .05, "slide");
+pop("#s8 .stp", P0(8));
+tl.fromTo("#prompt", { opacity: 0, x: -60 }, { opacity: 1, x: 0, duration: .35, ease: OUT }, T(66));
+tl.fromTo("#prev", { opacity: 0, x: 60 }, { opacity: 1, x: 0, duration: .35, ease: OUT }, T(67));
+const ptxt = $("#ptxt"); const PT = ["Сделай ролик:", "\n— 15 секунд,", "\n— крупный текст,", "\n— плавные переходы,", "\n— тёмная сетка."];
+const pts = [T(68), T(72) - .05, T(74) - .05, T(76) - .05, T(78) - .05];
+{ let acc = ""; const st = { i: 0 };
+  PT.forEach((p, k) => { const from = acc.length; acc += p; const to = acc.length, full = acc; const s = { n: from };
+    tl.fromTo(s, { n: from }, { n: to, duration: Math.min(.5, p.length * .025), ease: "none", immediateRender: false, onUpdate: () => { ptxt.textContent = full.slice(0, Math.round(s.n)); } }, pts[k]); }); }
+tl.set(["#ptime", "#ptext"], { opacity: 0 }, 0);
+tl.fromTo("#ptime", { opacity: 0, scale: 1.6 }, { opacity: 1, scale: 1, duration: .3, ease: OUT }, T(72));
+tl.fromTo("#ptext", { opacity: 0, scale: .5 }, { opacity: 1, scale: 1, duration: .4, ease: "back.out(1.8)" }, T(74));
+tl.fromTo("#pwipe", { scaleX: 0, transformOrigin: "0% 50%" }, { scaleX: 1, duration: .3, ease: "power3.in" }, T(76));
+tl.set("#pwipe", { transformOrigin: "100% 50%" }, T(76) + .3);
+tl.to("#pwipe", { scaleX: 0, duration: .35, ease: "power3.out" }, T(76) + .32);
+tl.to("#ptext", { color: "#5CF2B5", duration: .01 }, T(76) + .3);
+tl.to("#pgrid", { opacity: 1, duration: .4 }, T(78));
+tl.to("#pgrid", { backgroundPositionY: "80px", duration: 1.4, ease: "none" }, T(78));
+hide("#s8", P0(9), "zoom");
+
+/* ---------- S9 step 3: edit with words ---------- */
+spillTo("#FF7A4D", P0(9));
+show("#s9", P0(9) - .05, "zoom");
+pop("#s9 .stp", P0(9));
+tl.set(["#b1", "#b2", "#b3", "#loop9"], { opacity: 0 }, 0);
+// fast shuttle first
+tl.fromTo("#mover", { x: 0 }, { x: 550, duration: .35, ease: "power2.inOut", yoyo: true, repeat: 3, immediateRender: false }, P0(9) + .1);
+pop("#b1", T(85) - .1, { x: 0 });
+tl.to("#mover", { x: 550, duration: 1.0, ease: "sine.inOut", yoyo: true, repeat: 1 }, T(85) + .2);
+pop("#b2", T(86) - .05);
+tl.to("#mover", { backgroundColor: "#5CF2B5", boxShadow: "0 0 60px rgba(92,242,181,.6)", borderRadius: "50%", duration: .35 }, T(87));
+pop("#b3", T(88) - .05);
+tl.fromTo("#loop9", { opacity: 0, scale: .4 }, { opacity: 1, scale: 1, duration: .35, ease: "back.out(2)" }, T(88) + .1);
+tl.to("#loop9", { rotation: 360, duration: 1.2, ease: "power2.inOut" }, T(89));
+tl.to("#mover", { x: 550, duration: .6, ease: "sine.inOut", yoyo: true, repeat: 1 }, T(89));
+hide("#s9", P0(10), "fade");
+
+/* ---------- S10 hundreds of keyframes ---------- */
+spillTo("#F7C948", P0(10));
+show("#s10", P0(10) - .05, "fade");
+tl.set(kfs, { opacity: 0 }, 0);
+tl.to(kfs, { opacity: 1, scale: 1, duration: .08, stagger: { each: .006, from: "random" } }, T(92));
+tl.fromTo("#ph", { left: 60 }, { left: 1100, duration: 2, ease: "none" }, T(92));
+tl.fromTo("#s10 .cap", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .3 }, T(95) - .05);
+tl.fromTo("#nox", { scaleX: 0, opacity: 1 }, { scaleX: 1, duration: .25, ease: OUT }, T(97) - .05);
+tl.to(kfs, { y: 500, rotation: 200, opacity: 0, duration: .6, ease: "power2.in", stagger: { each: .002, from: "random" } }, T(97) + .15);
+hide("#s10", P0(11), "cut");
+flash(P0(11) - .02, .6);
+
+/* ---------- S11 does it replace AE? ---------- */
+spillTo("#EDEFF3", P0(11));
+show("#s11", P0(11) - .02, "cut");
+tl.fromTo("#form .qq", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: .3, ease: OUT }, P0(11));
+$$("#form .opt").forEach((o, i) => tl.fromTo(o, { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: .25, ease: OUT }, T(98) + .2 + i * .12));
+tl.fromTo("#tick", { strokeDasharray: 1, strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: .3, ease: "power2.out" }, T(103) - .05);
+tl.to("#nesov", { color: "#E5482A", duration: .2 }, T(103));
+hide("#s11", P0(12), "zoom");
+
+/* ---------- S12 idea -> animation ---------- */
+spillTo("#6E8BFF", P0(12));
+show("#s12", P0(12) - .05, "zoom");
+tl.set(["#nA", "#nAl", "#nB", "#nBl", "#dot12", "#notl", "#wow"], { opacity: 0 }, 0);
+pop("#nA", T(109) - .1); pop("#nAl", T(109));
+tl.to("#arcp", { strokeDashoffset: 0, duration: .9, ease: "power2.inOut" }, T(109));
+pop("#nB", T(111)); pop("#nBl", T(112) - .1);
+const arcPt = t => { const n = [230, 420, 420, 40, 860, 40, 1050, 420], u = 1 - t; return [0, 1].map(k => u*u*u*n[k] + 3*u*u*t*n[2+k] + 3*u*t*t*n[4+k] + t*t*t*n[6+k]); };
+const ad = { t: 0 };
+tl.fromTo("#dot12", { opacity: 0 }, { opacity: 1, duration: .1 }, T(109));
+tl.fromTo(ad, { t: 0 }, { t: 1, duration: 1.0, ease: "power2.inOut", immediateRender: false, onUpdate: () => { const [x, y] = arcPt(ad.t); $("#dot12").style.transform = `translate(${x}px, ${y}px)`; } }, T(109));
+tl.to("#dot12", { opacity: 0, duration: .1 }, T(111) + .05);
+tl.to("#nB", { boxShadow: "0 0 90px rgba(255,107,61,.8)", duration: .3, yoyo: true, repeat: 1 }, T(111) + .1);
+tl.fromTo("#notl", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .3 }, T(116) - .1);
+tl.to("#notl", { opacity: 0, duration: .15 }, T(118) - .15);
+tl.to(["#nA","#nAl","#nB","#nBl","#arc12"], { opacity: .15, duration: .25 }, T(119) - .15);
+tl.fromTo("#wow", { opacity: 0, scale: 2.2 }, { opacity: 1, scale: 1, duration: .35, ease: "back.out(1.6)" }, T(119) - .1);
+flash(T(119) - .05, .35);
+hide("#s12", P0(13), "zoom");
+
+/* ---------- S13 CTA ---------- */
+spillTo("#FF6B3D", P0(13));
+show("#s13", P0(13) - .05, "zoom");
+tl.set(["#ct1", "#ct2", "#cth"], { opacity: 0 }, 0);
+tl.fromTo("#ct1", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .3 }, P0(13));
+$$("#word div").forEach((d, i) => tl.fromTo(d, { opacity: 0, rotationX: -90, y: 50 }, { opacity: 1, rotationX: 0, y: 0, duration: .5, ease: "back.out(1.8)" }, T(125) - .2 + i * .06));
+tl.fromTo("#ct2", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .35 }, T(128) - .05);
+tl.fromTo("#cth", { opacity: 0 }, { opacity: 1, duration: .3 }, T(131));
+tl.to("#word div", { y: -12, duration: .45, yoyo: true, repeat: 3, ease: "sine.inOut", stagger: .07 }, T(126) + .4);
+
+/* initial states */
+["#s1", "#s2", "#s3", "#s4", "#s5", "#s6", "#s7", "#s8", "#s9", "#s10", "#s11", "#s12", "#s13"].forEach(id => tl.set(id, { opacity: 0 }, 0));
+
+window.__timelines = window.__timelines || {};
+window.__timelines["main"] = tl;
+tl.seek(0);
+</script>
+</body>
+</html>
