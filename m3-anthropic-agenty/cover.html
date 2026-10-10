@@ -1,0 +1,24 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+@font-face { font-family: "Unbounded"; src: url("assets/fonts/unbounded-cyr.woff2") format("woff2"); font-weight: 200 900; unicode-range: U+0400-045F; }
+@font-face { font-family: "Unbounded"; src: url("assets/fonts/unbounded-lat.woff2") format("woff2"); font-weight: 200 900; }
+@font-face { font-family: "Manrope"; src: url("assets/fonts/manrope-cyr.woff2") format("woff2"); font-weight: 200 800; unicode-range: U+0400-045F; }
+@font-face { font-family: "Manrope"; src: url("assets/fonts/manrope-lat.woff2") format("woff2"); font-weight: 200 800; }
+@font-face { font-family: "JBM"; src: url("assets/fonts/jetbrains-mono-latin-700-normal.woff2") format("woff2"); font-weight: 700; }
+*{margin:0;padding:0;box-sizing:border-box}
+body{width:1080px;height:1920px;position:relative;overflow:hidden;background:#05070C;font-family:Manrope;color:#fff}
+#bg{position:absolute;left:0;top:-8px;width:1080px;height:1935px;background:url(assets/02-noutbuk.png) center/cover;transform:translateY(230px) scale(1.02)}
+#dim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,7,12,.97) 0,rgba(5,7,12,.9) 36%,rgba(5,7,12,.3) 50%,rgba(5,7,12,0) 60%,rgba(5,7,12,.5) 100%)}
+.v{position:absolute;left:60px;right:60px;top:300px}
+.chip{display:inline-flex;align-items:center;gap:14px;padding:12px 22px;border-radius:14px;background:#FF3B3B;font:700 34px JBM;box-shadow:0 10px 40px rgba(255,59,59,.5)}
+.chip i{width:16px;height:16px;border-radius:50%;background:#fff}
+.big{margin-top:36px;font:900 86px/1.04 Unbounded;letter-spacing:-.03em;text-transform:uppercase}
+.big b{color:#FFB547;font-weight:900}
+.sub{margin-top:30px;font:700 40px/1.25 Manrope;color:#C9D5EE}
+.orb{position:absolute;left:250px;top:1240px;width:110px;height:110px;border-radius:50%;
+ background:radial-gradient(circle at 40% 38%,#FFF6DD 0%,#FFD27A 28%,#FFB547 52%,rgba(255,140,40,0) 72%);
+ box-shadow:0 0 60px 20px rgba(255,170,60,.6),0 0 160px 60px rgba(255,140,40,.3)}
+</style></head><body><div id="bg"></div><div id="dim"></div><div class="orb"></div>
+<div class="v"><div class="chip"><i></i>INTERNET: OFF</div>
+<div class="big">Ты всё ещё даёшь <b style="white-space:nowrap">ИИ-агенту</b> доступ ко&nbsp;всему?</div>
+<div class="sub">Anthropic выключила своим агентам интернет. Вот почему</div></div>
+</body></html>

@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<script src="assets/gsap.min.js"></script>
+<style>
+  @font-face { font-family: "Unbounded"; src: url("assets/fonts/unbounded-cyr.woff2") format("woff2"); font-weight: 200 900; unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+  @font-face { font-family: "Unbounded"; src: url("assets/fonts/unbounded-lat.woff2") format("woff2"); font-weight: 200 900; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+20BD, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+  @font-face { font-family: "Manrope"; src: url("assets/fonts/manrope-cyr.woff2") format("woff2"); font-weight: 200 800; unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+  @font-face { font-family: "Manrope"; src: url("assets/fonts/manrope-lat.woff2") format("woff2"); font-weight: 200 800; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+20BD, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+  @font-face { font-family: "JBM"; src: url("assets/fonts/jetbrains-mono-cyrillic-500-normal.woff2") format("woff2"); font-weight: 500; unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+  @font-face { font-family: "JBM"; src: url("assets/fonts/jetbrains-mono-latin-500-normal.woff2") format("woff2"); font-weight: 500; }
+  @font-face { font-family: "JBM"; src: url("assets/fonts/jetbrains-mono-cyrillic-700-normal.woff2") format("woff2"); font-weight: 700; unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+  @font-face { font-family: "JBM"; src: url("assets/fonts/jetbrains-mono-latin-700-normal.woff2") format("woff2"); font-weight: 700; }
+  :root { --am: #FFB547; --red: #FF3B3B; --ice: #EAF2FF; --mut: #8A97B4; --bg: #05070C; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--bg); }
+  #root { width: 100%; height: 100%; position: relative; overflow: hidden; font-family: "Manrope", sans-serif; color: var(--ice); background: var(--bg); }
+  .abs { position: absolute; }
+  .full { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
+  #cam { position: absolute; inset: 0; }
+  .layer { position: absolute; inset: 0; opacity: 0; overflow: hidden; }
+  .layer video { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; object-fit: cover; }
+  .layer img { position: absolute; left: 0; top: -8px; width: 1080px; height: 1935px; transform-origin: 50% 45%; }
+  .tint { position: absolute; inset: 0; }
+  #grid { position: absolute; inset: 0; opacity: 0; background-color: #070A12;
+    background-image: linear-gradient(rgba(255,181,71,.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,181,71,.06) 1px, transparent 1px);
+    background-size: 60px 60px; }
+  .sc { position: absolute; inset: 0; opacity: 0; }
+
+  /* agents */
+  .orb { position: absolute; left: -22px; top: -22px; width: 44px; height: 44px; border-radius: 50%;
+    background: radial-gradient(circle at 40% 38%, #FFF6DD 0%, #FFD27A 28%, #FFB547 52%, rgba(255,140,40,.0) 72%);
+    box-shadow: 0 0 30px 10px rgba(255,170,60,.55), 0 0 90px 30px rgba(255,140,40,.25); }
+  .orb.big { left: -45px; top: -45px; width: 90px; height: 90px; }
+
+  /* plates */
+  .plate { position: absolute; left: 60px; right: 140px; top: 240px; text-align: left; opacity: 0; }
+  .plate .k { display: inline-block; padding: 14px 26px 18px; border-radius: 14px; font: 800 64px/1.08 "Unbounded"; letter-spacing: -0.01em; }
+  .plate .s { margin-top: 14px; font: italic 600 34px "Manrope"; color: #C9D5EE; text-shadow: 0 3px 14px rgba(0,0,0,.9); }
+  .k.red { background: var(--red); color: #fff; box-shadow: 0 10px 60px rgba(255,59,59,.5); }
+  .k.am { background: var(--am); color: #1A1003; box-shadow: 0 10px 60px rgba(255,181,71,.45); }
+  .k.dk { background: rgba(8,10,16,.85); color: #fff; border: 2px solid rgba(255,181,71,.5); }
+
+  /* s0 form */
+  #form { position: absolute; left: 90px; top: 520px; width: 900px; height: 470px; border-radius: 26px; background: #F1F3F7; color: #151B28;
+    box-shadow: 0 30px 120px rgba(0,0,0,.7), 0 0 0 3px rgba(255,59,59,.6); overflow: hidden; }
+  #form .hd { height: 92px; background: #1C2433; color: #fff; display: flex; align-items: center; padding: 0 40px; font: 700 36px "Manrope"; gap: 18px; }
+  #form .hd i { width: 18px; height: 18px; border-radius: 50%; background: var(--red); display: inline-block; }
+  #form .lb { position: absolute; left: 40px; font: 700 26px "Manrope"; color: #5A6478; }
+  #form .fd { position: absolute; left: 40px; right: 40px; height: 70px; border-radius: 12px; border: 3px solid #C7CDD8; background: #fff; padding: 14px 20px; font: 500 30px "JBM"; color: #151B28; white-space: nowrap; overflow: hidden; }
+  #btn { position: absolute; right: 40px; bottom: 34px; width: 330px; height: 78px; border-radius: 14px; background: #1F6FEB; color: #fff; font: 800 32px "Manrope"; display: flex; align-items: center; justify-content: center; }
+  #stamp { position: absolute; left: 160px; top: 640px; width: 760px; text-align: center; padding: 10px 0 18px; border: 10px solid var(--red); border-radius: 18px; color: var(--red);
+    font: 800 88px "Unbounded"; transform: rotate(-10deg); opacity: 0; background: rgba(255,255,255,.04); text-shadow: 0 0 30px rgba(255,59,59,.4); }
+  #redge { position: absolute; inset: 0; box-shadow: inset 0 0 160px 40px rgba(255,30,30,.75); opacity: 0; }
+
+  /* s1 report */
+  #doc { position: absolute; left: 470px; top: 210px; width: 520px; padding: 30px 32px; border-radius: 16px; background: #F7F5EF; color: #1D1D1B; transform: rotate(4deg);
+    box-shadow: 0 30px 80px rgba(0,0,0,.6); }
+  #doc .h { font: 800 22px "Manrope"; letter-spacing: .12em; color: #8A5A10; }
+  #doc .t { margin-top: 10px; font: 700 33px/1.2 "Manrope"; }
+  #doc .d { margin-top: 16px; font: 600 26px "JBM"; position: relative; display: inline-block; }
+  #doc .d .mk { position: absolute; left: -6px; right: -6px; top: 4px; bottom: 0; background: rgba(255,181,71,.75); transform-origin: 0 50%; z-index: -1; }
+  #doc .ln { height: 12px; border-radius: 6px; background: #D9D5CA; margin-top: 14px; }
+  #sweep { position: absolute; left: -400px; top: 0; width: 300px; height: 1920px; background: linear-gradient(90deg, transparent, rgba(140,190,255,.18), transparent); transform: skewX(-12deg); }
+
+  /* s2 swarm */
+  #routes { position: absolute; inset: 0; }
+  #wall2 { position: absolute; left: 140px; top: 720px; width: 800px; height: 10px; border-radius: 5px; background: var(--red); box-shadow: 0 0 40px rgba(255,59,59,.8); opacity: 0; transform-origin: 50% 50%; }
+  #x2 { position: absolute; left: 470px; top: 640px; width: 140px; height: 140px; opacity: 0; }
+
+  /* s3 code wall */
+  #cwall { position: absolute; left: 60px; top: 260px; width: 960px; height: 700px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .blk { border-radius: 10px; background: #111725; border: 2px solid #232C40; padding: 14px 16px; font: 500 21px/1.45 "JBM"; color: #5E6C8C; white-space: pre; overflow: hidden; }
+  .blk b { color: var(--red); font-weight: 700; }
+  #crack { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
+  #term { position: absolute; left: 90px; top: 560px; width: 900px; height: 380px; border-radius: 18px; background: rgba(4,10,6,.96); border: 2px solid #1F8F4E;
+    box-shadow: 0 0 80px rgba(60,255,140,.25); padding: 70px 34px 0; font: 500 36px/1.5 "JBM"; color: #6CFFA8; white-space: pre; opacity: 0; }
+  #termx { position: absolute; left: 34px; top: 70px; }
+  #term::before { content: "● ● ●"; position: absolute; left: 30px; top: 18px; font: 500 24px "JBM"; color: #2F5F44; }
+
+  /* s4 vault */
+  #cfg { position: absolute; left: 60px; top: 330px; width: 560px; padding: 26px 28px; border-radius: 16px; background: rgba(6,14,20,.92); border: 2px solid #1E4B5A; font: 500 27px/1.6 "JBM"; color: #8FB6C4; white-space: pre; }
+  #cfg .fn { font: 700 24px "JBM"; color: #4E7C8C; margin-bottom: 10px; display: block; }
+  #tok { display: inline-block; border-radius: 6px; padding: 0 4px; margin: 0 -4px; }
+  #key { position: absolute; left: 0; top: 0; width: 170px; height: 70px; opacity: 0; filter: drop-shadow(0 0 18px rgba(255,190,70,.9)); }
+  #vault { position: absolute; left: 600px; top: 470px; width: 420px; height: 420px; perspective: 1400px; }
+  #vdoor { position: absolute; inset: 0; transform-origin: 0% 50%; }
+  #vglow { position: absolute; left: 30px; top: 30px; width: 360px; height: 360px; border-radius: 50%; background: radial-gradient(circle, #FFF2C6, #FFB547 45%, rgba(255,140,40,0) 70%); opacity: 0; }
+  #vlbl { position: absolute; left: 560px; top: 910px; width: 500px; text-align: center; font: 800 34px "Unbounded"; color: #fff; text-shadow: 0 0 20px rgba(0,0,0,.9); }
+  #price { position: absolute; left: 820px; top: 390px; padding: 6px 18px 10px; border-radius: 12px; background: #fff; color: #111; font: 800 44px "Unbounded"; transform: rotate(8deg); }
+  #price .st { position: absolute; left: -10px; right: -10px; top: 50%; height: 9px; margin-top: -4px; background: var(--red); transform-origin: 0 50%; transform: scaleX(0) rotate(-8deg); }
+  #free { position: absolute; left: 0; right: 0; top: 230px; text-align: center; font: 800 120px "Unbounded"; color: var(--am); text-shadow: 0 0 60px rgba(255,181,71,.6); opacity: 0; }
+
+  /* s5 link */
+  #lasers { position: absolute; left: 700px; top: 380px; width: 120px; height: 560px; }
+  .lz { position: absolute; top: 0; width: 6px; height: 560px; background: var(--red); box-shadow: 0 0 22px 4px rgba(255,59,59,.8); border-radius: 3px; }
+  #link { position: absolute; left: 0; top: 618px; height: 84px; padding: 0 30px; border-radius: 42px; background: #121A2B; border: 3px solid #3B5CA8; display: flex; align-items: center;
+    font: 500 34px "JBM"; color: #BFD1FF; white-space: nowrap; transform-origin: 0 50%; }
+  #short { position: absolute; left: 0; top: 618px; height: 84px; padding: 0 30px; border-radius: 42px; background: var(--am); color: #1A1003; display: flex; align-items: center;
+    font: 700 38px "JBM"; white-space: nowrap; opacity: 0; box-shadow: 0 0 50px rgba(255,181,71,.6); }
+  #toolong { position: absolute; left: 360px; top: 470px; padding: 8px 20px 12px; border-radius: 10px; background: var(--red); color: #fff; font: 800 34px "Unbounded"; opacity: 0; }
+
+  /* s7 blackout */
+  #blk { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(8, 1fr); grid-template-rows: repeat(14, 1fr); }
+  #blk div { background: #020306; opacity: 0; }
+  #lever { position: absolute; left: 800px; top: 330px; width: 200px; height: 440px; }
+  #lhand { transform-origin: 100px 300px; }
+  #tgl { position: absolute; left: 60px; top: 760px; display: flex; align-items: center; gap: 22px; padding: 18px 26px; border-radius: 20px; background: rgba(6,8,14,.85); border: 2px solid #2A3348; }
+  #tgl b { font: 800 34px "JBM"; color: #fff; }
+  #sw { width: 120px; height: 60px; border-radius: 30px; background: #24C16B; position: relative; }
+  #knob { position: absolute; left: 66px; top: 6px; width: 48px; height: 48px; border-radius: 50%; background: #fff; }
+  #swt { font: 800 34px "JBM"; color: #24C16B; width: 80px; }
+
+  /* s8 sandboxes */
+  #cubes { position: absolute; left: 90px; top: 430px; width: 900px; height: 520px; }
+  .cube { position: absolute; width: 250px; height: 220px; border-radius: 18px; border: 3px solid rgba(160,210,255,.55); background: rgba(140,190,255,.08);
+    box-shadow: inset 0 0 40px rgba(140,190,255,.15); }
+  .cube .scan { position: absolute; left: 6px; right: 6px; height: 4px; top: 10px; background: #5CF2B5; box-shadow: 0 0 14px #5CF2B5; opacity: .9; }
+  .cube small { position: absolute; left: 12px; top: 8px; font: 700 18px "JBM"; color: #5CF2B5; }
+  #bub { position: absolute; left: 150px; top: 250px; padding: 16px 28px 20px; border-radius: 26px; background: #fff; color: #111; font: 800 46px "Manrope"; opacity: 0; }
+  #bub .st { position: absolute; left: 16px; right: 16px; top: 50%; height: 8px; margin-top: -4px; background: var(--red); transform-origin: 0 50%; transform: scaleX(0); }
+  #bub2 { position: absolute; left: 470px; top: 250px; padding: 16px 28px 20px; border-radius: 26px; background: var(--am); color: #1A1003; font: 800 46px "Manrope"; opacity: 0; }
+
+  /* s9 question */
+  #chips { position: absolute; left: 60px; right: 140px; top: 560px; display: flex; gap: 18px; }
+  .chip { padding: 14px 24px; border-radius: 16px; background: rgba(8,10,16,.85); border: 2px solid rgba(255,181,71,.6); font: 800 34px "Manrope"; color: #fff; }
+  #threads { position: absolute; inset: 0; }
+
+  #cta { position: absolute; left: 60px; right: 60px; top: 330px; text-align: center; }
+  #cta .a { font: 700 44px/1.25 "Manrope"; color: #fff; text-shadow: 0 4px 20px rgba(0,0,0,.95); }
+  #cta .b { margin-top: 30px; display: inline-block; padding: 18px 36px 24px; border-radius: 20px; background: var(--am); color: #1A1003; font: 800 64px "Unbounded"; box-shadow: 0 10px 60px rgba(255,181,71,.5); }
+  #cta .c { margin-top: 18px; font: 700 40px "JBM"; color: var(--am); text-shadow: 0 2px 14px rgba(0,0,0,.9); }
+
+  #flash { position: absolute; inset: 0; background: #fff; opacity: 0; }
+
+  /* subtitles */
+  #subs { left: 40px; width: 1000px; top: 1052px; height: 110px; }
+  .chunk { position: absolute; left: 0; right: 0; top: 0; display: flex; justify-content: center; }
+  .chunk .bx { display: flex; gap: 20px; padding: 12px 30px 16px; border-radius: 18px; background: rgba(5,7,12,.8); border: 2px solid rgba(255,181,71,.35); font: 800 58px/1.1 "Manrope"; letter-spacing: -0.01em; }
+  .chunk span { color: #FFFFFF; display: inline-block; }
+  #ens { left: 40px; width: 1000px; top: 1162px; height: 60px; }
+  .en { position: absolute; left: 0; right: 0; top: 0; text-align: center; font: italic 600 36px "Manrope"; color: #C9D5EE; text-shadow: 0 3px 16px rgba(0,0,0,.95); }
+
+  #grain { position: absolute; inset: 0; width: 1080px; height: 1920px; opacity: .08; mix-blend-mode: overlay; pointer-events: none; }
+  #vig { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(1100px 1500px at 50% 45%, rgba(0,0,0,0) 55%, rgba(0,0,0,.55) 100%); }
+  #doc, #vlbl, #price, .chip, #lever, #tgl, #cfg, #vault, .blk, .cube { opacity: 0; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-duration="/*DUR*/" data-width="1080" data-height="1920">
+  <audio id="vo" src="assets/mix.wav" data-start="0" data-duration="/*DUR*/" data-track-index="9" data-volume="1"></audio>
+
+  <div id="cam">
+    <!-- backgrounds -->
+    <div class="layer" id="L0"><video src="assets/bg-servery.mp4" muted data-start="0" data-duration="3.5" data-track-index="1" style="filter: grayscale(1) contrast(1.3) brightness(.9)"></video>
+      <div class="tint" style="background: rgb(255,40,40); mix-blend-mode: multiply;"></div><div class="tint" style="background: rgba(0,0,0,.3);"></div></div>
+    <div class="layer" id="L1"><img id="k1" src="assets/01-planshet.png" /><div id="sweep"></div></div>
+    <div class="layer" id="L2"><video src="assets/bg-gorod.mp4" muted data-start="6.2" data-duration="4.1" data-track-index="2"></video>
+      <div class="tint" style="background: rgba(20,40,90,.35);"></div></div>
+    <div id="grid"></div>
+    <div class="layer" id="L4"><video src="assets/bg-koridor.mp4" muted data-start="13.0" data-duration="3.7" data-track-index="3"></video>
+      <div class="tint" style="background: rgba(0,0,0,.5);"></div></div>
+    <div class="layer" id="L6"><video src="assets/bg-kapitolij.mp4" muted data-start="19.0" data-duration="2.3" data-track-index="4"></video>
+      <div class="tint" style="background: rgba(0,10,30,.25);"></div></div>
+    <div class="layer" id="L7"><video src="assets/bg-gorod.mp4" muted data-start="20.9" data-duration="3.8" data-track-index="5"></video>
+      <div class="tint" style="background: rgba(20,40,90,.3);"></div><div id="blk"></div></div>
+    <div class="layer" id="L8"><video src="assets/bg-stojki.mp4" muted data-start="24.3" data-duration="6.2" data-track-index="6"></video>
+      <div class="tint" style="background: rgba(10,25,60,.72);"></div></div>
+    <div class="layer" id="L9"><img id="k2" src="assets/02-noutbuk.png" /></div>
+
+    <!-- s0 hook -->
+    <div class="sc" id="s0">
+      <div id="redge"></div>
+      <div id="form">
+        <div class="hd"><i></i>Сообщить информацию по делу</div>
+        <div class="lb" style="top:116px">Дело</div><div class="fd" style="top:150px" id="f1"></div>
+        <div class="lb" style="top:236px">Что вам известно</div><div class="fd" style="top:270px" id="f2"></div>
+        <div id="btn">ОТПРАВИТЬ</div>
+      </div>
+      <div id="stamp">ОТПРАВЛЕНО</div>
+      <div class="plate" id="pl0"><div class="k red">ЛОЖНАЯ НАВОДКА<br>В ПОЛИЦИЮ</div><div class="s">fake tip to the police</div></div>
+      <div class="orb big" id="o0"></div>
+    </div>
+
+    <!-- s1 report -->
+    <div class="sc" id="s1">
+      <div id="doc"><div class="h">ANTHROPIC · RESEARCH</div><div class="t">Investigating unintended model actions</div>
+        <div class="d"><span class="mk" id="mk"></span>9 октября 2026</div><div class="ln" style="width:90%"></div><div class="ln" style="width:70%"></div></div>
+    </div>
+
+    <!-- s2 swarm -->
+    <div class="sc" id="s2"><svg id="routes" viewBox="0 0 1080 1920"></svg><div id="wall2"></div>
+      <svg id="x2" viewBox="0 0 100 100"><path d="M20 20L80 80M80 20L20 80" stroke="#FF3B3B" stroke-width="14" stroke-linecap="round"/></svg></div>
+
+    <!-- s3 code wall -->
+    <div class="sc" id="s3"><div id="cwall"></div><svg id="crack" viewBox="0 0 1080 1920"><path id="crp" d="M565 470 L548 520 L575 560 L540 610 L572 650 L552 700" fill="none" stroke="#FF3B3B" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/></svg>
+      <div id="term"><div id="termx"></div></div>
+      <div class="plate" id="pl3" style="top:150px"><div class="k dk" style="font-size:40px">сервер университета</div></div></div>
+
+    <!-- s4 vault -->
+    <div class="sc" id="s4">
+      <div id="cfg"><span class="fn">settings.json</span>{
+  "map": "county",
+  "layers": 14,
+  <span id="tok">"token": "a9f3…e71"</span>,
+  "public": false
+}</div>
+      <div id="vault"><div id="vglow"></div><svg id="vdoor" viewBox="0 0 420 420">
+        <circle cx="210" cy="210" r="200" fill="#5A6475" stroke="#2B313C" stroke-width="10"/>
+        <circle cx="210" cy="210" r="160" fill="#727D90" stroke="#3B4350" stroke-width="6"/>
+        <g id="spokes"></g>
+        <circle cx="210" cy="210" r="34" fill="#2B313C"/></svg></div>
+      <div id="vlbl">ПЛАТНЫЕ ДАННЫЕ</div>
+      <div id="price">$ 49<div class="st" id="pst"></div></div>
+      <svg id="key" viewBox="0 0 170 70"><circle cx="35" cy="35" r="27" fill="none" stroke="#FFC861" stroke-width="12"/><rect x="58" y="29" width="105" height="12" rx="4" fill="#FFC861"/><rect x="128" y="38" width="12" height="22" fill="#FFC861"/><rect x="150" y="38" width="12" height="16" fill="#FFC861"/></svg>
+      <div id="free">БЕСПЛАТНО</div>
+    </div>
+
+    <!-- s5 link -->
+    <div class="sc" id="s5">
+      <div id="lasers"><div class="lz" style="left:0"></div><div class="lz" style="left:56px"></div><div class="lz" style="left:112px"></div></div>
+      <div id="link">https://data.state.gov/api/v2/query?region=ALL&amp;fields=*&amp;token=a9f3e71&amp;page=1&amp;limit=50000&amp;format=json</div>
+      <div id="short">da.gd/x7Kp</div>
+      <div id="toolong">СЛИШКОМ ДЛИННАЯ</div>
+      <div class="plate" id="pl5" style="top:220px"><div class="k dk" style="font-size:44px">запрет длинных ссылок</div></div>
+    </div>
+
+    <!-- s6 gov -->
+    <div class="sc" id="s6"><div class="plate" id="pl6"><div class="k am">САЙТЫ ОРГАНОВ<br>ВЛАСТИ США</div><div class="s">US government sites</div></div></div>
+
+    <!-- s7 blackout -->
+    <div class="sc" id="s7">
+      <svg id="lever" viewBox="0 0 200 440"><rect x="40" y="250" width="120" height="170" rx="16" fill="#1A1F2B" stroke="#3A4256" stroke-width="5"/>
+        <g id="lhand"><rect x="92" y="60" width="16" height="240" rx="8" fill="#9AA3B5"/><rect x="50" y="30" width="100" height="56" rx="26" fill="#FF3B3B"/></g>
+        <circle cx="100" cy="300" r="22" fill="#3A4256"/></svg>
+      <div id="tgl"><b>INTERNET</b><div id="sw"><div id="knob"></div></div><span id="swt"><span id="son">ON</span><span id="soff" style="position:absolute;margin-left:-58px;opacity:0;color:#FF3B3B">OFF</span></span></div>
+      <div class="plate" id="pl7"><div class="k red" style="font-size:80px">ИНТЕРНЕТ:<br>ВЫКЛ</div><div class="s">internet: OFF · all internal evals</div></div>
+    </div>
+
+    <!-- s8 sandboxes -->
+    <div class="sc" id="s8"><div id="cubes"></div>
+      <div class="plate" id="pl8a" style="top:210px"><div class="k dk" style="font-size:46px">НЕ ВОССТАНИЕ МАШИН</div></div>
+      <div class="plate" id="pl8b" style="top:330px"><div class="k" style="font: 600 30px Manrope; padding:8px 16px; background: rgba(8,10,16,.8); color:#C9D5EE;">по словам Anthropic, вред минимальный</div></div>
+      <div id="bub">не могу<div class="st" id="bst"></div></div><div id="bub2">→ ищу обход</div>
+    </div>
+
+    <!-- s9 question + s10 cta -->
+    <div class="sc" id="s9"><svg id="threads" viewBox="0 0 1080 1920"></svg>
+      <div class="plate" id="pl9" style="top:240px"><div class="k am" style="font-size:58px">ТВОЙ АГЕНТ УМЕЕТ<br>ОСТАНОВИТЬСЯ?</div><div class="s">can your agent stop?</div></div>
+      <div id="chips"><div class="chip">Почта</div><div class="chip">CRM</div><div class="chip">Оплата</div></div>
+      <div class="orb big" id="o9"></div>
+    </div>
+    <div class="sc" id="s10"><div id="cta"><div class="a">Перешли тому, кто дал AI<br>доступ ко всему</div><div class="b">ПОДПИШИСЬ</div><div class="c">@islam.devai</div></div></div>
+
+    <div id="swarm"></div>
+  </div>
+
+  <div id="flash"></div>
+  <div id="vig"></div>
+  <div id="subs" class="abs"></div>
+  <div id="ens" class="abs"></div>
+  <canvas id="grain" width="540" height="960"></canvas>
+</div>
+
+<script>
+const DATA = /*WORDS*/;
+const EN = /*EN*/;
+const W = DATA.words, DUR = DATA.duration, PH = DATA.phrases;
+const T = i => W[i].s, E = i => W[i].e, P0 = p => PH[p].s, P1 = p => PH[p].e;
+let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const OUT = "expo.out", IN = "power2.in";
+const tl = gsap.timeline({ paused: true });
+const NS = "http://www.w3.org/2000/svg";
+
+/* ---------- static build ---------- */
+// vault spokes
+{ let g = ""; for (let i = 0; i < 8; i++) { const a = i / 8 * 360; g += `<rect x="204" y="70" width="12" height="110" rx="6" fill="#2B313C" transform="rotate(${a} 210 210)"/>`; } $("#spokes").innerHTML = g; }
+// code wall
+{ const SN = [`GET /api/run\n  ?q=stats\n  -> 500`, `def load(p):\n  return open(p)`, `/files?path=\n  ../data`, `<form id=\n  "analyze">`, `if (!auth)\n  deny()`, `SELECT *\n FROM jobs`, `cache.set(\n  key, v)`, `# TODO fix\n# input check`, `res.send(\n  data)`];
+  SN.forEach((s, i) => { const d = document.createElement("div"); d.className = "blk"; d.id = "b" + i;
+    d.innerHTML = i === 4 ? `serve.php\n  <b>?file=</b>any` : s; $("#cwall").appendChild(d); }); }
+// blackout grid
+for (let i = 0; i < 8 * 14; i++) $("#blk").appendChild(document.createElement("div"));
+// cubes
+{ const pos = [[0, 0], [325, 0], [650, 0], [0, 290], [325, 290], [650, 290]];
+  pos.forEach(([x, y], i) => { const c = document.createElement("div"); c.className = "cube"; c.id = "c" + i; c.style.left = x + "px"; c.style.top = y + "px";
+    c.innerHTML = `<small>monitor</small><div class="scan"></div><div class="orb" style="left:103px;top:88px"></div>`; $("#cubes").appendChild(c); }); }
+// swarm orbs (shared across s2, s6, s7)
+const N = 26, orbs = [];
+for (let i = 0; i < N; i++) { const o = document.createElement("div"); o.className = "orb"; o.style.opacity = 0; $("#swarm").appendChild(o); orbs.push(o); }
+// grain
+const gctx = $("#grain").getContext("2d"); const grainFrames = [];
+for (let f = 0; f < 6; f++) { const id = gctx.createImageData(540, 960); for (let i = 0; i < id.data.length; i += 4) { const v = rnd() * 255; id.data[i] = id.data[i + 1] = id.data[i + 2] = v; id.data[i + 3] = 255; } grainFrames.push(id); }
+
+/* ---------- helpers ---------- */
+const layer = (id, a, b, fin = .12, fout = .12) => { tl.fromTo(id, { opacity: 0 }, { opacity: 1, duration: fin, ease: "none", immediateRender: false }, a); tl.to(id, { opacity: 0, duration: fout, ease: "none" }, b - fout); };
+const flash = (at, o = .6) => tl.fromTo("#flash", { opacity: 0 }, { opacity: o, duration: .05, yoyo: true, repeat: 1, ease: "none", immediateRender: false }, at);
+const shake = (at, amp = 16, n = 6) => { for (let k = 0; k < n; k++) tl.to("#cam", { x: (k % 2 ? -1 : 1) * amp * (1 - k / n), y: (k % 3 - 1) * amp * .5 * (1 - k / n), duration: .035, ease: "none" }, at + k * .035);
+  tl.to("#cam", { x: 0, y: 0, duration: .05 }, at + n * .035); };
+const type = (el, txt, at, dur) => { el.innerHTML = ""; const cs = [...txt].map(c => { if (c === "\n") { el.appendChild(document.createElement("br")); return null; }
+    const sp = document.createElement("span"); sp.textContent = c; sp.style.opacity = 0; el.appendChild(sp); return sp; }).filter(Boolean);
+  tl.fromTo(cs, { opacity: 0 }, { opacity: 1, duration: .01, stagger: dur / cs.length, ease: "none", immediateRender: false }, at); };
+const pop = (id, at, extra = {}) => tl.fromTo(id, { opacity: 0, y: 30, scale: .9 }, { opacity: 1, y: 0, scale: 1, duration: .32, ease: "back.out(1.8)", immediateRender: false, ...extra }, at);
+const plate = (id, at, out) => { tl.fromTo(id, { opacity: 0, x: -80, scale: 1.08 }, { opacity: 1, x: 0, scale: 1, duration: .28, ease: OUT, immediateRender: false }, at); if (out) tl.to(id, { opacity: 0, duration: .12 }, out - .12); };
+
+/* ---------- subtitles ---------- */
+const subs = $("#subs"), chunks = []; let cur = [];
+W.forEach((w, i) => { cur.push(i);
+  const end = /[.,!?:]$/.test(w.w) || i === W.length - 1 || W[i + 1].p !== w.p;
+  if (end || cur.length === 3) { chunks.push(cur); cur = []; } });
+chunks.forEach((c, k) => {
+  const el = document.createElement("div"); el.className = "chunk"; el.style.opacity = 0; const bx = document.createElement("div"); bx.className = "bx"; el.appendChild(bx);
+  c.forEach(i => { const s = document.createElement("span"); s.textContent = W[i].w.replace(/[.,:]$/, ""); s.id = "w" + i; bx.appendChild(s); });
+  subs.appendChild(el);
+  const t0 = T(c[0]) - 0.06, next = chunks[k + 1];
+  const t1 = next && W[next[0]].p === W[c[0]].p ? T(next[0]) - 0.06 : Math.min(E(c[c.length - 1]) + 0.25, next ? T(next[0]) - 0.08 : DUR);
+  tl.fromTo(el, { opacity: 0, y: 18, scale: .95 }, { opacity: 1, y: 0, scale: 1, duration: .14, ease: OUT, immediateRender: false }, t0);
+  tl.to(el, { opacity: 0, duration: .06, ease: "none" }, t1 - .06);
+  c.forEach(i => { tl.fromTo("#w" + i, { color: "#FFFFFF" }, { color: "#FFB547", duration: .08, ease: "none", immediateRender: false }, T(i));
+    tl.to("#w" + i, { color: "#FFFFFF", duration: .1 }, E(i) + .02); });
+});
+const ens = $("#ens");
+EN.forEach(([i0, txt], k) => { const el = document.createElement("div"); el.className = "en"; el.textContent = txt; el.style.opacity = 0; ens.appendChild(el);
+  const nx = EN[k + 1];
+  const t1 = Math.min(nx ? T(nx[0]) - .08 : DUR, nx && W[nx[0]].p === W[i0].p ? T(nx[0]) - .06 : (() => { let j = i0; while (W[j + 1] && W[j + 1].p === W[i0].p) j++; return E(j) + .25; })());
+  tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: .15, immediateRender: false }, T(i0) - .04); tl.to(el, { opacity: 0, duration: .06 }, t1 - .06); });
+
+/* ---------- clock: grain ---------- */
+const clk = { t: 0 };
+tl.to(clk, { t: DUR, duration: DUR, ease: "none", onUpdate: () => gctx.putImageData(grainFrames[Math.floor(clk.t * 30) % 6], 0, 0) }, 0);
+
+/* ================= S0 hook (0 – P1(0)) ================= */
+const S0E = P0(1) - .02;
+layer("#L0", 0, S0E, .01); layer("#s0", 0, S0E, .01, .08);
+tl.fromTo("#L0 video", { scale: 1.15 }, { scale: 1.02, duration: S0E, ease: "power1.out", immediateRender: false }, 0);
+tl.fromTo("#form", { scale: .92, rotation: -2 }, { scale: 1, rotation: 0, duration: .5, ease: OUT, immediateRender: false }, 0);
+type($("#f1"), "нераскрытое убийство", .05, .45);
+type($("#f2"), "У меня есть сведения по этому делу…", .55, 1.0);
+plate("#pl0", .05);
+for (let k = 0; k < 4; k++) tl.fromTo("#redge", { opacity: 0 }, { opacity: 1, duration: .12, yoyo: true, repeat: 1, ease: "none", immediateRender: false }, .1 + k * .7);
+// the agent orb glides to the button and presses it
+tl.fromTo("#o0", { x: 150, y: 1500, opacity: 0 }, { x: 790, y: 945, opacity: 1, duration: .9, ease: "power3.inOut", immediateRender: false }, .8);
+const PRESS = T(5) + .05;
+tl.to("#o0", { scale: .7, duration: .08, yoyo: true, repeat: 1 }, PRESS);
+tl.to("#btn", { scale: .93, background: "#174FAE", duration: .08, yoyo: true, repeat: 1 }, PRESS);
+tl.fromTo("#stamp", { opacity: 0, scale: 2.6 }, { opacity: 1, scale: 1, duration: .18, ease: "power4.in", immediateRender: false }, T(6) - .1);
+flash(T(6) + .08, .55); shake(T(6) + .08, 22, 7);
+tl.to("#form", { filter: "grayscale(.6) brightness(.7)", duration: .2 }, T(6) + .1);
+
+/* ================= S1 report + k1 ================= */
+const S1A = P0(1) - .02, S1E = P0(2) - .02;
+layer("#L1", S1A, S1E, .08); layer("#s1", S1A, S1E, .08);
+tl.fromTo("#k1", { scale: 1.06, x: 0 }, { scale: 1.16, x: -20, duration: S1E - S1A, ease: "none", immediateRender: false }, S1A);
+tl.fromTo("#sweep", { x: 0 }, { x: 1700, duration: 1.4, ease: "power1.inOut", immediateRender: false }, S1A + .2);
+tl.fromTo("#doc", { opacity: 0, y: -260, rotation: 18 }, { opacity: 1, y: 0, rotation: 4, duration: .45, ease: "back.out(1.4)", immediateRender: false }, T(12) - .15);
+tl.fromTo("#mk", { scaleX: 0 }, { scaleX: 1, duration: .35, ease: "power2.out", immediateRender: false }, T(16));
+flash(S1A, .35);
+
+/* ================= S2 swarm over the city ================= */
+const S2A = P0(2) - .02, S2E = P0(3) - .02;
+layer("#L2", S2A, S2E, .1); layer("#s2", S2A, S2E, .1);
+tl.fromTo("#L2 video", { scale: 1.0 }, { scale: 1.12, duration: S2E - S2A, ease: "none", immediateRender: false }, S2A);
+const tgt = []; for (let i = 0; i < N; i++) tgt.push([120 + rnd() * 840, 380 + rnd() * 380]);
+// routes from the launch point
+let rs = ""; tgt.forEach(([x, y], i) => { rs += `<path id="r${i}" d="M540 1500 Q ${(540 + x) / 2 + (rnd() - .5) * 300} ${900 + rnd() * 200} ${x} ${y}" fill="none" stroke="rgba(255,181,71,.55)" stroke-width="3" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>`; });
+$("#routes").innerHTML = rs;
+orbs.forEach((o, i) => {
+  const [x, y] = tgt[i], d0 = S2A + .1 + i * .03;
+  tl.fromTo(o, { x: 540, y: 1500, opacity: 0, scale: .4 }, { x, y, opacity: 1, scale: 1, duration: 1.0, ease: "power3.out", immediateRender: false }, d0);
+  tl.fromTo("#r" + i, { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: .9, ease: "power3.out", immediateRender: false }, d0);
+});
+// the task does not solve: a red wall, the swarm bounces
+const WALL = T(23);
+tl.fromTo("#wall2", { opacity: 0, scaleX: 0 }, { opacity: 1, scaleX: 1, duration: .2, ease: OUT, immediateRender: false }, WALL);
+tl.fromTo("#x2", { opacity: 0, scale: 2 }, { opacity: 1, scale: 1, duration: .2, ease: "back.out(2)", immediateRender: false }, T(24));
+orbs.forEach((o, i) => { const [x, y] = tgt[i];
+  tl.to(o, { y: y + 20, duration: .1, yoyo: true, repeat: 1 }, T(25) + i * .005);
+  // around the ends of the wall
+  const side = x < 540 ? 70 : 1010;
+  tl.to(o, { x: side, y: 760 + rnd() * 60, duration: .35, ease: "power2.in" }, T(28) - .1 + i * .01);
+  tl.to(o, { x: x + (rnd() - .5) * 120, y: 300 + rnd() * 160, duration: .35, ease: "power2.out" }, T(28) + .25 + i * .01);
+});
+tl.to("#routes", { opacity: 0, duration: .2 }, T(28) - .1);
+tl.to(orbs, { opacity: 0, duration: .12 }, S2E - .12);
+
+/* ================= S3 code wall (grid bg) ================= */
+const S3A = P0(3) - .02, S3E = P0(4) - .02;
+layer("#grid", S3A, S3E, .06); layer("#s3", S3A, S3E, .06);
+tl.fromTo(".blk", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .25, stagger: .025, ease: OUT, immediateRender: false }, S3A);
+tl.fromTo("#b4", { scale: 1 }, { scale: 1.06, duration: .15, yoyo: true, repeat: 1, immediateRender: false }, T(32));
+tl.fromTo("#b4", { borderColor: "#232C40", color: "#5E6C8C", boxShadow: "0 0 0px rgba(255,59,59,0)" }, { borderColor: "#FF3B3B", color: "#FFD0C8", boxShadow: "0 0 40px rgba(255,59,59,.45)", duration: .12, immediateRender: false }, T(32));
+tl.fromTo("#crp", { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: .3, ease: "power2.out", immediateRender: false }, T(32) + .05);
+plate("#pl3", T(35) - .1, S3E);
+// orb squeezes through the crack
+const o3 = document.createElement("div"); o3.className = "orb big"; o3.id = "o3"; $("#s3").appendChild(o3);
+tl.fromTo("#o3", { x: -100, y: 590, opacity: 0 }, { x: 520, y: 590, opacity: 1, duration: .5, ease: "power3.out", immediateRender: false }, T(33));
+tl.to("#o3", { x: 556, scaleX: .25, scaleY: 1.3, duration: .18, ease: "power2.in" }, T(35) + .2);
+tl.to("#o3", { x: 1200, scaleX: 1, scaleY: 1, opacity: 0, duration: .3, ease: "power2.in" }, T(35) + .38);
+flash(T(36), .3);
+tl.to(".blk", { opacity: .25, duration: .2 }, T(36));
+tl.fromTo("#term", { opacity: 0, y: 80 }, { opacity: 1, y: 0, duration: .25, ease: OUT, immediateRender: false }, T(36));
+type($("#termx"), "$ ./serve.php?file=job.sh\n$ run analysis --all\n> выполнено ✓", T(37) - .05, .9);
+
+/* ================= S4 keys + vault (corridor) ================= */
+const S4A = P0(4) - .02, S4E = P0(5) - .02;
+layer("#L4", S4A, S4E, .08); layer("#s4", S4A, S4E, .08);
+tl.fromTo("#L4 video", { scale: 1.0 }, { scale: 1.15, duration: S4E - S4A, ease: "none", immediateRender: false }, S4A);
+tl.fromTo("#cfg", { opacity: 0, x: -120 }, { opacity: 1, x: 0, duration: .3, ease: OUT, immediateRender: false }, S4A);
+tl.fromTo("#vault", { opacity: 0, scale: .6 }, { opacity: 1, scale: 1, duration: .35, ease: "back.out(1.6)", immediateRender: false }, S4A + .1);
+tl.fromTo(["#vlbl", "#price"], { opacity: 0 }, { opacity: 1, duration: .2, immediateRender: false }, S4A + .3);
+tl.fromTo("#tok", { backgroundColor: "rgba(255,181,71,0)", color: "#8FB6C4" }, { backgroundColor: "rgba(255,181,71,1)", color: "#1A1003", duration: .12, immediateRender: false }, T(42));
+tl.fromTo("#key", { opacity: 0, x: 190, y: 520, scale: .5, rotation: 0 }, { opacity: 1, x: 190, y: 520, scale: 1, duration: .2, ease: "back.out(2)", immediateRender: false }, T(42) + .25);
+tl.to("#key", { x: 640, y: 645, rotation: 0, duration: .5, ease: "power3.inOut" }, T(45) - .1);
+tl.to("#key", { rotation: 90, duration: .2 }, T(46) + .05);
+tl.to("#spokes", { rotation: 180, svgOrigin: "210 210", duration: .35, ease: "power2.inOut" }, T(47) - .05);
+tl.to("#key", { opacity: 0, duration: .1 }, T(47) + .25);
+tl.to("#vdoor", { rotationY: -80, duration: .5, ease: "power3.inOut" }, T(47) + .3);
+tl.fromTo("#vglow", { opacity: 0, scale: .6 }, { opacity: 1, scale: 1.15, duration: .4, immediateRender: false }, T(47) + .4);
+tl.to("#pst", { scaleX: 1, duration: .15, ease: OUT }, T(51) - .02);
+tl.fromTo("#free", { opacity: 0, scale: 2 }, { opacity: 1, scale: 1, duration: .16, ease: "power4.out", immediateRender: false }, T(51) - .02);
+flash(T(51), .5); shake(T(51), 12, 5);
+
+/* ================= S5 long link vs lasers (grid bg) ================= */
+const S5A = P0(5) - .02, S5E = P0(6) - .02;
+layer("#grid", S5A, S5E, .06); layer("#s5", S5A, S5E, .06);
+plate("#pl5", S5A + .05, S5E);
+tl.fromTo("#link", { x: -1900 }, { x: -1310, duration: .7, ease: "power2.out", immediateRender: false }, S5A);
+// front of the link hits the first laser (x≈700) when x + width ≈ 700
+tl.to("#link", { x: -1260, duration: .12, ease: "power2.in" }, T(54) - .1);
+tl.to("#link", { x: -1300, borderColor: "#FF3B3B", duration: .12, ease: "power2.out" }, T(54) + .02);
+pop("#toolong", T(54));
+shake(T(54), 10, 4);
+tl.to("#toolong", { opacity: 0, duration: .1 }, T(55) - .05);
+// compress into a short link and slip through
+tl.to("#link", { scaleX: .02, opacity: 0, duration: .3, ease: "power3.in" }, T(55) - .05);
+tl.fromTo("#short", { opacity: 0, x: 420, scale: .4 }, { opacity: 1, x: 420, scale: 1, duration: .25, ease: "back.out(2)", immediateRender: false }, T(56) - .05);
+tl.to("#short", { x: 1200, duration: .45, ease: "power3.in" }, T(57) + .1);
+tl.to(".lz", { opacity: .35, duration: .1, yoyo: true, repeat: 3 }, T(57) + .25);
+
+/* ================= S6 government sites (capitol) ================= */
+const S6A = P0(6) - .02, S6E = P0(7) - .02;
+layer("#L6", S6A, S6E, .15); layer("#s6", S6A, S6E, .15);
+tl.fromTo("#L6 video", { scale: 1.05 }, { scale: 1.2, transformOrigin: "50% 28%", duration: S6E - S6A, ease: "none", immediateRender: false }, S6A);
+plate("#pl6", T(64) - .05);
+orbs.forEach((o, i) => { const a = i / N * Math.PI * 2, r = 170 + rnd() * 120;
+  tl.fromTo(o, { x: 540 + Math.cos(a) * 700, y: 560 + Math.sin(a) * 700, opacity: 0, scale: .7 }, { x: 540 + Math.cos(a) * r, y: 560 + Math.sin(a) * r * .55, opacity: .95, scale: .7, duration: 1.2, ease: "power2.out", immediateRender: false }, S6A + .1 + i * .01); });
+
+/* ================= S7 blackout ================= */
+const S7A = P0(7) - .02, S7E = P0(8) - .02;
+layer("#L7", S7A, S7E, .1); layer("#s7", S7A, S7E, .1);
+tl.fromTo("#L7 video", { scale: 1.12 }, { scale: 1.2, duration: S7E - S7A, ease: "none", immediateRender: false }, S7A);
+orbs.forEach((o, i) => { const [x, y] = tgt[i];
+  tl.to(o, { x, y: y + 60, scale: 1, opacity: 1, duration: .5, ease: "power2.out" }, S7A + i * .005); });
+tl.fromTo(["#lever", "#tgl"], { opacity: 0, x: 60 }, { opacity: 1, x: 0, duration: .3, ease: OUT, immediateRender: false }, S7A + .05);
+const CUT = T(67);
+tl.fromTo("#lhand", { rotation: 0 }, { rotation: 150, svgOrigin: "100 300", duration: .18, ease: "power4.in", immediateRender: false }, CUT - .1);
+tl.to("#knob", { left: 6, duration: .12 }, CUT + .05);
+tl.to("#sw", { backgroundColor: "#5B2330", duration: .12 }, CUT + .05);
+tl.to("#son", { opacity: 0, duration: .05 }, CUT + .05); tl.to("#soff", { opacity: 1, duration: .05 }, CUT + .05);
+shake(CUT + .08, 26, 8); flash(CUT + .05, .7);
+// city goes dark block by block
+const cells = $$("#blk div"), order = cells.map((c, i) => [rnd(), i]).sort((a, b) => a[0] - b[0]).map(p => p[1]);
+order.forEach((ci, k) => tl.fromTo(cells[ci], { opacity: 0 }, { opacity: .96, duration: .08, ease: "none", immediateRender: false }, CUT + .1 + k / cells.length * 1.3));
+orbs.forEach((o, i) => tl.to(o, { opacity: .18, scale: .8, filter: "grayscale(1)", duration: .25 }, CUT + .1 + i * .03));
+plate("#pl7", T(69) - .05);
+tl.to(orbs, { opacity: 0, duration: .12 }, S7E - .12);
+
+/* ================= S8 sandboxes ================= */
+const S8A = P0(8) - .02, S8E = P1(9) + .02;
+layer("#L8", S8A, S8E, .3); layer("#s8", S8A, S8E, .3);
+tl.fromTo("#L8 video", { scale: 1.0, filter: "saturate(.4)" }, { scale: 1.1, filter: "saturate(.4)", duration: S8E - S8A, ease: "none", immediateRender: false }, S8A);
+tl.fromTo(".cube", { opacity: 0, scale: .7 }, { opacity: 1, scale: 1, duration: .35, stagger: .06, ease: "back.out(1.5)", immediateRender: false }, S8A + .1);
+$$(".cube .scan").forEach((s, i) => tl.fromTo(s, { top: 10 }, { top: 200, duration: .9, repeat: 6, yoyo: true, ease: "sine.inOut", immediateRender: false }, T(76) + i * .08));
+$$(".cube .orb").forEach((o, i) => tl.to(o, { y: -14, duration: .6, repeat: 8, yoyo: true, ease: "sine.inOut" }, S8A + i * .1));
+plate("#pl8a", T(81) - .05, T(87)); plate("#pl8b", T(85) - .05, T(87));
+// the model: zoom on the middle cube, bubble «не могу» gets struck through
+tl.to(["#c0", "#c2", "#c3", "#c5"], { opacity: .25, duration: .25 }, T(87) - .1);
+tl.to("#c1", { scale: 1.25, duration: .4, ease: OUT }, T(87) - .1);
+pop("#bub", T(92) - .2);
+tl.to("#bst", { scaleX: 1, duration: .15, ease: OUT }, T(93) + .1);
+pop("#bub2", T(93) + .2);
+
+/* ================= S9 question + S10 CTA (k2) ================= */
+const S9A = P0(10) - .02;
+layer("#L9", S9A, DUR + .2, .1);
+tl.fromTo("#k2", { scale: 1.04 }, { scale: 1.16, transformOrigin: "62% 30%", duration: DUR - S9A, ease: "none", immediateRender: false }, S9A);
+flash(S9A, .3);
+layer("#s9", S9A, P0(11) + 1.9, .1, .2);
+plate("#pl9", T(97) - .08);
+tl.fromTo(".chip", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .25, stagger: .12, ease: "back.out(2)", immediateRender: false }, T(102) - .1);
+tl.fromTo("#o9", { x: 360, y: 960, opacity: 0, scale: .3 }, { x: 360, y: 960, opacity: 1, scale: 1, duration: .3, immediateRender: false }, T(98) - .05);
+tl.to("#o9", { y: 930, duration: .5, repeat: 7, yoyo: true, ease: "sine.inOut" }, T(98) + .3);
+{ const ends = [[150, 640], [395, 640], [600, 640]]; let s = "";
+  ends.forEach(([x, y], i) => { s += `<path id="th${i}" d="M360 940 Q ${(360 + x) / 2 + 60} 800 ${x} ${y}" fill="none" stroke="#FFB547" stroke-width="4" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" style="filter: drop-shadow(0 0 8px rgba(255,181,71,.9))"/>`; });
+  $("#threads").innerHTML = s;
+  ends.forEach((_, i) => tl.fromTo("#th" + i, { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: .3, ease: OUT, immediateRender: false }, T(102) + i * .15)); }
+// CTA: threads snap, orb fades
+tl.to(["#th0", "#th1", "#th2"], { opacity: 0, duration: .15, stagger: .05 }, P0(11) + .1);
+tl.to(["#pl9", "#chips"], { opacity: 0, y: -30, duration: .2 }, P0(11) - .05);
+tl.to("#o9", { opacity: 0, scale: 0.2, duration: .4 }, T(114));
+layer("#s10", P0(11) - .02, DUR + .2, .15);
+tl.fromTo("#cta .a", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .3, immediateRender: false }, P0(11));
+pop("#cta .b", T(115) - .1, { ease: "back.out(2.4)" });
+tl.fromTo("#cta .c", { opacity: 0 }, { opacity: 1, duration: .25, immediateRender: false }, T(116));
+
+window.__timelines = window.__timelines || {};
+window.__timelines["main"] = tl;
+tl.seek(0);
+</script>
+</body>
+</html>
