@@ -204,7 +204,7 @@
 
   <div id="full"></div>
   <div id="cam">
-    <div id="bgw"><video id="bg" src="assets/intro-bg.mp4" muted data-start="0" data-duration="3" data-track-index="1"></video></div>
+    <div id="bgw"><img id="bg" src="assets/intro-photo.jpg" alt=""></div>
     <div id="S">
         <div id="gridbg"></div>
         <div id="floor"></div>
@@ -361,8 +361,8 @@ const NS = "http://www.w3.org/2000/svg";
 
 /* ---------- static build ---------- */
 // screen quad in the footage (output px), measured from the white screen of Pexels 6585409; grown 3 px to hide the white rim
-// v3: full uncropped frame (1080x1920); after the zoom the screen becomes the full-width stage x 0..1080, y 340..1015
-const Q = [[168, 959], [897, 952.5], [891, 1396.5], [179, 1400]];
+// v3/v4: full uncropped frame (1080x1920); after the zoom the screen becomes the full-width stage x 0..1080, y 340..1015
+const Q = [[75.3, 486.9], [843.1, 468.4], [821.6, 877.3], [146.8, 916.1]];   // v4: the user's own laptop photo (IMG_0196)
 const RECT = [[0, 340], [1080, 340], [1080, 1015], [0, 1015]];
 const grow = (q, g) => { const cx = q.reduce((a, p) => a + p[0], 0) / 4, cy = q.reduce((a, p) => a + p[1], 0) / 4;
   return q.map(([x, y]) => { const dx = x - cx, dy = y - cy, l = Math.hypot(dx, dy); return [x + dx / l * g, y + dy / l * g]; }); };
@@ -462,7 +462,7 @@ EN.forEach(([i0, txt], k) => { const el = document.createElement("div"); el.clas
   tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: .2 }, T(i0) - .04); tl.to(el, { opacity: 0, duration: .08 }, t1 - .08); });
 
 /* ---------- intro: hold on the real MacBook, then zoom into its screen until it is the whole frame ---------- */
-const Q0 = grow(Q, 2), ZF = 1080 / 720.5, C0 = [533.75, 1177], CF = [540, 677.5];
+const Q0 = grow(Q, 2), ZF = 1080 / 721.3, C0 = [471.7, 687.2], CF = [540, 677.5];
 const hand = { t: 0 }, zi = { u: 0 }, camEl = $("#cam"), bgw = $("#bgw");
 const lerp = (a, b, k) => a + (b - a) * k;
 const applyZoom = t => {
