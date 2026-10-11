@@ -117,7 +117,8 @@
   #mp4n { position: absolute; left: 0; width: 1280px; top: 560px; text-align: center; font: 700 56px "JBM"; color: var(--mint); }
 
   /* s6 */
-  #s6 .q { position: absolute; left: 0; width: 1280px; top: 150px; text-align: center; font: 700 56px "Manrope"; color: #B9C6E4; }
+  #s6 .q { position: absolute; left: 0; width: 1280px; top: 120px; text-align: center; font: 800 78px "Manrope"; color: #FFFFFF; }
+  #s6 .q b { color: var(--co); display: inline-block; }
   #steps { position: absolute; left: 0; width: 1280px; top: 290px; display: flex; justify-content: center; gap: 40px; perspective: 1200px; }
   #steps div { width: 250px; height: 300px; border-radius: 40px; display: flex; align-items: center; justify-content: center; font: 800 190px "Unbounded"; background: #131B2E; border: 3px solid rgba(255,107,61,.6); color: var(--co); }
 
@@ -263,7 +264,7 @@
 
         <!-- s6: three steps -->
         <div class="sc" id="s6">
-          <div class="q">Как этому научиться?</div>
+          <div class="q">Как этому научиться<b>?</b></div>
           <div id="steps"><div>1</div><div>2</div><div>3</div></div>
         </div>
 
@@ -355,14 +356,14 @@ const OUT = "expo.out", SOFT = "power3.out", IN = "power2.in";
 const tl = gsap.timeline({ paused: true });
 const NS = "http://www.w3.org/2000/svg";
 // v3: all short tweens 25% faster (positions stay on the voice)
-{ const SP = .75, f = v => { if (v && typeof v.duration === "number" && v.duration < 2.5) v.duration *= SP; if (v && typeof v.repeatDelay === "number") v.repeatDelay *= SP; return v; };
+{ const SP = .88, f = v => { if (v && typeof v.duration === "number" && v.duration < 2.5) v.duration *= SP; if (v && typeof v.repeatDelay === "number") v.repeatDelay *= SP; return v; };
   const to = tl.to.bind(tl), ft = tl.fromTo.bind(tl);
   tl.to = (t, v, p) => to(t, f(v), p); tl.fromTo = (t, a, b, p) => ft(t, a, f(b), p); }
 
 /* ---------- static build ---------- */
 // screen quad in the footage (output px), measured from the white screen of Pexels 6585409; grown 3 px to hide the white rim
 // v3/v4: full uncropped frame (1080x1920); after the zoom the screen becomes the full-width stage x 0..1080, y 340..1015
-const Q = [[75.3, 486.9], [843.1, 468.4], [821.6, 877.3], [146.8, 916.1]];   // v4: the user's own laptop photo (IMG_0196)
+const Q = [[26.2, 423.7], [1025.8, 413.1], [990.7, 941.6], [119.0, 998.1]];   // v5: the user's own laptop photo, closer shot (IMG_0197)
 const RECT = [[0, 340], [1080, 340], [1080, 1015], [0, 1015]];
 const grow = (q, g) => { const cx = q.reduce((a, p) => a + p[0], 0) / 4, cy = q.reduce((a, p) => a + p[1], 0) / 4;
   return q.map(([x, y]) => { const dx = x - cx, dy = y - cy, l = Math.hypot(dx, dy); return [x + dx / l * g, y + dy / l * g]; }); };
@@ -462,7 +463,7 @@ EN.forEach(([i0, txt], k) => { const el = document.createElement("div"); el.clas
   tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: .2 }, T(i0) - .04); tl.to(el, { opacity: 0, duration: .08 }, t1 - .08); });
 
 /* ---------- intro: hold on the real MacBook, then zoom into its screen until it is the whole frame ---------- */
-const Q0 = grow(Q, 2), ZF = 1080 / 721.3, C0 = [471.7, 687.2], CF = [540, 677.5];
+const Q0 = grow(Q, 2), ZF = 1080 / 935.6, C0 = [540.4, 694.1], CF = [540, 677.5];
 const hand = { t: 0 }, zi = { u: 0 }, camEl = $("#cam"), bgw = $("#bgw");
 const lerp = (a, b, k) => a + (b - a) * k;
 const applyZoom = t => {
@@ -575,6 +576,10 @@ hide("#s5", P0(6), "zoom");
 spillTo("#6E8BFF", P0(6));
 show("#s6", P0(6) - .05, "fade");
 tl.fromTo("#s6 .q", { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: .3 }, P0(6));
+// question accents follow the voice: punch on «Как», the «?» jumps on the rise at the end
+const WI = (p, w) => W.findIndex(x => x.p === p && x.w.startsWith(w));
+tl.fromTo("#s6 .q", { scale: 1 }, { scale: 1.08, duration: .16, yoyo: true, repeat: 1, ease: "power2.out", immediateRender: false }, T(WI(6, "Как")));
+tl.fromTo("#s6 .q b", { scale: 1, rotation: 0 }, { scale: 1.6, rotation: 12, duration: .2, yoyo: true, repeat: 1, ease: "back.out(3)", immediateRender: false }, E(WI(6, "научиться")) - .15);
 $$("#steps div").forEach((d, i) => tl.fromTo(d, { opacity: 0, rotationY: -90, y: 40 }, { opacity: 1, rotationY: 0, y: 0, duration: .45, ease: "back.out(1.6)" }, T(51) - .1 + i * .12));
 tl.to("#floor", { opacity: .8, duration: .4 }, T(51));
 tl.to("#floor", { backgroundPositionY: "180px", duration: 2, ease: "none" }, T(51));
@@ -651,6 +656,7 @@ flash(P0(11) - .02, .6);
 spillTo("#EDEFF3", P0(11));
 show("#s11", P0(11) - .02, "cut");
 tl.fromTo("#form .qq", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: .3, ease: OUT }, P0(11));
+tl.fromTo("#form .qq", { scale: 1 }, { scale: 1.07, transformOrigin: "0% 50%", duration: .18, yoyo: true, repeat: 1, ease: "power2.out", immediateRender: false }, T(WI(11, "Заменяет")) + .1);
 $$("#form .opt").forEach((o, i) => tl.fromTo(o, { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: .25, ease: OUT }, T(98) + .2 + i * .12));
 tl.fromTo("#tick", { strokeDasharray: 1, strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: .3, ease: "power2.out" }, T(103) - .05);
 tl.to("#nesov", { color: "#E5482A", duration: .2 }, T(103));
