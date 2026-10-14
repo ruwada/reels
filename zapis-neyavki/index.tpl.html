@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<script src="assets/gsap.min.js"></script>
+<style>
+@font-face { font-family: "Unbounded"; src: url("assets/fonts/unbounded-cyr.woff2") format("woff2"); font-weight: 200 900; unicode-range: U+0400-045F; }
+@font-face { font-family: "Unbounded"; src: url("assets/fonts/unbounded-lat.woff2") format("woff2"); font-weight: 200 900; unicode-range: U+0000-00FF, U+2000-206F; }
+@font-face { font-family: "Unbounded"; src: url("assets/fonts/unbounded-ext.woff2") format("woff2"); font-weight: 200 900; unicode-range: U+20BD; }
+@font-face { font-family: "Manrope"; src: url("assets/fonts/manrope-cyr.woff2") format("woff2"); font-weight: 200 800; unicode-range: U+0400-045F; }
+@font-face { font-family: "Manrope"; src: url("assets/fonts/manrope-lat.woff2") format("woff2"); font-weight: 200 800; unicode-range: U+0000-00FF, U+2000-206F; }
+@font-face { font-family: "Manrope"; src: url("assets/fonts/manrope-ext.woff2") format("woff2"); font-weight: 200 800; unicode-range: U+20BD; }
+:root{--bg:#FFF6EE;--ink:#1D1A17;--mute:#8A7F75;--card:#FFFFFF;--line:#EADFD3;--coral:#E5443A;--coralL:#FFE4DF;--green:#1FAA6B;--greenL:#DCF7E6;--wa:#25D366;--tg:#2AABEE}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;background:var(--bg)}
+#root{width:100%;height:100%;position:relative;overflow:hidden;font-family:"Manrope",sans-serif;color:var(--ink);background:var(--bg)}
+.dots{position:absolute;left:-60px;top:-60px;width:1200px;height:2040px;background-image:radial-gradient(rgba(29,26,23,.08) 3px,transparent 3px);background-size:60px 60px}
+.blob{position:absolute;border-radius:50%}
+.full{position:absolute;inset:0;width:1080px;height:1920px;object-fit:cover}
+.shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(12,9,7,.78) 0%,rgba(12,9,7,.25) 30%,rgba(12,9,7,0) 50%,rgba(12,9,7,.35) 75%,rgba(12,9,7,.7) 100%);opacity:0}
+.scene{position:absolute;inset:0;opacity:0}
+.h{position:absolute;left:80px;right:150px;top:230px;font:800 82px/1.06 "Unbounded";letter-spacing:-.035em}
+.h em{font-style:normal;color:var(--coral)}
+.hw{color:#fff;text-shadow:0 6px 30px rgba(0,0,0,.35)}
+.kick{position:absolute;left:80px;top:230px;font:800 34px "Manrope";letter-spacing:.16em;color:var(--coral)}
+.ws{display:inline-block;opacity:0}
+/* S0 card */
+#ap{position:absolute;left:110px;top:640px;width:700px;padding:36px 40px;border-radius:36px;background:var(--card);box-shadow:0 30px 80px rgba(0,0,0,.35);opacity:0}
+#ap .t{font:800 30px "Manrope";letter-spacing:.12em;color:var(--mute)}
+#ap .n{font:800 64px "Unbounded";letter-spacing:-.03em;margin-top:10px}
+#ap .s{font:700 38px "Manrope";color:var(--mute);margin-top:8px}
+#stamp{position:absolute;right:-40px;top:-46px;padding:16px 30px;border:7px solid var(--coral);border-radius:20px;color:var(--coral);font:800 46px "Unbounded";background:rgba(255,255,255,.92);transform:rotate(-10deg);opacity:0}
+#again{position:absolute;left:110px;top:1000px;padding:16px 30px;border-radius:999px;background:var(--coral);color:#fff;font:800 40px "Manrope";opacity:0}
+/* S1 */
+#cnt{position:absolute;left:80px;top:300px;font:800 230px/1 "Unbounded";letter-spacing:-.05em;color:var(--ink)}
+#cnt small{font:800 70px "Unbounded";color:var(--mute);letter-spacing:-.03em}
+#cnt span{display:none}
+#cntl{position:absolute;left:86px;top:565px;font:700 40px "Manrope";color:var(--mute)}
+#feed{position:absolute;left:80px;right:80px;top:640px;height:560px;overflow:hidden;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 18%,#000 82%,transparent 100%)}
+#feedin{position:absolute;left:0;right:0;top:0}
+.b{margin:0 0 22px auto;width:700px;padding:24px 30px 16px;border-radius:36px 36px 10px 36px;background:#E3F6EA;font:700 38px/1.3 "Manrope";box-shadow:0 8px 20px rgba(29,26,23,.06)}
+.b .to{font:800 26px "Manrope";color:var(--mute);letter-spacing:.06em;margin-bottom:6px}
+.b .tk{text-align:right;font:800 26px "Manrope";color:#9AA59E}
+/* S2 */
+#sch{position:absolute;left:150px;top:740px;width:780px;padding:30px 36px;border-radius:34px;background:rgba(255,255,255,.96);box-shadow:0 30px 80px rgba(0,0,0,.35);opacity:0}
+#sch .cap{font:800 28px "Manrope";letter-spacing:.14em;color:var(--mute);margin-bottom:10px}
+.sr{display:flex;align-items:center;gap:26px;padding:18px 0;border-top:2px solid var(--line);font:800 40px "Manrope"}
+.sr:first-of-type{border-top:0}
+.sr .tm{width:150px;font:800 40px "Unbounded";letter-spacing:-.03em}
+.sr .st{margin-left:auto;padding:8px 20px;border-radius:999px;background:var(--greenL);color:#13804F;font:800 28px "Manrope"}
+#empty{border-radius:18px;margin:0 -18px;padding:18px}
+#empty .st{background:var(--coralL);color:#D63A2B}
+/* S3 */
+.mr{position:absolute;left:80px;font:800 76px/1.1 "Unbounded";letter-spacing:-.035em;opacity:0}
+.mr i{font-style:normal;color:var(--mute)}
+#tot{position:absolute;left:80px;top:860px;font:800 150px/1 "Unbounded";letter-spacing:-.05em;color:var(--coral);opacity:0}
+#tot span{display:none}
+#totl{position:absolute;left:84px;top:1030px;font:800 48px "Manrope";opacity:0}
+#bar{position:absolute;left:80px;top:830px;width:920px;height:8px;border-radius:4px;background:var(--ink);transform-origin:left center;transform:scaleX(0)}
+#note{position:absolute;right:150px;top:1040px;font:700 28px "Manrope";color:var(--mute);opacity:0}
+/* S4 */
+#code{position:absolute;left:80px;top:400px;padding:20px 30px;border-radius:22px;background:rgba(10,14,10,.82);color:#7CF29C;font:700 40px "Manrope";letter-spacing:.02em;opacity:0}
+/* S5 */
+.chip{position:absolute;top:350px;padding:14px 28px;border-radius:999px;font:800 36px "Manrope";color:#fff;opacity:0;white-space:nowrap}
+/* S6 */
+#day{position:absolute;left:70px;top:420px;width:470px;padding:30px;border-radius:34px;background:var(--card);border:3px solid var(--line);box-shadow:0 24px 60px rgba(29,26,23,.10);opacity:0}
+#day .cap,#q .cap{font:800 26px "Manrope";letter-spacing:.14em;color:var(--mute);margin-bottom:8px}
+.dr{display:flex;flex-direction:column;padding:16px 18px;margin:0 -18px;border-radius:20px;border-top:2px solid var(--line)}
+.dr .tm{font:800 40px "Unbounded";letter-spacing:-.03em}
+.dr .nm{font:800 34px "Manrope";margin-top:4px;position:relative}
+.dr .nm b{position:absolute;left:0;top:52%;height:6px;width:0;background:var(--coral);border-radius:3px}
+#q{position:absolute;left:580px;top:420px;width:430px;padding:30px;border-radius:34px;background:var(--card);border:3px solid var(--line);box-shadow:0 24px 60px rgba(29,26,23,.10);opacity:0}
+.qr{display:flex;align-items:center;gap:16px;padding:14px 0;border-top:2px solid var(--line);font:800 36px "Manrope"}
+.qr .av{width:60px;height:60px;border-radius:50%;background:var(--ink);color:#fff;font:800 28px/60px "Manrope";text-align:center}
+#offer{position:absolute;left:580px;top:850px;width:430px;padding:24px 28px;border-radius:30px 30px 30px 10px;background:var(--ink);color:#fff;font:700 34px/1.3 "Manrope";opacity:0}
+#offer small{display:block;font:800 22px "Manrope";letter-spacing:.14em;color:#FFB4AC;margin-bottom:6px}
+#yes{position:absolute;left:640px;top:1060px;padding:20px 30px;border-radius:30px 30px 10px 30px;background:var(--greenL);color:#13804F;font:800 36px "Manrope";opacity:0}
+#arr{position:absolute;left:470px;top:735px;width:160px;height:120px;opacity:0}
+/* S7 */
+#zero{position:absolute;left:110px;top:780px;width:860px;padding:34px 40px;border-radius:34px;background:rgba(255,255,255,.96);box-shadow:0 30px 80px rgba(0,0,0,.35);display:flex;align-items:center;gap:30px;opacity:0}
+#zero .l{font:800 40px/1.2 "Manrope"}
+#zero .n{margin-left:auto;font:800 120px/1 "Unbounded";letter-spacing:-.05em;color:var(--coral)}
+#zero .n span{display:none}
+/* CTA */
+#cta{position:absolute;inset:0;background:var(--bg);opacity:0}
+#cta .k{position:absolute;left:80px;top:300px;font:800 76px/1.08 "Unbounded";letter-spacing:-.035em}
+#cta .w{position:absolute;left:80px;top:520px;padding:30px 60px 38px;border-radius:44px;background:var(--coral);color:#fff;font:800 150px/1 "Unbounded";letter-spacing:-.04em;opacity:0}
+#cta .s{position:absolute;left:84px;top:760px;right:150px;font:700 50px/1.25 "Manrope";color:var(--ink);opacity:0}
+#cta .s em{font-style:normal;color:var(--coral)}
+#cta .hn{position:absolute;left:84px;top:1000px;font:800 40px "Manrope";color:var(--mute);opacity:0}
+/* subtitles */
+#subs{position:absolute;left:0;right:0;top:1250px;height:110px}
+.sub{position:absolute;left:50%;top:0;transform:translateX(-50%);padding:16px 34px 20px;border-radius:26px;background:var(--bg);color:var(--ink);font:800 52px/1.1 "Unbounded";letter-spacing:-.03em;white-space:nowrap;opacity:0;box-shadow:0 10px 30px rgba(0,0,0,.18)}
+#ens{position:absolute;left:0;right:0;top:1372px;height:60px}
+.en{position:absolute;left:50%;top:0;transform:translateX(-50%);padding:8px 22px;border-radius:14px;background:rgba(29,26,23,.82);color:#fff;font:700 32px "Manrope";white-space:nowrap;opacity:0}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-duration="/*END*/" data-width="1080" data-height="1920">
+  <div class="dots" id="dots"></div>
+  <div class="blob" id="bl1" style="width:900px;height:900px;left:-350px;top:-250px;background:radial-gradient(circle,#FFD9CF,transparent 70%)"></div>
+  <div class="blob" id="bl2" style="width:900px;height:900px;right:-380px;bottom:-200px;background:radial-gradient(circle,#FFE9C9,transparent 70%)"></div>
+
+  <video id="v0" class="clip full" src="assets/c0.mp4" muted playsinline data-start="0" data-duration="2.9" data-track-index="0"></video>
+  <video id="v2" class="clip full" src="assets/c2.mp4" muted playsinline data-start="6.7" data-duration="3.3" data-track-index="1"></video>
+  <video id="v4" class="clip full" src="assets/c4.mp4" muted playsinline data-start="14.3" data-duration="2.3" data-track-index="2"></video>
+  <video id="v5" class="clip full" src="assets/c5.mp4" muted playsinline data-start="16.55" data-duration="6.6" data-track-index="3"></video>
+  <video id="v7" class="clip full" src="assets/c7.mp4" muted playsinline data-start="26.3" data-duration="3.2" data-track-index="4"></video>
+  <div class="shade" id="sh"></div>
+
+  <!-- S0 hook -->
+  <div class="scene" id="S0">
+    <div class="h hw" id="h0"><span class="ws">Клиент</span> <span class="ws">записался.</span><br><span class="ws" style="color:#FF7A6F">И&nbsp;не&nbsp;пришёл.</span></div>
+    <div id="ap"><div class="t">ЗАПИСЬ · СЕГОДНЯ</div><div class="n">15:00</div><div class="s">Стрижка · Ахмад</div><div id="stamp">НЕ ПРИШЁЛ</div></div>
+    <div id="again">Опять. Третий раз за неделю</div>
+  </div>
+
+  <!-- S1 forty messages -->
+  <div class="scene" id="S1">
+    <div class="kick" id="k1">КАЖДЫЙ ВЕЧЕР · ВРУЧНУЮ</div>
+    <div id="cnt">/*CNT*/<small>/40</small></div>
+    <div id="cntl">сообщений администратора</div>
+    <div id="feed"><div id="feedin">/*FEED*/</div></div>
+  </div>
+
+  <!-- S2 silence -->
+  <div class="scene" id="S2">
+    <div class="h hw" id="h2">Половина <span style="color:#FF7A6F">молчит.</span></div>
+    <div id="sch"><div class="cap">РАСПИСАНИЕ · ЗАВТРА</div>
+      <div class="sr"><div class="tm">14:00</div><div>Ислам</div><div class="st">пришёл</div></div>
+      <div class="sr" id="empty"><div class="tm">15:00</div><div>пусто</div><div class="st">−2 000 ₽</div></div>
+      <div class="sr"><div class="tm">16:00</div><div>Руслан</div><div class="st">пришёл</div></div>
+    </div>
+  </div>
+
+  <!-- S3 math -->
+  <div class="scene" id="S3">
+    <div class="kick" id="k3">ПОСЧИТАЙ</div>
+    <div class="mr" id="m1" style="top:330px">3 неявки <i>в день</i></div>
+    <div class="mr" id="m2" style="top:490px"><i>×</i> 2 000 ₽</div>
+    <div class="mr" id="m3" style="top:650px"><i>×</i> 26 <i>дней</i></div>
+    <div id="bar"></div>
+    <div id="tot">/*TOT*/</div>
+    <div id="totl">в месяц. Каждый месяц.</div>
+    <div id="note">пример расчёта</div>
+  </div>
+
+  <!-- S4 build -->
+  <div class="scene" id="S4">
+    <div class="h hw" id="h4">Я делаю <span style="color:#FF7A6F">бота.</span></div>
+    <div id="code">&gt; reminders.auto = true</div>
+  </div>
+
+  <!-- S5 phone -->
+  <div class="scene" id="S5">
+    <div class="h hw" id="h5" style="top:200px;font-size:70px">Напоминает <span style="color:#FF7A6F">сам</span></div>
+    <div class="chip" id="cp1" style="left:80px;background:var(--coral)">за 24 часа</div>
+    <div class="chip" id="cp2" style="left:390px;background:var(--coral)">за 2 часа</div>
+    <div class="chip" id="cp3" style="left:80px;background:var(--wa)">WhatsApp</div>
+    <div class="chip" id="cp4" style="left:390px;background:var(--tg)">Telegram</div>
+  </div>
+
+  <!-- S6 waitlist -->
+  <div class="scene" id="S6">
+    <div class="h" id="h6" style="top:220px"><em>Отменил?</em> Окно не пустует</div>
+    <div id="day"><div class="cap">ЗАВТРА</div>
+      <div class="dr" style="border-top:0"><div class="tm">14:00</div><div class="nm">Ислам</div></div>
+      <div class="dr" id="slot"><div class="tm">15:00</div><div class="nm"><span id="sn1">Ахмад</span><span id="sn2" style="display:none">Билал ✓</span><b id="strike"></b></div></div>
+      <div class="dr"><div class="tm">16:00</div><div class="nm">Руслан</div></div>
+    </div>
+    <svg id="arr" viewBox="0 0 160 120"><path d="M8 100 C 60 100, 90 30, 140 24" fill="none" stroke="#E5443A" stroke-width="9" stroke-linecap="round"/><path d="M118 10 L144 23 L124 44" fill="none" stroke="#E5443A" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div id="q"><div class="cap">ОЧЕРЕДЬ</div>
+      <div class="qr" style="border-top:0"><div class="av">Б</div>Билал</div>
+      <div class="qr"><div class="av">Т</div>Тимур</div>
+      <div class="qr"><div class="av">К</div>Карим</div>
+    </div>
+    <div id="offer"><small>БОТ</small>Освободилось завтра в 15:00. Записать вас?</div>
+    <div id="yes">Билал: Да, беру!</div>
+  </div>
+
+  <!-- S7 zero -->
+  <div class="scene" id="S7">
+    <div id="zero"><div class="l">Напоминаний<br>вручную</div><div class="n">/*ZERO*/</div></div>
+  </div>
+
+  <!-- CTA -->
+  <div id="cta">
+    <div class="dots" style="opacity:.6"></div>
+    <div class="k">Напиши<br>в директ</div>
+    <div class="w">ЗАПИСЬ</div>
+    <div class="s">Пришлю <em>схему бота</em>, который сам напоминает и заполняет окна</div>
+    <div class="hn">@islam.devai</div>
+  </div>
+
+  <div id="subs"></div>
+  <div id="ens"></div>
+</div>
+<script>
+const D=/*DATA*/, EN=/*EN*/;
+const WORDS=D.words, END=D.END;
+const w=(l,k)=>WORDS.find(v=>v[3]===l&&v[4]===k)[1];
+const we=(l,k)=>WORDS.find(v=>v[3]===l&&v[4]===k)[2];
+const OUT="expo.out",SOFT="power3.out",IN="power2.in";
+const tl=gsap.timeline({paused:true});
+// subtitles: 2-3 words, break on punctuation, never across lines; dashes skipped
+const ch=[];let cur=[];
+WORDS.forEach(v=>{if(v[0]==="—")return;if(cur.length&&cur[cur.length-1][3]!==v[3]){ch.push(cur);cur=[];}cur.push(v);if(/[,.:?!»]$/.test(v[0])||cur.length===3||cur.map(x=>x[0]).join(' ').length>=15){ch.push(cur);cur=[];}});
+if(cur.length)ch.push(cur);
+const box=document.getElementById("subs");
+ch.forEach((c,i)=>{const d=document.createElement("div");d.className="sub";
+  c.forEach((x,j)=>{const sp=document.createElement("span");sp.id=`s${i}w${j}`;sp.textContent=(j?" ":"")+x[0];d.appendChild(sp)});
+  box.appendChild(d);
+  const st=c[0][1];let en=c[c.length-1][2]+0.35;const nx=ch[i+1];if(nx)en=Math.min(en,nx[0][1]);
+  tl.set(d,{opacity:1},st);tl.set(d,{opacity:0},Math.max(en,c[c.length-1][2]));
+  c.forEach((x,j)=>{tl.set(`#s${i}w${j}`,{color:"#E5443A"},x[1]);if(j+1<c.length)tl.set(`#s${i}w${j}`,{color:"#1D1A17"},c[j+1][1]);});
+});
+const eb=document.getElementById("ens");
+EN.forEach((e,i)=>{const d=document.createElement("div");d.className="en";d.textContent=e[2];eb.appendChild(d);
+  const st=w(e[0],e[1]);const nx=EN[i+1];let en=nx?w(nx[0],nx[1]):END-2.2;
+  const lineEnd=Math.max(...WORDS.filter(v=>v[3]===e[0]).map(v=>v[2]))+0.35;if(!nx||nx[0]!==e[0])en=Math.min(en,lineEnd);
+  tl.set(d,{opacity:1},st);tl.set(d,{opacity:0},en);});
+const show=(id,t,from={y:30},d=.5)=>tl.fromTo(id,{opacity:0,...from},{opacity:1,x:0,y:0,scale:1,duration:d,ease:OUT},t);
+const hide=(ids,t,d=.25)=>tl.to(ids,{opacity:0,duration:d,ease:IN},t);
+const scene=(id,a,b)=>{tl.set(id,{opacity:1},a);tl.set(id,{opacity:0},b);};
+const count=(sel,t0,t1)=>{const S=document.querySelectorAll(sel+" span");tl.set(S[0],{display:"inline"},0);
+  for(let i=1;i<S.length;i++){const t=t0+(t1-t0)*Math.pow(i/(S.length-1),.8);tl.set(S[i-1],{display:"none"},t);tl.set(S[i],{display:"inline"},t);}};
+tl.fromTo("#dots",{x:0,y:0},{x:60,y:60,duration:END,ease:"none"},0);
+tl.fromTo("#bl1",{x:0,y:0},{x:140,y:120,duration:END,ease:"none"},0);
+tl.fromTo("#bl2",{x:0,y:0},{x:-120,y:-90,duration:END,ease:"none"},0);
+
+// S0 hook 0 - 2.75 (dental chair)
+scene("#S0",0,2.72);
+tl.set("#sh",{opacity:1},0);
+tl.fromTo("#v0",{scale:1.0},{scale:1.12,duration:2.9,ease:"none"},0);
+const H0=document.querySelectorAll("#h0 .ws");
+tl.fromTo(H0[0],{opacity:0,y:30},{opacity:1,y:0,duration:.35,ease:OUT},w(0,0)-.05);
+tl.fromTo(H0[1],{opacity:0,y:30},{opacity:1,y:0,duration:.35,ease:OUT},w(0,1)-.05);
+tl.fromTo(H0[2],{opacity:0,y:30},{opacity:1,y:0,duration:.35,ease:OUT},w(0,2)-.05);
+show("#ap",w(0,1),{y:60,scale:.9},.45);
+tl.fromTo("#stamp",{opacity:0,scale:2.2,rotation:-24},{opacity:1,scale:1,rotation:-10,duration:.28,ease:"power4.in"},w(0,4)-.02);
+tl.to("#ap",{x:-10,duration:.05,yoyo:true,repeat:5},w(0,4)+.26);
+show("#again",w(0,5),{y:20,scale:.9},.35);
+tl.set("#v0",{opacity:0},2.72);tl.set("#sh",{opacity:0},2.72);
+
+// S1 2.75 - 6.75 forty messages
+scene("#S1",2.72,6.72);
+show("#k1",2.75,{y:-20},.4);
+tl.fromTo("#cnt",{opacity:0,x:-40},{opacity:1,x:0,duration:.4,ease:OUT},2.78);
+show("#cntl",3.0,{y:10},.4);
+count("#cnt",w(1,0),w(1,5)+.5);
+tl.fromTo("#feedin",{y:40},{y:-1500,duration:3.9,ease:"power1.in"},2.8);
+tl.to("#feed",{opacity:.35,duration:.3},6.3);
+
+// S2 6.75 - 9.9 silence (waiting man)
+scene("#S2",6.72,9.95);
+tl.set("#sh",{opacity:1},6.72);
+tl.fromTo("#v2",{scale:1.08},{scale:1.0,duration:3.3,ease:"none"},6.7);
+show("#h2",w(2,0)-.1,{y:-20},.45);
+show("#sch",w(2,2)-.1,{y:60},.45);
+tl.to("#empty",{background:"#FFE4DF",duration:.3},w(2,3));
+tl.fromTo("#empty",{scale:1},{scale:1.05,duration:.18,yoyo:true,repeat:1,immediateRender:false},w(2,4));
+tl.set(["#v2","#sh"],{opacity:0},9.95);
+
+// S3 math 9.95 - 14.3
+scene("#S3",9.95,14.3);
+show("#k3",9.98,{y:-20},.35);
+show("#m1",w(3,0)-.05,{x:-40,y:0},.4);
+show("#m2",w(3,5)-.05,{x:-40,y:0},.4);
+show("#m3",w(3,8)-.1,{x:-40,y:0},.4);
+tl.to("#bar",{scaleX:1,duration:.35,ease:SOFT},w(3,9)-.15);
+tl.set("#tot",{opacity:1},w(3,9));
+count("#tot",w(3,9),w(3,12)+.2);
+tl.fromTo("#tot",{scale:1},{scale:1.06,duration:.18,yoyo:true,repeat:1,immediateRender:false,transformOrigin:"left center"},w(3,12)+.25);
+show("#totl",w(3,13),{y:20},.35);show("#note",w(3,13)+.2,{y:10},.35);
+
+// S4 build 14.3 - 16.55
+scene("#S4",14.3,16.55);
+tl.set("#sh",{opacity:1},14.3);
+tl.fromTo("#v4",{scale:1.0},{scale:1.08,duration:2.3,ease:"none"},14.3);
+show("#h4",w(4,0)-.05,{y:-20},.4);
+tl.fromTo("#code",{opacity:0,clipPath:"inset(0 100% 0 0)"},{opacity:1,clipPath:"inset(0 0% 0 0)",duration:.7,ease:"steps(22)"},w(4,4));
+tl.set(["#v4"],{opacity:0},16.55);
+
+// S5 phone 16.55 - 23.1
+scene("#S5",16.55,23.1);
+tl.fromTo("#v5",{scale:1.0},{scale:1.07,duration:6.6,ease:"none",transformOrigin:"50% 55%"},16.55);
+show("#h5",w(5,0)-.1,{y:-20},.4);
+show("#cp1",w(5,1),{y:20,scale:.85},.35);show("#cp2",w(5,4),{y:20,scale:.85},.35);
+hide(["#cp1","#cp2"],w(5,10)-.1,.2);
+show("#cp3",w(5,11),{y:20,scale:.85},.35);show("#cp4",w(5,13),{y:20,scale:.85},.35);
+hide(["#h5","#cp3","#cp4"],w(6,0),.3);
+tl.set(["#v5","#sh"],{opacity:0},23.1);
+
+// S6 waitlist 23.1 - 26.4
+scene("#S6",23.1,26.4);
+show("#h6",23.12,{y:-20},.35);
+show("#day",23.15,{x:-40,y:0},.4);
+tl.to("#strike",{width:"100%",duration:.25,ease:SOFT},w(7,0)+.1);
+tl.to("#slot",{background:"#FFE4DF",duration:.25},w(7,0)+.1);
+show("#q",w(7,2),{x:40,y:0},.4);
+tl.fromTo("#arr",{opacity:0,scale:.6},{opacity:1,scale:1,duration:.35,ease:"back.out(2)"},w(7,5)-.1);
+show("#offer",w(7,5)+.1,{y:30,scale:.92},.4);
+show("#yes",w(7,9)-.05,{y:30,scale:.92},.35);
+tl.set("#sn1",{display:"none"},w(7,11));tl.set("#sn2",{display:"inline"},w(7,11));tl.set("#strike",{width:0},w(7,11));
+tl.to("#slot",{background:"#DCF7E6",color:"#13804F",duration:.3},w(7,11));
+tl.to(["#S6"],{opacity:0,duration:.35,ease:"sine.inOut"},26.1);
+
+// S7 calm 26.3 - 29.4 (soft)
+tl.set("#S7",{opacity:1},26.3);
+tl.fromTo(["#v7","#sh"],{opacity:0},{opacity:1,duration:.4,ease:"sine.inOut"},26.25);
+tl.fromTo("#v7",{scale:1.0},{scale:1.06,duration:3.2,ease:"none"},26.3);
+show("#zero",w(8,0)-.05,{y:40},.45);
+count("#zero .n",w(8,2),w(8,6)+.1);
+tl.to("#zero .n",{color:"#1FAA6B",duration:.2},w(8,6)+.15);
+
+// CTA 29.4 - END
+tl.to("#cta",{opacity:1,duration:.3},29.38);
+tl.set(["#S7","#v7","#sh"],{opacity:0},29.7);
+tl.fromTo("#cta .k",{opacity:0,y:40},{opacity:1,y:0,duration:.5,ease:OUT},29.42);
+tl.fromTo("#cta .w",{opacity:0,scale:.6},{opacity:1,scale:1,duration:.55,ease:"back.out(2)"},w(9,1)-.05);
+tl.fromTo("#cta .w",{scale:1},{scale:1.05,duration:.5,yoyo:true,repeat:5,ease:"sine.inOut",immediateRender:false},w(9,1)+.6);
+tl.fromTo("#cta .s",{opacity:0,y:30},{opacity:1,y:0,duration:.5,ease:OUT},w(9,5));
+tl.fromTo("#cta .hn",{opacity:0},{opacity:1,duration:.5},w(9,8));
+window.__timelines=window.__timelines||{};
+window.__timelines["main"]=tl;tl.seek(0);
+</script>
+</body>
+</html>

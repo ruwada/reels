@@ -1,0 +1,10 @@
+[[0,0,"The client booked."],[0,2,"And didn't show. Again."],
+[1,0,"The admin sends 40 messages a night:"],[1,6,"“Reminder: tomorrow at 3.”"],
+[2,0,"Half stay silent."],[2,2,"And an empty slot can't be sold."],
+[3,0,"3 no-shows a day at 2,000 ₽"],[3,8,"is over 150,000 ₽ a month."],
+[4,0,"I build a bot that takes all of it."],
+[5,0,"A day and two hours before,"],[5,6,"it texts the client on WhatsApp/Telegram."],
+[6,0,"The client taps “Coming” or “Reschedule”."],
+[7,0,"Cancelled? The bot offers the slot"],[7,7,"to people on the waitlist."],
+[8,0,"The admin sends zero reminders."],
+[9,0,"DM me “ЗАПИСЬ”"],[9,4,"and I'll send the bot's blueprint."]]
