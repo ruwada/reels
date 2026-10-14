@@ -85,7 +85,7 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:var(--bg)}
 /* CTA */
 #cta{position:absolute;inset:0;background:var(--bg);opacity:0}
 #cta .k{position:absolute;left:80px;top:300px;font:800 76px/1.08 "Unbounded";letter-spacing:-.035em}
-#cta .w{position:absolute;left:80px;top:520px;padding:30px 60px 38px;border-radius:44px;background:var(--coral);color:#fff;font:800 150px/1 "Unbounded";letter-spacing:-.04em;opacity:0}
+#cta .w{position:absolute;left:80px;top:520px;padding:30px 60px 38px;border-radius:44px;background:var(--coral);color:#fff;font:800 104px/1 "Unbounded";letter-spacing:-.04em;opacity:0}
 #cta .s{position:absolute;left:84px;top:760px;right:150px;font:700 50px/1.25 "Manrope";color:var(--ink);opacity:0}
 #cta .s em{font-style:normal;color:var(--coral)}
 #cta .hn{position:absolute;left:84px;top:1000px;font:800 40px "Manrope";color:var(--mute);opacity:0}
@@ -106,7 +106,7 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:var(--bg)}
   <video id="v2" class="clip full" src="assets/c2.mp4" muted playsinline data-start="6.7" data-duration="3.3" data-track-index="1"></video>
   <video id="v4" class="clip full" src="assets/c4.mp4" muted playsinline data-start="14.3" data-duration="2.3" data-track-index="2"></video>
   <video id="v5" class="clip full" src="assets/c5.mp4" muted playsinline data-start="16.55" data-duration="6.6" data-track-index="3"></video>
-  <video id="v7" class="clip full" src="assets/c7.mp4" muted playsinline data-start="26.3" data-duration="3.2" data-track-index="4"></video>
+  <video id="v7" class="clip full" src="assets/c7.mp4" muted playsinline data-start="26.75" data-duration="3.6" data-track-index="4"></video>
   <div class="shade" id="sh"></div>
 
   <!-- S0 hook -->
@@ -187,9 +187,9 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:var(--bg)}
   <!-- CTA -->
   <div id="cta">
     <div class="dots" style="opacity:.6"></div>
-    <div class="k">Напиши<br>в директ</div>
-    <div class="w">ЗАПИСЬ</div>
-    <div class="s">Пришлю <em>схему бота</em>, который сам напоминает и заполняет окна</div>
+    <div class="k">Схему бота<br>забирай</div>
+    <div class="w">в Telegram</div>
+    <div class="s"><em>Ссылка в шапке профиля.</em> Бот сам напоминает и заполняет окна</div>
     <div class="hn">@islam.devai</div>
   </div>
 
@@ -293,35 +293,35 @@ hide(["#h5","#cp3","#cp4"],w(6,0),.3);
 tl.set(["#v5","#sh"],{opacity:0},23.1);
 
 // S6 waitlist 23.1 - 26.4
-scene("#S6",23.1,26.4);
+scene("#S6",23.1,26.9);
 show("#h6",23.12,{y:-20},.35);
 show("#day",23.15,{x:-40,y:0},.4);
-tl.to("#strike",{width:"100%",duration:.25,ease:SOFT},w(7,0)+.1);
-tl.to("#slot",{background:"#FFE4DF",duration:.25},w(7,0)+.1);
+tl.to("#strike",{width:"100%",duration:.25,ease:SOFT},w(7,1)+.1);
+tl.to("#slot",{background:"#FFE4DF",duration:.25},w(7,1)+.1);
 show("#q",w(7,2),{x:40,y:0},.4);
 tl.fromTo("#arr",{opacity:0,scale:.6},{opacity:1,scale:1,duration:.35,ease:"back.out(2)"},w(7,5)-.1);
 show("#offer",w(7,5)+.1,{y:30,scale:.92},.4);
 show("#yes",w(7,9)-.05,{y:30,scale:.92},.35);
 tl.set("#sn1",{display:"none"},w(7,11));tl.set("#sn2",{display:"inline"},w(7,11));tl.set("#strike",{width:0},w(7,11));
 tl.to("#slot",{background:"#DCF7E6",color:"#13804F",duration:.3},w(7,11));
-tl.to(["#S6"],{opacity:0,duration:.35,ease:"sine.inOut"},26.1);
+tl.to(["#S6"],{opacity:0,duration:.35,ease:"sine.inOut"},26.55);
 
 // S7 calm 26.3 - 29.4 (soft)
-tl.set("#S7",{opacity:1},26.3);
-tl.fromTo(["#v7","#sh"],{opacity:0},{opacity:1,duration:.4,ease:"sine.inOut"},26.25);
-tl.fromTo("#v7",{scale:1.0},{scale:1.06,duration:3.2,ease:"none"},26.3);
+tl.set("#S7",{opacity:1},26.75);
+tl.fromTo(["#v7","#sh"],{opacity:0},{opacity:1,duration:.4,ease:"sine.inOut"},26.7);
+tl.fromTo("#v7",{scale:1.0},{scale:1.06,duration:3.6,ease:"none"},26.75);
 show("#zero",w(8,0)-.05,{y:40},.45);
 count("#zero .n",w(8,2),w(8,6)+.1);
 tl.to("#zero .n",{color:"#1FAA6B",duration:.2},w(8,6)+.15);
 
 // CTA 29.4 - END
-tl.to("#cta",{opacity:1,duration:.3},29.38);
-tl.set(["#S7","#v7","#sh"],{opacity:0},29.7);
-tl.fromTo("#cta .k",{opacity:0,y:40},{opacity:1,y:0,duration:.5,ease:OUT},29.42);
-tl.fromTo("#cta .w",{opacity:0,scale:.6},{opacity:1,scale:1,duration:.55,ease:"back.out(2)"},w(9,1)-.05);
-tl.fromTo("#cta .w",{scale:1},{scale:1.05,duration:.5,yoyo:true,repeat:5,ease:"sine.inOut",immediateRender:false},w(9,1)+.6);
-tl.fromTo("#cta .s",{opacity:0,y:30},{opacity:1,y:0,duration:.5,ease:OUT},w(9,5));
-tl.fromTo("#cta .hn",{opacity:0},{opacity:1,duration:.5},w(9,8));
+tl.to("#cta",{opacity:1,duration:.3},29.85);
+tl.set(["#S7","#v7","#sh"],{opacity:0},30.2);
+tl.fromTo("#cta .k",{opacity:0,y:40},{opacity:1,y:0,duration:.5,ease:OUT},29.9);
+tl.fromTo("#cta .w",{opacity:0,scale:.6},{opacity:1,scale:1,duration:.55,ease:"back.out(2)"},w(9,3)-.05);
+tl.fromTo("#cta .w",{scale:1},{scale:1.05,duration:.5,yoyo:true,repeat:5,ease:"sine.inOut",immediateRender:false},w(9,5)+.3);
+tl.fromTo("#cta .s",{opacity:0,y:30},{opacity:1,y:0,duration:.5,ease:OUT},w(9,7));
+tl.fromTo("#cta .hn",{opacity:0},{opacity:1,duration:.5},w(9,10));
 window.__timelines=window.__timelines||{};
 window.__timelines["main"]=tl;tl.seek(0);
 </script>
