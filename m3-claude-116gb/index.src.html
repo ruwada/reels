@@ -149,11 +149,11 @@
   /* s7 cta */
   #cta { position: absolute; left: 40px; right: 40px; top: 300px; text-align: center; }
   #cta .a { font: 700 46px/1.25 "Manrope"; color: #fff; }
-  #word { margin-top: 30px; display: inline-flex; gap: 6px; }
-  #word span { display: inline-block; width: 128px; height: 156px; border-radius: 18px; background: var(--red); font: 800 96px/156px "Unbounded"; color: #fff; opacity: 0; box-shadow: 0 12px 40px rgba(255,46,46,.4); }
+  #word { margin-top: 30px; display: inline-flex; gap: 18px; }
+  #word span { display: inline-block; padding: 0 34px; height: 156px; border-radius: 18px; background: var(--red); font: 800 96px/156px "Unbounded"; color: #fff; opacity: 0; box-shadow: 0 12px 40px rgba(255,46,46,.4); }
   #pdf { margin-top: 40px; display: inline-flex; align-items: center; gap: 22px; padding: 18px 30px; border-radius: 20px; background: #fff; color: #111; font: 800 38px "Manrope"; opacity: 0; }
   #pdf i { width: 64px; height: 80px; border-radius: 8px; background: var(--red); color: #fff; font: 800 20px/80px "JBM"; font-style: normal; display: inline-block; text-align: center; }
-  #cta .c { margin-top: 26px; font: 700 40px "JBM"; color: #fff; opacity: 0; }
+  #cta .c { margin-top: 30px; font: 800 44px "Manrope"; color: #fff; opacity: 0; }
 
   #flash { position: absolute; inset: 0; background: #fff; opacity: 0; }
   #glitch { position: absolute; inset: 0; opacity: 0; mix-blend-mode: screen; background: repeating-linear-gradient(0deg, rgba(255,46,46,.35) 0 6px, transparent 6px 18px); }
@@ -272,10 +272,10 @@
     </div>
 
     <!-- cta -->
-    <div class="sc" id="s9"><div id="cta"><div class="a">Напиши в директ слово</div>
+    <div class="sc" id="s9"><div id="cta"><div class="a">Чек-лист забирай в Telegram</div>
       <div id="word"></div>
       <div><div id="pdf"><i>PDF</i>Чек-лист: доступ без потерь</div></div>
-      <div class="c">@islam.devai</div></div></div>
+      <div class="c">↑ ссылка в шапке @islam.devai</div></div></div>
   </div>
 
   <div id="glitch"></div>
@@ -306,7 +306,7 @@ ICONS.forEach(([n, x, y, g], i) => { const d = document.createElement("div"); d.
   if (i < 5) for (let k = 0; k < 18; k++) { const p = document.createElement("div"); p.className = "px"; p.dataset.f = i; p.style.left = (x + 75 + rnd() * 110) + "px"; p.style.top = (y + 10 + rnd() * 120) + "px"; $("#icons").appendChild(p); } });
 const SF = ["Документы", "Проекты", "Фото", "Загрузки", "Почта", "Финансы", "Клиенты", "agent-work"];
 SF.forEach((n, i) => { const d = document.createElement("div"); d.className = "sf"; d.id = "sf" + i; d.innerHTML = `<div class="g"><div class="lk"></div></div>${n}`; $("#fgrid").appendChild(d); });
-"ЗАЩИТА".split("").forEach(c => { const s = document.createElement("span"); s.textContent = c; $("#word").appendChild(s); });
+["ГАЙД", "№10"].forEach(c => { const s = document.createElement("span"); s.textContent = c; $("#word").appendChild(s); });
 const gctx = $("#grain").getContext("2d"); const grainFrames = [];
 for (let f = 0; f < 6; f++) { const id = gctx.createImageData(540, 960); for (let i = 0; i < id.data.length; i += 4) { const v = rnd() * 255; id.data[i] = id.data[i + 1] = id.data[i + 2] = v; id.data[i + 3] = 255; } grainFrames.push(id); }
 
@@ -480,9 +480,9 @@ tl.set("#subs", { top: 1050 }, S8E); tl.set("#ens", { top: 1150 }, S8E);
 const S9A = P0(14) - .02;
 layer("#s9", S9A, DUR + .2, .15);
 tl.fromTo("#cta .a", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .3, immediateRender: false }, S9A);
-tl.fromTo("#word span", { opacity: 0, y: -260, rotation: () => (rnd() - .5) * 60 }, { opacity: 1, y: 0, rotation: 0, duration: .32, stagger: .06, ease: "back.out(1.6)", immediateRender: false }, T(104) - .15);
-pop("#pdf", T(108) - .05);
-tl.fromTo("#cta .c", { opacity: 0 }, { opacity: 1, duration: .3, immediateRender: false }, T(112));
+tl.fromTo("#word span", { opacity: 0, y: -260, rotation: () => (rnd() - .5) * 60 }, { opacity: 1, y: 0, rotation: 0, duration: .32, stagger: .06, ease: "back.out(1.6)", immediateRender: false }, T(106) - .12);
+pop("#pdf", T(102) + .1);
+tl.fromTo("#cta .c", { opacity: 0 }, { opacity: 1, duration: .3, immediateRender: false }, T(108) - .05);
 
 window.__timelines = window.__timelines || {};
 window.__timelines["main"] = tl;
