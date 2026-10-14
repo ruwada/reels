@@ -1,0 +1,30 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+@font-face { font-family: "Unbounded"; src: url("assets/fonts/unbounded-cyr.woff2"); font-weight: 200 900; unicode-range: U+0400-045F; }
+@font-face { font-family: "Unbounded"; src: url("assets/fonts/unbounded-lat.woff2"); font-weight: 200 900; unicode-range: U+0000-00FF, U+2000-206F; }
+@font-face { font-family: "Manrope"; src: url("assets/fonts/manrope-cyr.woff2"); font-weight: 200 800; unicode-range: U+0400-045F; }
+@font-face { font-family: "Manrope"; src: url("assets/fonts/manrope-lat.woff2"); font-weight: 200 800; unicode-range: U+0000-00FF, U+2000-206F, U+2713; }
+@font-face { font-family: "JBM"; src: url("assets/fonts/jetbrains-mono-latin-700-normal.woff2"); font-weight: 700; }
+@font-face { font-family: "JBM"; src: url("assets/fonts/jetbrains-mono-cyrillic-700-normal.woff2"); font-weight: 700; unicode-range: U+0400-045F; }
+*{margin:0;padding:0;box-sizing:border-box}
+body{width:1080px;height:1920px;overflow:hidden;background:#08090B;font-family:Manrope;color:#fff;position:relative}
+.bg{position:absolute;inset:0;background:url(cover-bg.jpg) center/cover;filter:saturate(1.2) brightness(.55)}
+.v{position:absolute;inset:0;background:radial-gradient(900px 1300px at 50% 50%,rgba(0,0,0,0) 40%,rgba(0,0,0,.75) 100%)}
+.chip{position:absolute;left:70px;top:300px;padding:12px 26px 14px;border-radius:40px;background:#fff;color:#111;font:800 34px Manrope}
+.h{position:absolute;left:60px;right:60px;top:400px;font:900 150px/1.0 Unbounded;letter-spacing:-3px}
+.h span{color:#FF2E2E}
+.fold{position:absolute;left:110px;top:900px;width:330px;height:250px;border-radius:24px;background:#F4C84A;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.fold:before{content:"";position:absolute;left:0;top:-30px;width:140px;height:40px;border-radius:16px 16px 0 0;background:#E9B830}
+.fold b{position:absolute;left:0;right:0;top:70px;text-align:center;font:800 46px JBM;color:rgba(80,50,0,.6)}
+.x{position:absolute;left:80px;top:850px;width:390px;height:360px}
+.toast{position:absolute;left:470px;top:960px;display:flex;align-items:center;gap:20px;padding:26px 36px 28px;border-radius:24px;background:#fff;color:#121417;font:800 58px Manrope;transform:rotate(-5deg);box-shadow:0 24px 90px rgba(0,0,0,.6),0 0 0 6px rgba(23,178,106,.45)}
+.toast i{width:74px;height:74px;border-radius:50%;background:#17B26A;color:#fff;font:800 48px/74px Manrope;font-style:normal;text-align:center}
+.q{position:absolute;left:60px;right:60px;top:1320px;font:800 60px/1.15 Manrope;text-align:left}
+.q span{background:#FF2E2E;padding:0 12px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+</style></head><body><div class="bg"></div><div class="v"></div>
+<div class="chip">Реальный случай · GitHub, 3.10.2026</div>
+<div class="h">ИИ СТЁР<br><span>116 ГБ</span></div>
+<div class="fold"><b>C:\Users</b></div>
+<svg class="x" viewBox="0 0 390 360"><path d="M40 40L350 320M350 40L40 320" stroke="#FF2E2E" stroke-width="34" stroke-linecap="round"/></svg>
+<div class="toast"><i>✓</i>«Всё цело»</div>
+<div class="q">Ты всё ещё даёшь ИИ<br><span>доступ ко всему?</span></div>
+</body></html>
