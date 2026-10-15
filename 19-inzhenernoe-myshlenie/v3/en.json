@@ -1,0 +1,19 @@
+{
+ "lang": "en",
+ "hook": {"l1": "AI will replace", "strike": "replace", "l2": "senior devs?", "flip": "the opposite"},
+ "pr": {"kicker": "// review queue", "label": "awaiting review", "from": 3, "to": 48,
+        "cards": ["feat: card payments", "fix: order race", "refactor: auth", "feat: PDF export", "chore: DB migration", "feat: AI replies", "fix: timezones"],
+        "badge": "REVIEW"},
+ "tags": {"kicker": "// AI can do", "items": [["architecture", "architecture"], ["service", "service"], ["API", "API"], ["SQL", "SQL"], ["tests", "tests"]]},
+ "q": {"title": "Engineer's\nquestions", "kicker": "// AI won't ask these",
+       "items": [["load", "Load grows?", "1k → 100k rps"],
+                 ["down", "Service down?", "503 · timeout"],
+                 ["maintained", "Who maintains it?", "in 6 months"],
+                 ["data", "And the data?", "backups · migrations"]]},
+ "tools": {"from": "use", "strike": "tool", "names": ["ChatGPT", "Claude", "Cursor", "Copilot", "Gemini", "Windsurf", "Lovable", "Bolt", "v0", "Devin", "Replit", "Perplexity", "DeepSeek", "Codex", "n8n", "Grok", "Mistral", "Zed AI", "Cline", "Aider", "Tabnine", "Qwen", "Make", "Kiro"]},
+ "found": {"title": "foundation", "title_cue": "foundation",
+           "slabs": [["architecture", "architecture"], ["databases", "databases"], ["Git", "Git"], ["Docker", "Docker"], ["networking", "networking"], ["debugging", "debugging"], ["security", "security"]],
+           "ai": "AI", "ai_sub": "accelerator"},
+ "speed": {"l1": "AI gives you speed.", "l1_cue": "speed", "l2a": "Direction comes from ", "l2b": "the engineer.", "l2_cue": "where"},
+ "cta": {"l1": "Full breakdown on Telegram", "l2": "link in bio", "cue": "What"}
+}

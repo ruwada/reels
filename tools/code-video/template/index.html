@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="assets/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "Unbounded"; src: url("assets/fonts/unbounded-cyr.woff2") format("woff2"); font-weight: 200 900; unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+      @font-face { font-family: "Unbounded"; src: url("assets/fonts/unbounded-lat.woff2") format("woff2"); font-weight: 200 900; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+      @font-face { font-family: "Manrope"; src: url("assets/fonts/manrope-cyr.woff2") format("woff2"); font-weight: 200 800; unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+      @font-face { font-family: "Manrope"; src: url("assets/fonts/manrope-lat.woff2") format("woff2"); font-weight: 200 800; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #0A0E1A; }
+      #root { width: 100%; height: 100%; position: relative; overflow: hidden; font-family: "Manrope", sans-serif; color: #EEF2FF; }
+
+      /* фон: тёмный градиент + сетка, которая медленно едет */
+      .bg { position: absolute; inset: 0; background: radial-gradient(1200px 900px at 20% 15%, #16224A 0%, transparent 60%), radial-gradient(900px 900px at 90% 85%, #0F3B36 0%, transparent 60%), #0A0E1A; }
+      .grid { position: absolute; left: -120px; top: -120px; width: 1320px; height: 2160px;
+        background-image: linear-gradient(rgba(120,160,255,.07) 2px, transparent 2px), linear-gradient(90deg, rgba(120,160,255,.07) 2px, transparent 2px);
+        background-size: 120px 120px; }
+
+      /* рабочая зона: верх 200, низ 320, справа 130 под иконки */
+      .scene { position: absolute; top: 260px; left: 80px; width: 820px; height: 920px; display: flex; flex-direction: column; justify-content: center; }
+
+      .kicker { font: 700 34px "Manrope"; letter-spacing: .14em; text-transform: uppercase; color: #5EEAD4; margin-bottom: 36px; }
+      .big { font: 800 132px/1.02 "Unbounded"; letter-spacing: -0.03em; }
+      .big .w { display: inline-block; }
+      .accent { color: #5EEAD4; }
+      .sub { font: 600 52px/1.25 "Manrope"; color: #A9B4D0; margin-top: 44px; max-width: 760px; }
+      .strike { position: relative; display: inline-block; }
+      .strike i { position: absolute; left: -6px; right: -6px; top: 54%; height: 10px; background: #FF6B5E; border-radius: 6px; transform-origin: left center; display: block; }
+
+      .card { background: rgba(20,28,52,.78); border: 2px solid rgba(140,170,255,.18); border-radius: 44px; padding: 64px 60px; box-shadow: 0 40px 120px rgba(0,0,0,.45); }
+      .num { font: 800 230px/1 "Unbounded"; letter-spacing: -0.04em; color: #5EEAD4; }
+      .unit { font: 700 54px/1.2 "Manrope"; margin-top: 18px; }
+      .bar { margin-top: 56px; width: 100%; height: 22px; border-radius: 11px; background: rgba(255,255,255,.08); overflow: hidden; }
+      .bar b { display: block; width: 100%; height: 100%; border-radius: 11px; background: linear-gradient(90deg, #5EEAD4, #60A5FA); transform-origin: left center; }
+      .note { font: 600 38px "Manrope"; color: #8C97B5; margin-top: 26px; }
+
+      .list-title { font: 800 64px/1.1 "Unbounded"; margin-bottom: 48px; }
+      .row { display: flex; align-items: center; gap: 34px; padding: 30px 0; border-top: 2px solid rgba(140,170,255,.12); }
+      .row:first-of-type { border-top: 0; }
+      .box { flex: 0 0 76px; width: 76px; height: 76px; border-radius: 22px; border: 4px solid rgba(140,170,255,.35); position: relative; }
+      .box s { position: absolute; inset: -4px; border-radius: 22px; background: #5EEAD4; display: block; }
+      .box svg { position: absolute; inset: 12px; width: 44px; height: 44px; }
+      .row span { font: 700 50px/1.2 "Manrope"; }
+
+      .cta-top { font: 700 46px "Manrope"; color: #A9B4D0; }
+      .cta-word { margin: 40px 0; display: inline-block; align-self: flex-start; font: 800 150px/1 "Unbounded"; color: #0A0E1A; background: #5EEAD4; padding: 34px 54px 40px; border-radius: 40px; }
+      .cta-sub { font: 600 46px/1.3 "Manrope"; color: #A9B4D0; max-width: 760px; }
+      .handle { font: 700 40px "Manrope"; color: #5EEAD4; margin-top: 60px; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="13" data-width="1080" data-height="1920">
+      <div class="bg"></div>
+      <div class="grid" id="grid"></div>
+
+      <!-- 1. Хук -->
+      <section class="scene clip" id="s1" data-start="0" data-duration="3.4" data-track-index="1">
+        <div class="kicker" id="s1k">Каждый день</div>
+        <div class="big"><span class="w" id="s1a">4&nbsp;часа</span></div>
+        <div class="big"><span class="w strike" id="s1b">уходят<i id="s1x"></i></span></div>
+        <div class="big"><span class="w accent" id="s1c">в&nbsp;никуда</span></div>
+        <div class="sub" id="s1s">на заявки, отчёты и ответы клиентам</div>
+      </section>
+
+      <!-- 2. Цифра -->
+      <section class="scene clip" id="s2" data-start="3.4" data-duration="3.4" data-track-index="1">
+        <div class="card" id="s2c">
+          <div class="kicker">ИИ-агент возвращает</div>
+          <div class="num" id="s2n">0</div>
+          <div class="unit">часов в неделю</div>
+          <div class="bar"><b id="s2b"></b></div>
+          <div class="note">почти три рабочих дня</div>
+        </div>
+      </section>
+
+      <!-- 3. Чек-лист -->
+      <section class="scene clip" id="s3" data-start="6.8" data-duration="3.4" data-track-index="1">
+        <div class="card" id="s3c">
+          <div class="list-title">Что он берёт на&nbsp;себя</div>
+          <div class="row" id="r1"><div class="box"><s></s><svg viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5" fill="none" stroke="#0A0E1A" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/></svg></div><span>Разбирает заявки</span></div>
+          <div class="row" id="r2"><div class="box"><s></s><svg viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5" fill="none" stroke="#0A0E1A" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/></svg></div><span>Собирает отчёты</span></div>
+          <div class="row" id="r3"><div class="box"><s></s><svg viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5" fill="none" stroke="#0A0E1A" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/></svg></div><span>Отвечает клиентам</span></div>
+        </div>
+      </section>
+
+      <!-- 4. Призыв -->
+      <section class="scene clip" id="s4" data-start="10.2" data-duration="2.8" data-track-index="1">
+        <div class="cta-top" id="s4t">Хочешь так же?</div>
+        <div class="cta-word" id="s4w">АГЕНТ</div>
+        <div class="cta-sub" id="s4s">Напиши это слово в&nbsp;директ, пришлю схему бесплатно</div>
+        <div class="handle" id="s4h">@islam.devai</div>
+      </section>
+    </div>
+
+    <script>
+      // кривые в духе Эмиля Ковальски: сильный ease-out, короткие длительности
+      const OUT = "expo.out", SOFT = "power3.out", IN = "power2.in";
+      const tl = gsap.timeline({ paused: true });
+
+      tl.fromTo("#grid", { y: 0 }, { y: -240, duration: 13, ease: "none" }, 0);
+
+      // 1. хук: слова выпрыгивают, «уходят» зачёркивается
+      tl.fromTo("#s1k", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.4, ease: SOFT }, 0.1);
+      ["#s1a", "#s1b", "#s1c"].forEach((id, i) => {
+        tl.fromTo(id, { opacity: 0, y: 70, scale: 0.92 }, { opacity: 1, y: 0, scale: 1, duration: 0.55, ease: OUT }, 0.25 + i * 0.28);
+      });
+      tl.fromTo("#s1x", { scaleX: 0 }, { scaleX: 1, duration: 0.35, ease: "power2.inOut" }, 1.35);
+      tl.fromTo("#s1s", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: SOFT }, 1.6);
+      tl.to(["#s1k", "#s1a", "#s1b", "#s1c", "#s1s"], { opacity: 0, y: -60, duration: 0.3, ease: IN, stagger: 0.03 }, 3.0);
+
+      // 2. карточка с цифрой: счётчик 0→20 и полоска
+      tl.fromTo("#s2c", { opacity: 0, y: 120, scale: 0.94 }, { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: OUT }, 3.4);
+      const counter = { v: 0 };
+      tl.fromTo(counter, { v: 0 }, { v: 20, duration: 1.4, ease: "power2.out", onUpdate: () => { document.getElementById("s2n").textContent = Math.round(counter.v); } }, 3.6);
+      tl.fromTo("#s2b", { scaleX: 0 }, { scaleX: 1, duration: 1.4, ease: "power2.out" }, 3.6);
+      tl.to("#s2c", { opacity: 0, x: -140, duration: 0.3, ease: IN }, 6.5);
+
+      // 3. чек-лист: строки въезжают, галочки рисуются по очереди
+      tl.fromTo("#s3c", { opacity: 0, x: 160 }, { opacity: 1, x: 0, duration: 0.5, ease: OUT }, 6.8);
+      ["#r1", "#r2", "#r3"].forEach((id, i) => {
+        const t = 7.15 + i * 0.6;
+        tl.fromTo(id, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.4, ease: SOFT }, t);
+        tl.fromTo(id + " s", { scale: 0 }, { scale: 1, duration: 0.3, ease: "back.out(2)" }, t + 0.25);
+        tl.fromTo(id + " path", { strokeDasharray: 1, strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.3, ease: "power2.out" }, t + 0.38);
+      });
+      tl.to("#s3c", { opacity: 0, scale: 0.96, duration: 0.3, ease: IN }, 9.9);
+
+      // 4. призыв: плашка со словом «пружинит»
+      tl.fromTo("#s4t", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.4, ease: SOFT }, 10.25);
+      tl.fromTo("#s4w", { opacity: 0, scale: 0.6, rotation: -4 }, { opacity: 1, scale: 1, rotation: 0, duration: 0.6, ease: "back.out(1.8)" }, 10.45);
+      tl.fromTo("#s4s", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.45, ease: SOFT }, 10.8);
+      tl.fromTo("#s4h", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: SOFT }, 11.1);
+
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>
