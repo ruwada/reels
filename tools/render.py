@@ -35,6 +35,9 @@ Clips get a mild grade to sit with the speaker's footage ("grade": false to keep
 """
 import html, json, os, re, shutil, subprocess, sys, tempfile
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import pop_subs  # noqa: E402
+
 W, H, FPS = 1080, 1920, 30
 LIME, BG = "#C6F432", "#0D0F14"
 CHROME = os.environ.get("CHROME", "/opt/pw-browsers/chromium")
@@ -358,7 +361,11 @@ def main(plan_path):
     tmp = tempfile.mkdtemp(prefix="reel-")
 
     en = json.load(open(p(plan["en"]))) if plan.get("en") else None
-    build_ass(words, f"{tmp}/subs.ass", plan.get("subs"), en)
+    subs_o = plan.get("subs") or {}
+    pop = subs_o.get("style") == "pop"  # big key word + small words, rendered as PNGs (tools/pop_subs.py)
+    if not pop:
+        build_ass(words, f"{tmp}/subs.ass", subs_o, en)
+    pop_caps = []
 
     # cards and clips; transition "smooth" = soft fade, "sharp" = slide (cards) or hard cut + punch-in (clips)
     overlays, banners = [], []
@@ -385,9 +392,19 @@ def main(plan_path):
             s = b.get("start", 0)
             s = total + s if s < 0 else s
             e = b.get("end", total)
+            if b.get("style") == "pop":
+                f = f"{tmp}/plate{key}.png"
+                pop_subs.render_png(page, pop_subs.plate_html(b, subs_o), subs_o, f)
+                banners.append((s, e, ["-loop", "1", "-framerate", str(FPS), "-t", f"{e - s:.3f}", "-i", f]))
+                continue
             d = f"{tmp}/plate{key}"
             render_frames(page, banner_html(b["text"], b.get("accent"), b.get("top", top), b.get("sub"), b.get("color", LIME)), e - s, d, transparent=True)
             banners.append((s, e, ["-framerate", str(FPS), "-i", f"{d}/%05d.png"]))
+        if pop:
+            for j, (ws, k, a, b) in enumerate(pop_subs.plan(words, total)):
+                f = f"{tmp}/cap{j:03d}.png"
+                pop_subs.render_png(page, pop_subs.chunk_html(ws, k, subs_o), subs_o, f)
+                pop_caps.append((a, b, f))
         browser.close()
 
     args = ["ffmpeg", "-y", "-v", "error", "-stats", "-i", src]
@@ -442,9 +459,18 @@ def main(plan_path):
         fc.append(f"[{last}][o{idx}]{ov}:{on}[v{idx}]")
         last = f"v{idx}"; idx += 1
 
-    subs = f"{tmp}/subs.ass".replace(":", "\\:")
-    fc.append(f"[{last}]ass='{subs}':fontsdir=/usr/local/share/fonts/brand[vs]")
-    last = "vs"
+    if pop:
+        # each screen pops in from 118 % to 100 % in 0.15 s
+        for a, b, f in pop_caps:
+            args += ["-loop", "1", "-framerate", str(FPS), "-t", f"{b - a:.3f}", "-i", f]
+            z = "(1+0.18*max(0,1-t/0.15))"
+            fc.append(f"[{idx}:v]format=rgba,scale=w='{W}*{z}':h='{H}*{z}':eval=frame,setpts=PTS-STARTPTS+{a}/TB[o{idx}]")
+            fc.append(f"[{last}][o{idx}]overlay=x='(W-w)/2':y='(H-h)/2':eof_action=pass:enable='between(t,{a:.3f},{b:.3f})'[v{idx}]")
+            last = f"v{idx}"; idx += 1
+    else:
+        subs = f"{tmp}/subs.ass".replace(":", "\\:")
+        fc.append(f"[{last}]ass='{subs}':fontsdir=/usr/local/share/fonts/brand[vs]")
+        last = "vs"
     for s, e, inp in banners:
         args += inp
         d = e - s
