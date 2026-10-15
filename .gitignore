@@ -6,3 +6,9 @@ __pycache__/
 */reel*.mp4
 */rils-*.mp4
 proekt/
+# method 3 reels: generated voice, renders
+*/tts/
+*/golos.wav
+*/code/assets/golos.wav
+*/code/index.html
+*/code/renders/
