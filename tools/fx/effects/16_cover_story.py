@@ -7,7 +7,7 @@ NAME_EN, NAME_RU = "cover story", "обложка журнала"
 
 CSS = """
 body{width:1080px;height:1920px;color:#FFF8EE}
-#mast{position:absolute;left:0;right:0;top:250px;text-align:center;font:900 200px/1 'Playfair Display';letter-spacing:0;
+#mast{position:absolute;left:0;right:0;top:250px;text-align:center;font:900 200px/1 'Playfair Display';letter-spacing:0;text-shadow:0 4px 24px rgba(0,0,0,.45);
       white-space:nowrap}
 #mast span{display:inline-block;clip-path:inset(-20% -10% 0 -10%)}
 #mast span i{display:inline-block;font-style:normal}
