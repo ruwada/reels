@@ -481,11 +481,21 @@ def main(plan_path):
               "loudnorm=I=-14:TP=-1.5:LRA=11,aresample=48000[a]")
 
     args += ["-filter_complex", ";".join(fc), "-map", f"[{last}]", "-map", "[a]",
-             "-t", f"{total:.3f}", "-c:v", "libx264", "-preset", "slow", "-crf", "16", "-profile:v", "high",
+             "-t", f"{total:.3f}", *venc(plan.get("enc", {})),
              "-pix_fmt", "yuv420p", "-r", str(FPS), "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart", out]
     run(args)
     shutil.rmtree(tmp, ignore_errors=True)
     print("rendered", out)
+
+
+def venc(e):
+    """Video encoder args. Default h264 CRF 16 (~7 Mbit/s on a talking head).
+    "enc": {"crf": 10} for a high-bitrate master; {"codec": "hevc", "crf": 18} for x265 (tag hvc1)."""
+    if e.get("codec") == "hevc":
+        return ["-c:v", "libx265", "-preset", e.get("preset", "slow"), "-crf", str(e.get("crf", 18)),
+                "-x265-params", "aq-mode=3:log-level=error", "-tag:v", "hvc1"]
+    return ["-c:v", "libx264", "-preset", e.get("preset", "slow"), "-crf", str(e.get("crf", 16)),
+            "-tune", "film", "-x264-params", "aq-mode=3", "-profile:v", "high"]
 
 
 if __name__ == "__main__":
