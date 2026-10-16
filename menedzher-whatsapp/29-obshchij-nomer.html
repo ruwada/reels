@@ -1,0 +1,105 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="base.css">
+<style>:root{--ink:#0F1A15;--soft:#3C4A43;--muted:#7F918A;--paper:#F7FAF8;--box:#E8F3EE;--acc:#0E9F5E;--line:#D9E6E0;--code:#0C1210;--codeink:#E6FFF2;--cbg:#0C1210}
+.cover{background:radial-gradient(130mm 130mm at 85% 6%,rgba(61,245,160,.22),transparent 60%),linear-gradient(180deg,#0C1210,#13241C)}
+.cover,.cta{--acc:#3DF5A0}
+.stamp{display:inline-block;font-family:Unbounded;font-weight:800;font-size:16pt;color:#FF6B60;border:1mm solid #FF6B60;border-radius:3mm;padding:2mm 5mm;transform:rotate(-4deg);margin-top:14mm;margin-left:2mm}
+.big{font-family:Unbounded;font-weight:800;font-size:18pt;color:var(--acc)}
+.small{font-size:9pt;color:var(--soft)}
+.risk td:last-child{text-align:right;width:45mm;white-space:nowrap}
+.day{display:grid;grid-template-columns:22mm 1fr;gap:3mm;padding:2.4mm 0;border-bottom:.2mm solid var(--line)}
+.day b{font-family:Unbounded;color:var(--acc);font-size:10pt}
+.sch{display:flex;flex-direction:column;align-items:center;gap:1.2mm;margin:3mm 0 4mm}
+.sch .r{display:flex;gap:2mm;justify-content:center}
+.sch .c{background:var(--box);border-radius:3mm;padding:2mm 4mm;font-weight:800;font-size:9.5pt}
+.sch .main{background:var(--acc);color:#fff;border-radius:3mm;padding:3mm 8mm;font-family:Unbounded;font-weight:800;font-size:11pt}
+.sch .crm{background:#0C1210;color:#E6FFF2;border-radius:3mm;padding:3mm 10mm;font-family:Unbounded;font-weight:800;font-size:11pt}
+.sch .arrow{color:var(--acc);font-weight:800}
+</style></head><body>
+
+<section class="page cover">
+ <div><div class="tag">@islam.devai · гайд №12</div><br>
+ <div class="stamp">МЕНЕДЖЕР УВОЛИЛСЯ</div>
+ <h1>Клиенты остаются <span>у компании.</span><br>Как перевести продажи на общий номер</h1>
+ <div class="lead">Менеджер ушёл, а вся переписка с клиентами осталась в его личном WhatsApp: цены, скидки, договорённости. Клиенты пишут ему, а ты даже не знаешь, кому и что обещали. Здесь чек-лист, как сделать так, чтобы номер, переписка и клиенты принадлежали бизнесу, а не сотруднику.</div></div>
+ <div class="toc">
+  <div><b>01</b>Проверь, насколько ты в зоне риска</div>
+  <div><b>02</b>Как устроен общий номер</div>
+  <div><b>03</b>Переход за 7 дней</div>
+  <div><b>04</b>Чек-лист на день увольнения</div>
+  <div><b>05</b>Нет времени? Соберу за тебя</div>
+ </div>
+ <div class="foot" style="color:#9fb5aa"><span>Islam · AI и автоматизация для бизнеса</span><span>instagram.com/islam.devai</span></div>
+</section>
+
+<section class="page">
+ <h2><span class="n">01</span>Проверь, насколько ты в зоне риска</h2>
+ <p>Отметь всё, что про тебя. Три галочки и больше — один уход менеджера может стоить тебе части клиентской базы.</p>
+ <ul class="chk">
+  <li>Менеджеры переписываются с клиентами со своих личных номеров</li>
+  <li>Цены и скидки менеджер согласует с клиентом в переписке, а в CRM их нет</li>
+  <li>Ты не можешь за минуту открыть историю общения с любым клиентом</li>
+  <li>Новый менеджер начинает с вопроса «а что ему раньше обещали?»</li>
+  <li>Клиент знает телефон менеджера, а не телефон компании</li>
+  <li>В отпуск или на больничный менеджер уходит вместе с клиентами</li>
+  <li>После увольнения ты просишь бывшего сотрудника «скинуть контакты»</li>
+ </ul>
+ <h3>Посчитай, сколько стоит уход одного менеджера</h3>
+ <table class="calc risk">
+  <tr><th>Показатель</th><th>Пример</th></tr>
+  <tr><td>Активных клиентов у менеджера</td><td>300</td></tr>
+  <tr><td>Доля, которая уйдёт за ним или потеряется</td><td>10%</td></tr>
+  <tr><td>Средняя выручка с клиента в год</td><td>50 000 ₽</td></tr>
+  <tr><td><b>Потери за год</b> = клиенты × доля × выручка</td><td><span class="big">1,5 млн ₽</span></td></tr>
+ </table>
+ <p class="small">Это пример расчёта, а не данные конкретного бизнеса. Подставь свои цифры.</p>
+ <div class="foot"><span>Гайд №12 · общий номер</span><span>2</span></div>
+</section>
+
+<section class="page">
+ <h2><span class="n">02</span>Как устроен общий номер</h2>
+ <div class="sch">
+  <div class="r"><span class="c">Клиент</span><span class="c">Клиент</span><span class="c">Клиент</span><span class="c">Клиент</span></div>
+  <div class="arrow">↓</div>
+  <div class="main">Номер компании</div>
+  <div class="arrow">↓</div>
+  <div class="crm">CRM</div>
+  <div class="arrow">↓</div>
+  <div class="r"><span class="c">Менеджер 1</span><span class="c">Менеджер 2</span><span class="c">Менеджер 3</span></div>
+ </div>
+ <ul>
+  <li><b>Один номер на компанию</b> (или на отдел). Его знают клиенты, он напечатан на сайте, в визитках и в подписи.</li>
+  <li><b>Мессенджеры подключены к CRM</b> через официальный WhatsApp Business API или через интеграцию мессенджеров, которая есть у amoCRM, Битрикс24 и других CRM. Telegram подключается туда же.</li>
+  <li><b>Менеджер отвечает из CRM</b> — с компьютера или из мобильного приложения CRM. Свой телефон для работы с клиентами не нужен.</li>
+  <li><b>Каждое сообщение и звонок</b> автоматически ложатся в карточку клиента. Цены, скидки, сроки видны любому, кто откроет карточку.</li>
+  <li><b>Доступы раздаёт владелец.</b> Ушёл человек — отключил его учётную запись, а номер, переписка и клиенты остались у тебя.</li>
+ </ul>
+ <div class="box acc"><b>Бонус: бот на входе.</b> Пока менеджеры спят или заняты, бот на общем номере отвечает первым: здоровается, задаёт 2–3 вопроса и создаёт сделку. Утром менеджер видит готовую заявку, а не «здравствуйте, вы тут?» трёхчасовой давности.</div>
+ <p class="small">Если твои клиенты переходят из WhatsApp в другие мессенджеры, схема та же: новый канал подключается к той же CRM, история остаётся в одном месте.</p>
+ <div class="foot"><span>Гайд №12 · общий номер</span><span>3</span></div>
+</section>
+
+<section class="page">
+ <h2><span class="n">03</span>Переход за 7 дней</h2>
+ <div class="day"><b>День 1</b><div>Выбери CRM и способ подключения мессенджеров. Если CRM уже есть — проверь, что у неё есть интеграция с WhatsApp и Telegram.</div></div>
+ <div class="day"><b>День 2</b><div>Заведи номер компании. Подключи его к CRM, проверь, что входящее сообщение создаёт карточку клиента.</div></div>
+ <div class="day"><b>День 3</b><div>Перенеси базу: выгрузи контакты клиентов из телефонов менеджеров и таблиц в CRM. Это делается один раз.</div></div>
+ <div class="day"><b>День 4</b><div>Напиши клиентам с нового номера: «Теперь мы на связи по этому номеру, ваш менеджер тот же». Короткий шаблон, без спама.</div></div>
+ <div class="day"><b>День 5</b><div>Правило для команды: с клиентами — только из CRM. Цены и скидки — только в карточке сделки.</div></div>
+ <div class="day"><b>День 6</b><div>Подключи бота на входе и шаблоны быстрых ответов: цена, адрес, сроки, реквизиты.</div></div>
+ <div class="day"><b>День 7</b><div>Проверь сам: открой трёх случайных клиентов и найди, что им обещали. Если нашёл за минуту — переход работает.</div></div>
+ <h2 style="margin-top:8mm"><span class="n">04</span>Чек-лист на день увольнения</h2>
+ <ul class="chk">
+  <li>Отключить учётную запись в CRM и доступ к номеру компании</li>
+  <li>Передать открытые сделки другому менеджеру одной кнопкой в CRM</li>
+  <li>Новый менеджер пишет клиентам от имени компании: «теперь я веду ваш заказ»</li>
+  <li>Сменить пароли от общих почт, кабинетов и сервисов</li>
+  <li>Проверить, что все договорённости из переписки отражены в сделках</li>
+ </ul>
+ <p class="small">Важно: переписка с клиентами — это персональные данные. Храни их в CRM с доступом по ролям и с согласием клиентов на обработку.</p>
+ <div class="cta" style="margin-top:5mm">
+  <div class="u">Нет времени разбираться? <span>Соберу за тебя</span></div>
+  <div>Подключу общий номер и мессенджеры к твоей CRM, перенесу базу, поставлю бота на входе и настрою доступы. Напиши в директ <b>@islam.devai</b>: чем занимаешься и сколько у тебя менеджеров.</div>
+ </div>
+ <div class="foot"><span>Гайд №12 · общий номер</span><span>4</span></div>
+</section>
+</body></html>

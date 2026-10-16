@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<script src="assets/gsap.min.js"></script>
+<style>
+@font-face { font-family: "Unbounded"; src: url("assets/fonts/unbounded-cyr.woff2") format("woff2"); font-weight: 200 900; unicode-range: U+0400-045F, U+2116; }
+@font-face { font-family: "Unbounded"; src: url("assets/fonts/unbounded-lat.woff2") format("woff2"); font-weight: 200 900; unicode-range: U+0000-00FF, U+2000-206F; }
+@font-face { font-family: "Manrope"; src: url("assets/fonts/manrope-cyr.woff2") format("woff2"); font-weight: 200 800; unicode-range: U+0400-045F, U+2116; }
+@font-face { font-family: "Manrope"; src: url("assets/fonts/manrope-lat.woff2") format("woff2"); font-weight: 200 800; unicode-range: U+0000-00FF, U+2000-206F; }
+:root{--bg:#0C1210;--panel:#141D19;--line:#24312B;--ink:#EEF5F1;--mute:#7F918A;--mint:#3DF5A0;--mintD:#0E8F57;--red:#FF4B3E;--paper:#F4F1E8;--pink:#FFD9D5}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;background:var(--bg)}
+#root{width:100%;height:100%;position:relative;overflow:hidden;font-family:"Manrope",sans-serif;color:var(--ink);background:var(--bg)}
+.grid{position:absolute;left:-80px;top:-80px;width:1240px;height:2080px;background-image:linear-gradient(rgba(61,245,160,.06) 2px,transparent 2px),linear-gradient(90deg,rgba(61,245,160,.06) 2px,transparent 2px);background-size:80px 80px}
+.glow{position:absolute;border-radius:50%;pointer-events:none}
+.full{position:absolute;inset:0;width:1080px;height:1920px;object-fit:cover;opacity:0}
+.shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,10,8,.82) 0%,rgba(6,10,8,.35) 32%,rgba(6,10,8,.1) 50%,rgba(6,10,8,.45) 72%,rgba(6,10,8,.8) 100%);opacity:0}
+.scene{position:absolute;inset:0;opacity:0}
+.h{position:absolute;left:80px;right:150px;top:220px;font:800 84px/1.05 "Unbounded";letter-spacing:-.04em}
+.h .r{color:var(--red)} .h .m{color:var(--mint)}
+.ws{display:inline-block;opacity:0}
+.kick{position:absolute;left:80px;top:220px;font:800 32px "Manrope";letter-spacing:.16em;color:var(--mint)}
+/* S0 */
+#emp{position:absolute;left:110px;top:620px;width:720px;padding:34px 38px;border-radius:36px;background:rgba(18,26,22,.9);border:2px solid rgba(255,255,255,.08);box-shadow:0 30px 80px rgba(0,0,0,.5);display:flex;gap:28px;align-items:center;opacity:0}
+.ava{width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg,#3DF5A0,#0E8F57);color:#06120C;font:800 56px/120px "Unbounded";text-align:center;flex:none}
+#emp .n{font:800 52px "Unbounded";letter-spacing:-.03em}
+#emp .s{font:700 32px "Manrope";color:var(--mute);margin-top:6px}
+#emp .c{display:inline-block;margin-top:14px;padding:8px 20px;border-radius:999px;background:rgba(61,245,160,.14);color:var(--mint);font:800 30px "Manrope"}
+#stamp{position:absolute;right:-50px;top:-56px;padding:14px 28px;border:7px solid var(--red);border-radius:20px;color:var(--red);font:800 44px "Unbounded";background:rgba(12,18,16,.92);transform:rotate(-9deg);opacity:0}
+.dot{position:absolute;width:64px;height:64px;border-radius:50%;background:#25D366;color:#fff;font:800 28px/64px "Manrope";text-align:center;opacity:0;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+/* S1 */
+#cnt{position:absolute;left:80px;top:280px;font:800 180px/1 "Unbounded";letter-spacing:-.06em;color:var(--ink)}
+#cnt span{display:none}
+#cntl{position:absolute;left:86px;top:500px;font:700 40px "Manrope";color:var(--mute)}
+#list{position:absolute;left:70px;right:70px;top:580px;height:600px;border-radius:36px;background:var(--panel);border:2px solid var(--line);overflow:hidden}
+#lhead{position:absolute;left:0;right:0;top:0;height:96px;background:#1A2621;display:flex;align-items:center;padding:0 34px;gap:16px;font:800 34px "Manrope";z-index:2}
+#lhead i{font-style:normal;margin-left:auto;font:700 26px "Manrope";color:var(--mute)}
+#lin{position:absolute;left:0;right:0;top:96px}
+.row{display:flex;align-items:center;gap:22px;padding:20px 30px;border-bottom:2px solid var(--line)}
+.row .a{width:76px;height:76px;border-radius:50%;flex:none;font:800 32px/76px "Manrope";text-align:center;color:#0C1210}
+.row .t{flex:1;min-width:0}
+.row .nm{font:800 34px "Manrope"}
+.row .sn{font:600 30px "Manrope";color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:4px}
+.row .bd{min-width:50px;height:50px;border-radius:25px;background:#25D366;color:#0C1210;font:800 26px/50px "Manrope";text-align:center;padding:0 12px}
+.tag{position:absolute;padding:14px 26px;border-radius:999px;font:800 36px "Manrope";opacity:0;white-space:nowrap;box-shadow:0 14px 40px rgba(0,0,0,.45)}
+/* S2 */
+.bub{position:absolute;padding:24px 30px 14px;border-radius:12px 36px 36px 36px;background:#fff;color:#111;font:700 40px/1.25 "Manrope";box-shadow:0 20px 50px rgba(0,0,0,.45);opacity:0}
+.bub small{display:block;text-align:right;font:700 24px "Manrope";color:#53BDEB;margin-top:4px}
+.bub b{display:block;font:800 26px "Manrope";color:#0E8F57;margin-bottom:6px;letter-spacing:.04em}
+#comp{position:absolute;left:80px;top:300px;padding:26px 36px;border-radius:30px;background:rgba(12,18,16,.92);border:3px solid var(--red);font:800 46px/1.2 "Unbounded";letter-spacing:-.03em;opacity:0}
+#comp small{display:block;font:800 28px "Manrope";letter-spacing:.14em;color:var(--red);margin-bottom:10px}
+/* S3 */
+.q{position:absolute;padding:18px 32px;border-radius:28px;background:rgba(255,255,255,.95);color:#111;font:800 44px "Manrope";opacity:0;box-shadow:0 20px 50px rgba(0,0,0,.45)}
+#bigq{position:absolute;right:110px;top:560px;font:800 300px/1 "Unbounded";color:var(--red);opacity:0}
+/* S5 diagram */
+.node{position:absolute;display:flex;align-items:center;gap:18px;padding:22px 34px;border-radius:30px;font:800 40px "Manrope";opacity:0;white-space:nowrap}
+#nNum{left:0;right:0;margin:0 auto;width:fit-content;top:560px;background:var(--mint);color:#06120C;font:800 44px "Unbounded";letter-spacing:-.03em}
+#nCrm{left:0;right:0;margin:0 auto;width:fit-content;top:790px;background:var(--panel);border:3px solid var(--mint);color:var(--ink);font:800 50px "Unbounded"}
+.cl{position:absolute;top:360px;width:86px;height:86px;border-radius:50%;background:#25D366;color:#0C1210;font:800 34px/86px "Manrope";text-align:center;opacity:0}
+.mg{position:absolute;top:1000px;width:250px;padding:18px 0;border-radius:26px;background:var(--panel);border:2px solid var(--line);text-align:center;font:800 32px "Manrope";opacity:0}
+.mg .av{width:70px;height:70px;margin:0 auto 10px;border-radius:50%;background:#2E3D36;color:var(--ink);font:800 30px/70px "Manrope"}
+#wires{position:absolute;left:0;top:0;width:1080px;height:1200px}
+#wires path{fill:none;stroke:var(--mint);stroke-width:5;stroke-linecap:round;opacity:.85}
+#ownph{position:absolute;left:770px;top:720px;width:230px;padding:18px;border-radius:26px;border:3px dashed var(--mute);text-align:center;font:700 26px/1.25 "Manrope";color:var(--mute);opacity:0}
+#ownph svg{display:block;margin:0 auto 8px}
+#ownx{position:absolute;left:750px;top:715px;width:270px;height:200px;opacity:0}
+/* S6 paper CRM card */
+#S6{background:var(--paper)}
+#S6 .h{color:#14201B}
+#card{position:absolute;left:80px;right:80px;top:470px;padding:34px 36px;border-radius:36px;background:#fff;box-shadow:0 24px 60px rgba(20,32,27,.12);color:#14201B;opacity:0}
+#card .top{display:flex;align-items:center;gap:24px;padding-bottom:22px;border-bottom:2px solid #ECE8DD}
+#card .top .ava{width:100px;height:100px;font-size:44px;line-height:100px}
+#card .nm{font:800 46px "Unbounded";letter-spacing:-.03em}
+#card .sb{font:700 30px "Manrope";color:#7C857F;margin-top:4px}
+.ev{display:flex;gap:20px;align-items:flex-start;padding:20px 0;border-bottom:2px solid #F1EEE5;opacity:0}
+.ev .ic{width:56px;height:56px;border-radius:50%;background:#DDF8EA;flex:none;display:flex;align-items:center;justify-content:center}
+.ev .tx{font:700 36px/1.25 "Manrope";flex:1}
+.ev .who{font:700 26px "Manrope";color:#7C857F;margin-top:4px}
+.ev .ok{font:800 24px "Manrope";color:var(--mintD);padding:6px 14px;border-radius:999px;background:#DDF8EA;white-space:nowrap;opacity:0}
+/* S7 */
+#acc{position:absolute;left:80px;right:80px;top:560px;padding:36px;border-radius:36px;background:var(--panel);border:2px solid var(--line);display:flex;align-items:center;gap:28px;opacity:0}
+#acc .t{flex:1}
+#acc .n{font:800 46px "Unbounded";letter-spacing:-.03em}
+#acc .s{font:700 32px "Manrope";color:var(--mute);margin-top:6px}
+#sw{width:190px;height:104px;border-radius:52px;background:var(--mint);position:relative;flex:none}
+#knob{position:absolute;left:94px;top:8px;width:88px;height:88px;border-radius:50%;background:#fff;box-shadow:0 6px 14px rgba(0,0,0,.3)}
+#off{position:absolute;left:84px;top:820px;padding:14px 28px;border-radius:999px;background:rgba(255,75,62,.16);color:var(--red);font:800 38px "Manrope";opacity:0}
+#keep{position:absolute;left:100px;right:100px;top:560px;padding:34px 40px;border-radius:36px;background:rgba(12,18,16,.86);border:2px solid rgba(61,245,160,.35);box-shadow:0 30px 80px rgba(0,0,0,.5);opacity:0}
+#keep .cap{font:800 28px "Manrope";letter-spacing:.14em;color:var(--mint);margin-bottom:8px}
+.kr{display:flex;align-items:center;justify-content:space-between;padding:18px 0;border-top:2px solid rgba(255,255,255,.08);font:800 42px "Manrope";opacity:0}
+.kr b{font:800 44px "Unbounded";color:var(--mint);letter-spacing:-.03em}
+/* CTA */
+#cta{position:absolute;inset:0;background:var(--bg);opacity:0}
+#cta .k{position:absolute;left:80px;top:250px;font:800 30px "Manrope";letter-spacing:.16em;color:var(--mint);opacity:0}
+#cta .t{position:absolute;left:80px;right:140px;top:310px;font:800 68px/1.08 "Unbounded";letter-spacing:-.04em;opacity:0}
+#cta .g{position:absolute;left:80px;top:590px;padding:28px 56px 36px;border-radius:44px;background:var(--mint);color:#06120C;font:800 120px/1 "Unbounded";letter-spacing:-.05em;opacity:0}
+#cta .s{position:absolute;left:84px;right:140px;top:820px;font:700 50px/1.25 "Manrope";opacity:0}
+#cta .s em{font-style:normal;color:var(--mint)}
+#cta .hn{position:absolute;left:84px;top:1010px;font:800 40px "Manrope";color:var(--mute);opacity:0}
+/* subtitles */
+#subs{position:absolute;left:0;right:0;top:1250px;height:110px}
+.sub{position:absolute;left:50%;top:0;transform:translateX(-50%);padding:14px 26px 18px;border-radius:24px;background:#fff;color:#0C1210;font:800 50px/1.1 "Unbounded";letter-spacing:-.03em;white-space:nowrap;opacity:0;box-shadow:0 12px 34px rgba(0,0,0,.35)}
+.sub span{display:inline-block;padding:2px 10px 6px;border-radius:14px}
+#ens{position:absolute;left:0;right:0;top:1370px;height:60px}
+.en{position:absolute;left:50%;top:0;transform:translateX(-50%);padding:8px 22px;border-radius:14px;background:rgba(12,18,16,.85);color:#DDEBE4;font:700 32px "Manrope";white-space:nowrap;opacity:0}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-duration="/*END*/" data-width="1080" data-height="1920">
+  <div class="grid" id="grid"></div>
+  <div class="glow" id="g1" style="width:1000px;height:1000px;left:-420px;top:-300px;background:radial-gradient(circle,rgba(61,245,160,.16),transparent 70%)"></div>
+  <div class="glow" id="g2" style="width:1000px;height:1000px;right:-420px;bottom:-200px;background:radial-gradient(circle,rgba(37,211,102,.12),transparent 70%)"></div>
+
+  <video id="v0" class="clip full" src="assets/c0.mp4" muted playsinline data-start="0" data-duration="3.5" data-track-index="0"></video>
+  <video id="v1" class="clip full" src="assets/c1.mp4" muted playsinline data-start="8.0" data-duration="1.25" data-track-index="1"></video>
+  <video id="v2" class="clip full" src="assets/c2.mp4" muted playsinline data-start="9.2" data-duration="1.8" data-track-index="2"></video>
+  <video id="v3" class="clip full" src="assets/c3.mp4" muted playsinline data-start="10.95" data-duration="2.4" data-track-index="3"></video>
+  <video id="v4" class="clip full" src="assets/c4.mp4" muted playsinline data-start="13.3" data-duration="1.3" data-track-index="4"></video>
+  <video id="v5" class="clip full" src="assets/c5.mp4" muted playsinline data-start="24.25" data-duration="2.6" data-track-index="5"></video>
+  <div class="shade" id="sh"></div>
+
+  <!-- S0 hook -->
+  <div class="scene" id="S0">
+    <div class="h" id="h0"><span class="ws">Менеджер</span> <span class="ws r">уволился.</span></div>
+    <div id="emp"><div class="ava">А</div><div><div class="n">Артём</div><div class="s">менеджер по продажам</div><div class="c">300 клиентов в WhatsApp</div></div><div id="stamp">УВОЛИЛСЯ</div></div>
+    /*DOTS*/
+  </div>
+
+  <!-- S1 personal whatsapp -->
+  <div class="scene" id="S1">
+    <div class="kick" id="k1">ЛИЧНЫЙ WHATSAPP МЕНЕДЖЕРА</div>
+    <div id="cnt">/*CNT*/</div>
+    <div id="cntl">чатов с вашими клиентами</div>
+    <div id="list"><div id="lhead">WhatsApp · Артём <i>личный номер</i></div><div id="lin">/*ROWS*/</div></div>
+    <div class="tag" id="t1" style="left:120px;top:1000px;background:#fff;color:#111">Цена 48 000 — только для вас</div>
+    <div class="tag" id="t2" style="left:200px;top:1100px;background:var(--mint);color:#06120C">Скидку 15% держу до пятницы</div>
+  </div>
+
+  <!-- S2 clients write him -->
+  <div class="scene" id="S2">
+    <div class="bub" id="b1" style="left:110px;top:600px;width:760px"><b>КЛИЕНТ → АРТЁМУ</b>Артём, цена ещё в силе? Хотим оплатить.<small>✓✓ 09:41</small></div>
+    <div id="comp"><small>АРТЁМ СЕЙЧАС</small>работает<br>у конкурента</div>
+  </div>
+
+  <!-- S3 what was promised -->
+  <div class="scene" id="S3">
+    <div class="h" id="h3" style="font-size:72px">Кому и что <span class="r">обещали?</span></div>
+    <div id="bigq">?</div>
+    <div class="q" id="q1" style="left:90px;top:620px">Какая скидка?</div>
+    <div class="q" id="q2" style="left:300px;top:780px">Когда отгрузка?</div>
+    <div class="q" id="q3" style="left:130px;top:940px">Кто уже оплатил?</div>
+  </div>
+
+  <!-- S4 fix -->
+  <div class="scene" id="S4">
+    <div class="h" id="h4">Закрываю <span class="m">так:</span></div>
+  </div>
+
+  <!-- S5 diagram -->
+  <div class="scene" id="S5">
+    <div class="kick" id="k5">КАК УСТРОЕНО</div>
+    <svg id="wires" viewBox="0 0 1080 1200">
+      <path id="w1" d="M150 446 C150 520 540 500 540 560"/><path id="w2" d="M290 446 C290 510 540 510 540 560"/><path id="w3" d="M430 446 L540 560"/><path id="w4" d="M650 446 L540 560"/><path id="w5" d="M790 446 C790 510 540 510 540 560"/><path id="w6" d="M930 446 C930 520 540 500 540 560"/>
+      <path id="w7" d="M540 670 L540 790"/>
+      <path id="w8" d="M540 910 C540 960 220 950 220 1000"/><path id="w9" d="M540 910 L540 1000"/><path id="w10" d="M540 910 C540 960 860 950 860 1000"/>
+    </svg>
+    /*CL*/
+    <div class="node" id="nNum"><svg width="46" height="46" viewBox="0 0 24 24"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z" fill="#06120C"/></svg>Номер компании</div>
+    <div class="node" id="nCrm">CRM</div>
+    <div class="mg" id="mg1" style="left:95px"><div class="av">1</div>Менеджер</div>
+    <div class="mg" id="mg2" style="left:415px"><div class="av">2</div>Менеджер</div>
+    <div class="mg" id="mg3" style="left:735px"><div class="av">3</div>Менеджер</div>
+  </div>
+  <div class="scene" id="S5b">
+    <div id="ownph"><svg width="54" height="80" viewBox="0 0 54 80"><rect x="3" y="3" width="48" height="74" rx="10" fill="none" stroke="#7F918A" stroke-width="5"/></svg>личный<br>телефон</div>
+    <svg id="ownx" viewBox="0 0 270 200"><path d="M30 20 L240 180 M240 20 L30 180" stroke="#FF4B3E" stroke-width="14" stroke-linecap="round"/></svg>
+  </div>
+
+  <!-- S6 CRM card -->
+  <div class="scene" id="S6">
+    <div class="h" id="h6" style="font-size:66px">Всё остаётся <span style="color:#0E8F57">в карточке</span></div>
+    <div id="card">
+      <div class="top"><div class="ava">М</div><div><div class="nm">Магомед</div><div class="sb">клиент с 2024 · 37 сообщений</div></div></div>
+      /*EV*/
+    </div>
+  </div>
+
+  <!-- S7 access -->
+  <div class="scene" id="S7">
+    <div class="h" id="h7" style="font-size:76px">Ушёл? <span class="r">Доступ — всё.</span></div>
+    <div id="acc"><div class="ava" style="width:110px;height:110px;line-height:110px;font-size:50px">А</div><div class="t"><div class="n">Артём</div><div class="s">доступ к CRM и номеру</div></div><div id="sw"><div id="knob"></div></div></div>
+    <div id="off">Отключён за 1 минуту</div>
+  </div>
+  <div class="scene" id="S7b">
+    <div id="keep"><div class="cap">ОСТАЁТСЯ У ТЕБЯ</div>
+      <div class="kr" id="kr1" style="border-top:0">Клиенты <b>300</b></div>
+      <div class="kr" id="kr2">Переписка <b>вся</b></div>
+      <div class="kr" id="kr3">Номер <b>твой</b></div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div id="cta">
+    <div class="grid" style="opacity:.7"></div>
+    <div class="k">ЧЕК-ЛИСТ</div>
+    <div class="t">Как перевести продажи на общий номер</div>
+    <div class="g">Гайд №12</div>
+    <div class="s">Забирай <em>в Telegram.</em> Ссылка в шапке профиля</div>
+    <div class="hn">@islam.devai</div>
+  </div>
+
+  <div id="subs"></div>
+  <div id="ens"></div>
+</div>
+<script>
+const D=/*DATA*/, EN=/*EN*/;
+const WORDS=D.words, END=D.END;
+const w=(l,k)=>WORDS.find(v=>v[3]===l&&v[4]===k)[1];
+const OUT="expo.out",SOFT="power3.out",IN="power2.in";
+const tl=gsap.timeline({paused:true});
+// subtitles: 2-3 words, active word = red chip
+const ch=[];let cur=[];
+WORDS.forEach(v=>{if(cur.length&&cur[cur.length-1][3]!==v[3]){ch.push(cur);cur=[];}cur.push(v);if(/[,.:?!»]$/.test(v[0])||cur.length===3||cur.map(x=>x[0]).join(' ').length>=15){ch.push(cur);cur=[];}});
+if(cur.length)ch.push(cur);
+const box=document.getElementById("subs");
+ch.forEach((c,i)=>{const d=document.createElement("div");d.className="sub";
+  c.forEach((x,j)=>{if(j)d.appendChild(document.createTextNode(" "));const sp=document.createElement("span");sp.id=`s${i}w${j}`;sp.textContent=x[0];d.appendChild(sp)});
+  box.appendChild(d);
+  const st=c[0][1];let en=c[c.length-1][2]+0.35;const nx=ch[i+1];if(nx)en=Math.min(en,nx[0][1]);
+  tl.set(d,{opacity:1},st);tl.set(d,{opacity:0},Math.max(en,c[c.length-1][2]));
+  c.forEach((x,j)=>{tl.set(`#s${i}w${j}`,{backgroundColor:"#FF4B3E",color:"#fff"},x[1]);if(j+1<c.length)tl.set(`#s${i}w${j}`,{backgroundColor:"rgba(0,0,0,0)",color:"#0C1210"},c[j+1][1]);});
+});
+const eb=document.getElementById("ens");
+EN.forEach((e,i)=>{const d=document.createElement("div");d.className="en";d.textContent=e[2];eb.appendChild(d);
+  const st=w(e[0],e[1]);const nx=EN[i+1];let en=nx?w(nx[0],nx[1]):END-2.2;
+  const lineEnd=Math.max(...WORDS.filter(v=>v[3]===e[0]).map(v=>v[2]))+0.35;if(!nx||nx[0]!==e[0])en=Math.min(en,lineEnd);
+  tl.set(d,{opacity:1},st);tl.set(d,{opacity:0},en);});
+const show=(id,t,from={y:30},d=.5)=>tl.fromTo(id,{opacity:0,...from},{opacity:1,x:0,y:0,scale:1,duration:d,ease:OUT},t);
+const hide=(ids,t,d=.25)=>tl.to(ids,{opacity:0,duration:d,ease:IN},t);
+const scene=(id,a,b)=>{tl.set(id,{opacity:1},a);tl.set(id,{opacity:0},b);};
+const clip=(id,a,b,s0=1,s1=1.08)=>{tl.set(id,{opacity:1},a);tl.fromTo(id,{scale:s0},{scale:s1,duration:b-a,ease:"none"},a);tl.set(id,{opacity:0},b);};
+const count=(sel,t0,t1)=>{const S=document.querySelectorAll(sel+" span");tl.set(S[0],{display:"inline"},0);
+  for(let i=1;i<S.length;i++){const t=t0+(t1-t0)*Math.pow(i/(S.length-1),.8);tl.set(S[i-1],{display:"none"},t);tl.set(S[i],{display:"inline"},t);}};
+tl.fromTo("#grid",{x:0,y:0},{x:80,y:80,duration:END,ease:"none"},0);
+tl.fromTo("#g1",{x:0,y:0},{x:160,y:140,duration:END,ease:"none"},0);
+tl.fromTo("#g2",{x:0,y:0},{x:-140,y:-100,duration:END,ease:"none"},0);
+
+// S0 hook 0 - 3.43 (man carries boxes out)
+const T1=w(1,0)-.02;
+scene("#S0",0,T1);clip("#v0",0,T1,1.0,1.12);tl.set("#sh",{opacity:1},0);
+const H0=document.querySelectorAll("#h0 .ws");
+tl.fromTo(H0[0],{opacity:0,y:30},{opacity:1,y:0,duration:.3,ease:OUT},w(0,0)-.08);
+tl.fromTo(H0[1],{opacity:0,y:30},{opacity:1,y:0,duration:.3,ease:OUT},w(0,1)-.05);
+show("#emp",w(0,0)+.1,{y:60,scale:.9},.45);
+tl.fromTo("#stamp",{opacity:0,scale:2.2,rotation:-24},{opacity:1,scale:1,rotation:-9,duration:.26,ease:"power4.in"},w(0,1)+.05);
+tl.to("#emp",{x:-10,duration:.05,yoyo:true,repeat:5},w(0,1)+.31);
+document.querySelectorAll("#S0 .dot").forEach((d,i)=>{const t=w(0,3)+i*.06;
+  tl.fromTo(d,{opacity:0,x:0,y:0,scale:.4},{opacity:1,scale:1,duration:.2,ease:OUT},t);
+  tl.to(d,{x:1100-parseFloat(d.style.left)+i*10,y:-200+i*40,opacity:0,duration:.75,ease:"power2.in"},t+.2);});
+tl.to("#emp .c",{opacity:.25,duration:.3},w(0,6));
+
+// S1 3.43 - 8.0 chats
+const T2=w(2,0)-.02;
+scene("#S1",T1,T2);tl.set("#sh",{opacity:0},T1);
+show("#k1",T1+.02,{y:-20},.35);
+tl.fromTo("#cnt",{opacity:0,x:-40},{opacity:1,x:0,duration:.35,ease:OUT},T1+.05);
+show("#cntl",T1+.25,{y:10},.35);
+count("#cnt",T1+.1,w(1,7)+.35);
+show("#list",T1+.1,{y:80},.5);
+tl.fromTo("#lin",{y:0},{y:-1350,duration:T2-T1-.2,ease:"power1.inOut"},T1+.4);
+show("#t1",w(1,9)-.05,{y:30,scale:.85},.35);
+show("#t2",w(1,10)-.05,{y:30,scale:.85},.35);
+
+// S2 8.0 - 10.96 clients write him -> competitor
+const T3=w(3,0)-.02;
+scene("#S2",T2,T3);clip("#v1",T2,9.2,1.0,1.06);tl.set("#sh",{opacity:1},T2);
+tl.fromTo("#b1",{opacity:0,y:40,scale:.92},{opacity:1,y:0,scale:1,duration:.35,ease:"back.out(1.6)"},w(2,1)-.1);
+tl.to("#b1",{opacity:0,y:-30,duration:.2},9.12);
+clip("#v2",9.2,T3,1.0,1.1);
+show("#comp",w(2,6)-.05,{x:-60,y:0},.4);
+
+// S3 10.96 - 13.3 empty desk, questions
+const T4=w(4,0)-.02;
+scene("#S3",T3,T4);clip("#v3",T3,T4,1.08,1.0);
+show("#h3",T3+.03,{y:-20},.35);
+tl.fromTo("#bigq",{opacity:0,scale:.5,rotation:-20},{opacity:.9,scale:1,rotation:0,duration:.5,ease:"back.out(2)"},w(3,5));
+show("#q1",w(3,5),{y:30,scale:.85},.3);show("#q2",w(3,7),{y:30,scale:.85},.3);show("#q3",w(3,8),{y:30,scale:.85},.3);
+tl.set("#sh",{opacity:1},T3);
+
+// S4 13.3 - 14.5 laptop
+const T5=w(4,4)-.12;
+scene("#S4",T4,T5);clip("#v4",T4,T5,1.0,1.06);
+show("#h4",T4+.05,{y:-20},.35);
+tl.set("#sh",{opacity:0},T5);
+
+// S5 diagram 14.5 - 19.38
+const T6=w(6,0)-.02;
+scene("#S5",T5,T6);
+show("#k5",T5,{y:-20},.3);
+document.querySelectorAll("#S5 .cl").forEach((d,i)=>show(d,T5+.03*i,{y:-30,scale:.6},.3));
+["#w1","#w2","#w3","#w4","#w5","#w6"].forEach((p,i)=>{const L=document.querySelector(p).getTotalLength();tl.fromTo(p,{strokeDasharray:L,strokeDashoffset:L},{strokeDashoffset:0,duration:.45,ease:SOFT},w(4,4)-.2+i*.03);});
+tl.fromTo("#nNum",{opacity:0,scale:.7},{opacity:1,scale:1,duration:.45,ease:"back.out(1.8)"},w(4,5));
+tl.fromTo("#nNum",{boxShadow:"0 0 0 0 rgba(61,245,160,.6)"},{boxShadow:"0 0 0 40px rgba(61,245,160,0)",duration:.8,ease:"power2.out"},w(4,7));
+{const L=document.querySelector("#w7").getTotalLength();tl.fromTo("#w7",{strokeDasharray:L,strokeDashoffset:L},{strokeDashoffset:0,duration:.35,ease:SOFT},w(5,2)-.3);}
+tl.fromTo("#nCrm",{opacity:0,scale:.7},{opacity:1,scale:1,duration:.45,ease:"back.out(1.8)"},w(5,3)-.12);
+["#w8","#w9","#w10"].forEach((p,i)=>{const L=document.querySelector(p).getTotalLength();tl.fromTo(p,{strokeDasharray:L,strokeDashoffset:L},{strokeDashoffset:0,duration:.35,ease:SOFT},w(5,0)+i*.05);});
+["#mg1","#mg2","#mg3"].forEach((m,i)=>show(m,w(5,0)+.15+i*.08,{y:30},.35));
+scene("#S5b",w(5,5)-.1,T6);
+show("#ownph",w(5,5)-.1,{y:20},.3);
+tl.fromTo("#ownx",{opacity:0,scale:1.6},{opacity:1,scale:1,duration:.22,ease:"power4.in"},w(5,8));
+
+// S6 CRM card 19.38 - 22.15 (soft cross)
+const T7=w(7,0)-.02;
+tl.fromTo("#S6",{opacity:0},{opacity:1,duration:.3,ease:"sine.inOut"},T6-.1);tl.set("#S6",{opacity:0},T7);
+show("#h6",T6,{y:-20},.35);
+show("#card",T6+.05,{y:60},.45);
+document.querySelectorAll("#card .ev").forEach((e,i)=>{const t=w(6,1)+i*.38;show(e,t,{x:-40,y:0},.35);tl.fromTo(e.querySelector(".ok"),{opacity:0,scale:.6},{opacity:1,scale:1,duration:.25,ease:"back.out(2)"},w(6,2)+i*.3);});
+
+// S7 access 22.15 - 24.25
+const T8=24.25;
+scene("#S7",T7,T8);
+show("#h7",T7+.02,{y:-20},.35);
+show("#acc",T7+.05,{y:50},.4);
+tl.to("#knob",{x:-86,duration:.25,ease:"power3.inOut"},w(7,2)+.05);
+tl.to("#sw",{backgroundColor:"#3A4741",duration:.25},w(7,2)+.05);
+tl.to("#acc",{borderColor:"#FF4B3E",duration:.25},w(7,2)+.1);
+show("#off",w(7,4),{y:20,scale:.9},.3);
+// S7b keep 24.25 - 26.8 over relaxed owner
+const T9=w(8,0)-.05;
+scene("#S7b",T8,T9);clip("#v5",T8,T9,1.0,1.07);tl.set("#sh",{opacity:1},T8);
+show("#keep",T8+.02,{y:50},.4);
+["#kr1","#kr2","#kr3"].forEach((k,i)=>show(k,[w(7,6),w(7,9),w(7,10)][i],{x:-30,y:0},.3));
+
+// CTA
+tl.fromTo("#cta",{opacity:0},{opacity:1,duration:.3},T9);
+tl.set("#sh",{opacity:0},T9+.3);
+show("#cta .k",T9+.05,{y:-20},.35);
+show("#cta .t",w(8,1),{y:40},.5);
+tl.fromTo("#cta .g",{opacity:0,scale:.6},{opacity:1,scale:1,duration:.55,ease:"back.out(2)"},w(8,10)-.05);
+tl.fromTo("#cta .g",{scale:1},{scale:1.05,duration:.5,yoyo:true,repeat:5,ease:"sine.inOut",immediateRender:false},w(8,12)+.4);
+show("#cta .s",w(8,7),{y:30},.5);
+tl.fromTo("#cta .hn",{opacity:0},{opacity:1,duration:.5},w(8,13));
+window.__timelines=window.__timelines||{};
+window.__timelines["main"]=tl;tl.seek(0);
+</script>
+</body>
+</html>
