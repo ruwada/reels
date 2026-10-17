@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<script src="assets/gsap.min.js"></script>
+<style>
+@font-face { font-family: "Unbounded"; src: url("assets/fonts/unbounded-cyr.woff2") format("woff2"); font-weight: 200 900; unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: "Unbounded"; src: url("assets/fonts/unbounded-lat.woff2") format("woff2"); font-weight: 200 900; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Manrope"; src: url("assets/fonts/manrope-cyr.woff2") format("woff2"); font-weight: 200 800; unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: "Manrope"; src: url("assets/fonts/manrope-lat.woff2") format("woff2"); font-weight: 200 800; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2190-2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "JBM"; src: url("assets/fonts/jetbrains-mono-cyrillic-700-normal.woff2") format("woff2"); font-weight: 700; unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: "JBM"; src: url("assets/fonts/jetbrains-mono-latin-700-normal.woff2") format("woff2"); font-weight: 700; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+2190-2193, U+2212, U+FEFF; }
+
+:root { --navy: #0B0F09; --blue: #C8F25A; --cyan: #DDF7A0; --ink: #10140C; --red: #FF4B4B; --white: #F6F8F0; --line: rgba(200, 242, 90, .45); }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; }
+#root { width: 1080px; height: 1920px; position: relative; overflow: hidden; font-family: "Manrope", sans-serif; color: var(--white); }
+.full { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
+video { display: block; width: 1080px; height: 1920px; object-fit: cover; }
+
+/* blueprint sheet behind the scenes */
+#sheet { z-index: 4; background:
+  linear-gradient(rgba(200,242,90,.16) 2px, transparent 2px) 0 0 / 120px 120px,
+  linear-gradient(90deg, rgba(200,242,90,.16) 2px, transparent 2px) 0 0 / 120px 120px,
+  linear-gradient(rgba(200,242,90,.07) 1px, transparent 1px) 0 0 / 24px 24px,
+  linear-gradient(90deg, rgba(200,242,90,.07) 1px, transparent 1px) 0 0 / 24px 24px,
+  radial-gradient(900px 1100px at 40% 30%, #1A2412 0%, #0B0F09 70%); }
+#sheet .stamp { position: absolute; right: 150px; top: 1010px; font: 700 20px "JBM"; color: rgba(200,242,90,.55); letter-spacing: .12em; border: 2px solid rgba(200,242,90,.35); padding: 10px 16px; }
+#sheet .mark { position: absolute; width: 46px; height: 46px; border-color: rgba(200,242,90,.6); border-style: solid; }
+
+#pip { z-index: 6; overflow: hidden; left: 0; top: 0; width: 1080px; height: 1920px; position: absolute; }
+#ring { z-index: 6; position: absolute; border-radius: 50%; border: 5px solid #C8F25A; box-shadow: 0 20px 50px rgba(0,0,0,.5); opacity: 0; }
+#pip video { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+.broll { z-index: 7; overflow: hidden; }
+.flash { z-index: 9; background: #fff; opacity: 0; }
+#shadeTop { z-index: 8; height: 760px; background: linear-gradient(180deg, rgba(6,9,4,.82) 0%, rgba(6,9,4,.5) 55%, rgba(6,9,4,0) 100%); opacity: 0; }
+
+/* hook */
+.hook { position: absolute; left: 70px; top: 236px; width: 900px; z-index: 12; }
+.hook .l { font: 900 104px/1.02 "Unbounded"; letter-spacing: -.035em; text-transform: uppercase; text-shadow: 0 6px 30px rgba(0,0,0,.5); }
+.hook .l span { display: inline-block; position: relative; }
+.hook .x { position: absolute; left: -8px; right: -8px; top: 50%; height: 16px; margin-top: -8px; background: var(--red); border-radius: 8px; transform-origin: 0 50%; }
+.hook .flip { display: inline-block; font: 900 92px "Unbounded"; text-transform: uppercase; color: var(--ink); background: var(--blue); padding: 16px 38px 22px; border-radius: 24px; box-shadow: 0 18px 50px rgba(0,0,0,.45); }
+
+/* subtitles */
+#subs { z-index: 20; }
+.g { position: absolute; left: 50px; width: 980px; top: 1068px; display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 18px; }
+.w { position: relative; isolation: isolate; display: inline-block; font: 800 62px/1.18 "Unbounded"; letter-spacing: -.02em; text-transform: uppercase; color: #fff; padding: 2px 6px;
+     text-shadow: 0 3px 0 rgba(0,0,0,.35), 0 6px 26px rgba(0,0,0,.65); }
+.w b { position: absolute; left: -10px; right: -10px; top: 4px; bottom: 2px; background: var(--blue); border-radius: 10px; z-index: -1; transform: rotate(-2deg); box-shadow: 0 10px 30px rgba(0,0,0,.4); }
+.w i { font-style: normal; position: relative; }
+.g.hi { top: 812px; }
+
+/* scene text */
+.kick { font: 700 32px "JBM"; color: var(--cyan); letter-spacing: .02em; }
+.title { font: 900 86px/1.0 "Unbounded"; letter-spacing: -.03em; text-transform: uppercase; }
+.title em { font-style: normal; color: var(--cyan); }
+.scene { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; z-index: 5; }
+
+/* PR queue */
+.counter { position: absolute; left: 80px; top: 300px; }
+.counter .n { font: 900 190px/1 "Unbounded"; letter-spacing: -.05em; color: #fff; }
+.counter .lab { font: 700 34px "JBM"; color: var(--cyan); margin-top: 8px; text-transform: uppercase; letter-spacing: .08em; }
+.pr { position: absolute; left: 80px; width: 840px; height: 104px; border: 2px solid var(--line); border-radius: 18px; background: rgba(18,24,14,.94);
+      display: flex; align-items: center; padding: 0 26px; gap: 20px; box-shadow: 0 16px 40px rgba(0,0,0,.35); }
+.pr .id { font: 700 28px "JBM"; color: rgba(220,240,180,.7); width: 120px; }
+.pr .t { font: 700 32px "JBM"; color: #fff; flex: 1; white-space: nowrap; overflow: hidden; }
+.pr .d { font: 700 24px "JBM"; color: #7CFFB2; white-space: nowrap; }
+.pr .d s { text-decoration: none; color: #FF8A8A; margin-left: 8px; }
+.pr .b { font: 700 22px "JBM"; color: var(--ink); background: var(--blue); border-radius: 10px; padding: 6px 12px; }
+
+/* tags around the face */
+.tag { position: absolute; z-index: 12; display: flex; align-items: center; gap: 14px; padding: 16px 26px; border-radius: 18px; border: 2px solid var(--cyan);
+       background: rgba(6,18,46,.82); font: 700 40px "JBM"; color: #fff; box-shadow: 0 14px 40px rgba(0,0,0,.4); }
+.tag u { text-decoration: none; display: inline-flex; width: 40px; height: 40px; border-radius: 10px; background: var(--blue); align-items: center; justify-content: center; font: 800 22px "JBM"; }
+.tagk { position: absolute; z-index: 12; left: 80px; top: 230px; font: 700 34px "JBM"; color: var(--cyan); text-shadow: 0 2px 16px rgba(0,0,0,.8); }
+
+/* questions */
+.qrow { position: absolute; left: 80px; width: 860px; height: 128px; display: flex; align-items: center; gap: 28px; }
+.qic { width: 128px; height: 128px; border-radius: 26px; border: 2px solid var(--line); background: rgba(9,26,66,.9); flex: none; position: relative; overflow: hidden; }
+.qic svg { position: absolute; left: 0; top: 0; width: 128px; height: 128px; }
+.qt { font: 800 52px/1.05 "Unbounded"; letter-spacing: -.02em; }
+.qs { font: 700 28px "JBM"; color: var(--cyan); margin-top: 10px; }
+.qn { position: absolute; left: -2px; top: -2px; font: 700 22px "JBM"; color: #071430; background: var(--cyan); padding: 3px 10px; border-radius: 0 0 12px 0; }
+
+/* tools flood */
+.tool { position: absolute; z-index: 12; font: 700 34px "JBM"; color: #0A1530; background: #F4F7FF; padding: 12px 22px; border-radius: 40px; box-shadow: 0 10px 30px rgba(0,0,0,.35); white-space: nowrap; }
+.tool.alt { background: var(--blue); color: #fff; }
+.tool.drk { background: #0B1B44; color: #fff; border: 2px solid var(--cyan); }
+#toolX_unused { position: absolute; z-index: 13; left: 300px; top: 330px; width: 480px; height: 18px; background: var(--red); border-radius: 11px; transform-origin: 0 50%; box-shadow: 0 8px 30px rgba(255,75,75,.6); }
+
+/* foundation */
+.slab { position: absolute; left: 80px; width: 660px; height: 70px; border: 2px solid var(--cyan); border-radius: 8px;
+        background: repeating-linear-gradient(135deg, rgba(200,242,90,.18) 0 10px, rgba(200,242,90,.04) 10px 22px), rgba(14,19,10,.94);
+        display: flex; align-items: center; padding: 0 24px; font: 700 34px "JBM"; color: #fff; }
+.slab span { margin-left: auto; font: 700 22px "JBM"; color: rgba(200,242,90,.7); }
+.aiblock { position: absolute; left: 160px; width: 500px; height: 150px; border-radius: 22px; background: linear-gradient(135deg, #D8FF6E, #A8D63A); color: var(--ink);
+           box-shadow: 0 20px 60px rgba(200,242,90,.45), inset 0 0 0 2px rgba(255,255,255,.35); display: flex; align-items: center; justify-content: center; gap: 22px; }
+.aiblock b { font: 900 84px "Unbounded"; letter-spacing: -.03em; }
+.aiblock i { font: 700 30px "JBM"; font-style: normal; color: #2A3518; }
+.dim { position: absolute; left: 780px; width: 2px; background: var(--cyan); }
+.dim:before, .dim:after { content: ""; position: absolute; left: -9px; width: 20px; height: 2px; background: var(--cyan); }
+.dim:before { top: 0; } .dim:after { bottom: 0; }
+
+/* speed punchline + cta */
+.punch { position: absolute; left: 70px; width: 940px; z-index: 12; font: 900 70px/1.08 "Unbounded"; letter-spacing: -.03em; text-transform: uppercase; text-shadow: 0 6px 30px rgba(0,0,0,.6); }
+.punch em { font-style: normal; display: inline-block; color: var(--ink); background: var(--blue); padding: 4px 18px 10px; border-radius: 18px; }
+.cta { position: absolute; z-index: 12; left: 90px; top: 262px; width: 900px; padding: 34px 36px; border-radius: 34px; background: rgba(12,16,9,.88); border: 2px solid rgba(200,242,90,.6);
+       display: flex; align-items: center; gap: 30px; box-shadow: 0 24px 60px rgba(0,0,0,.45); }
+.cta .ico { width: 124px; height: 124px; border-radius: 62px; background: #2AABEE; flex: none; display: flex; align-items: center; justify-content: center; }
+.cta .t1 { font: 800 40px/1.1 "Unbounded"; white-space: nowrap; letter-spacing: -.02em; }
+.cta .t2 { font: 700 30px "JBM"; color: var(--cyan); margin-top: 12px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-duration="/*DUR*/" data-width="1080" data-height="1920">
+  <div id="sheet" class="full"></div>
+  <div id="pip"><video id="base" class="clip" src="assets/base.mp4" data-start="0" data-duration="/*DUR*/" muted playsinline></video></div>
+  <div id="ring"></div>
+  <div id="brolls">/*BROLL*/</div>
+  <div id="shadeTop" class="full"></div>
+  <div id="fx"></div>
+  <div id="subs" class="full"></div>
+</div>
+<script>
+const D = /*DATA*/;
+const tl = gsap.timeline({ paused: true });
+const $ = (h) => { const t = document.createElement("template"); t.innerHTML = h.trim(); return t.content.firstChild; };
+const root = document.getElementById("root"), fx = document.getElementById("fx");
+const OUT = "expo.out", SOFT = "power3.out", IN = "power2.in", POP = "back.out(1.9)";
+let seed = 19; const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+const add = (h, parent = fx) => { const el = $(h); parent.appendChild(el); return el; };
+const show = (el, t0, t1) => { gsap.set(el, { autoAlpha: 0 }); tl.set(el, { autoAlpha: 1 }, t0); if (t1 != null) tl.set(el, { autoAlpha: 0 }, t1); };
+
+/* ---------- B-roll ---------- */
+D.broll.forEach((c, k) => {
+  const w = document.getElementById(`br${k}`);   // written into the page by build.py: media must be in the static HTML
+  show(w, c.at, c.at + c.dur);
+  const v = w.querySelector("video");
+  if (c.in === "sharp") {
+    tl.fromTo(v, { scale: 1.16 }, { scale: 1.0, duration: 0.45, ease: OUT }, c.at);
+    const f = add(`<div class="flash full"></div>`);
+    show(f, c.at, c.at + 0.2);
+    tl.fromTo(f, { opacity: 0.55 }, { opacity: 0, duration: 0.18, ease: "power1.out" }, c.at);
+  } else {
+    tl.fromTo(w, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power1.inOut" }, c.at - 0.05);
+    tl.fromTo(v, { scale: 1.06 }, { scale: 1.0, duration: c.dur, ease: "none" }, c.at);
+  }
+  if (c.out === "smooth") tl.to(w, { opacity: 0, duration: 0.25, ease: "power1.in" }, c.at + c.dur - 0.25);
+  if (c.in !== "sharp") return;
+  tl.fromTo(v, { scale: 1.0 }, { scale: 1.05, duration: c.dur - 0.45, ease: "none" }, c.at + 0.45);
+});
+
+/* ---------- PiP: the speaker shrinks into a circle while a scene plays ---------- */
+const pip = document.getElementById("pip"), base = document.getElementById("base"), sheet = document.getElementById("sheet");
+gsap.set(sheet, { autoAlpha: 0 });
+const PS = 0.44, R = 125, CX = 895, CY = 340, ring = document.getElementById("ring");
+gsap.set(ring, { left: CX - R, top: CY - R, width: 2 * R, height: 2 * R });
+gsap.set(pip, { clipPath: `circle(2300px at ${CX}px ${CY}px)` });
+function pipScene(a, b) {
+  tl.set(sheet, { autoAlpha: 1 }, a);
+  tl.fromTo(sheet, { clipPath: `circle(0px at ${CX}px ${CY}px)` }, { clipPath: `circle(2300px at ${CX}px ${CY}px)`, duration: 0.55, ease: "power3.inOut" }, a);
+  tl.fromTo(pip, { clipPath: `circle(2300px at ${CX}px ${CY}px)` }, { clipPath: `circle(${R}px at ${CX}px ${CY}px)`, duration: 0.55, ease: "power3.inOut" }, a);
+  tl.fromTo(base, { scale: 1, x: 0, y: 0 }, { scale: PS, x: CX - 540 * PS, y: CY - 640 * PS, duration: 0.55, ease: "power3.inOut" }, a);
+  tl.fromTo(ring, { opacity: 0, scale: 1.4 }, { opacity: 1, scale: 1, duration: 0.3, ease: "power2.out" }, a + 0.35);
+  tl.to(ring, { opacity: 0, duration: 0.15 }, b - 0.45);
+  tl.to(pip, { clipPath: `circle(2300px at ${CX}px ${CY}px)`, duration: 0.45, ease: "power3.inOut" }, b - 0.45);
+  tl.to(base, { scale: 1, x: 0, y: 0, duration: 0.45, ease: "power3.inOut" }, b - 0.45);
+  tl.to(sheet, { opacity: 0, duration: 0.3, ease: "power1.in" }, b - 0.3);
+  tl.set(sheet, { autoAlpha: 0, opacity: 1 }, b);
+}
+const marks = [[60, 200, "4px 0 0 4px"], [974, 200, "4px 4px 0 0"], [60, 1040, "0 0 4px 4px"], [974, 1040, "0 4px 4px 0"]];
+marks.forEach(([x, y, bw]) => sheet.appendChild($(`<div class="mark" style="left:${x}px;top:${y}px;border-width:${bw}"></div>`)));
+sheet.appendChild($(`<div class="stamp">DWG-19 · ${D.lang === "ru" ? "ИНЖЕНЕРНОЕ МЫШЛЕНИЕ" : "ENGINEERING THINKING"} · REV 4</div>`));
+tl.fromTo(sheet, { backgroundPosition: "0 0,0 0,0 0,0 0,0 0" }, { backgroundPosition: "0 -240px,0 0,0 -96px,0 0,0 0", duration: D.dur, ease: "none" }, 0);
+
+/* ---------- shade at the top for text over footage ---------- */
+const shade = document.getElementById("shadeTop");
+function shadeOn(a, b) { tl.to(shade, { opacity: 1, duration: 0.3 }, a); tl.to(shade, { opacity: 0, duration: 0.3 }, b - 0.3); }
+
+/* ---------- 1. hook: the cover effect asks the question, the page answers «наоборот» ---------- */
+{
+  const H = D.text.hook, t = D.t;
+  const el = add(`<div class="hook"><div class="flip" id="hf">${esc(H.flip)}</div></div>`);
+  show(el, t.hookFlip, t.hookEnd);
+  tl.fromTo("#hf", { opacity: 0, scale: 0.4, rotation: -8 }, { opacity: 1, scale: 1, rotation: -3, duration: 0.45, ease: POP }, t.hookFlip);
+  tl.to(el, { opacity: 0, y: -50, duration: 0.25, ease: IN }, t.hookEnd - 0.25);
+}
+
+/* ---------- 2. PR queue ---------- */
+{
+  const P = D.text.pr, [a, b] = D.t.pr;
+  pipScene(a, b);
+  const sc = add(`<div class="scene"><div class="counter"><div class="kick" style="margin-bottom:14px">${esc(P.kicker)}</div><div class="n" id="prn">${P.from}</div><div class="lab">${esc(P.label)}</div></div></div>`);
+  show(sc, a, b);
+  tl.fromTo(sc.querySelector(".counter"), { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: OUT }, a + 0.3);
+  const cnt = { v: P.from }, nEl = sc.querySelector("#prn");
+  tl.fromTo(cnt, { v: P.from }, { v: P.to, duration: b - a - 0.9, ease: "power2.in", onUpdate: () => { nEl.textContent = Math.round(cnt.v); } }, a + 0.5);
+  P.cards.forEach((c, i) => {
+    const y = 960 - i * 62;
+    const add_ = 80 + ((i * 397) % 1900), del = 5 + ((i * 131) % 300);
+    const card = add(`<div class="pr" style="top:${y}px;z-index:${10 + i}"><div class="id">#${1480 + i * 7}</div><div class="t">${esc(c)}</div><div class="d">+${add_}<s>−${del}</s></div><div class="b">${P.badge}</div></div>`, sc);
+    const t0 = a + 0.55 + i * ((b - a - 1.3) / P.cards.length);
+    tl.fromTo(card, { opacity: 0, y: -260, rotation: (i % 2 ? 3 : -3) }, { opacity: 1, y: 0, rotation: (i % 2 ? 1 : -1), duration: 0.42, ease: "back.out(1.4)" }, t0);
+  });
+}
+
+/* ---------- 6. foundation ---------- */
+{
+  const F = D.text.found, [a, b] = D.t.found;
+  pipScene(a, b);
+  const sc = add(`<div class="scene"><div style="position:absolute;left:80px;top:250px"><div class="kick" style="margin-bottom:16px">// ${esc(F.title)}</div><div class="title" id="ftt" style="font-size:66px">${esc(F.title)}</div></div></div>`);
+  show(sc, a, b);
+  tl.fromTo(sc.firstChild, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: OUT }, Math.max(a + 0.25, D.t.foundTitle - 0.2));
+  const H = 74, bottom = 1000;
+  D.t.slabCues.forEach((t0, i) => {
+    const y = bottom - (i + 1) * H;
+    const el = add(`<div class="slab" style="top:${y}px">${esc(F.slabs[i][1])}<span>L${i + 1}</span></div>`, sc);
+    tl.fromTo(el, { opacity: 0, y: -220 }, { opacity: 1, y: 0, duration: 0.35, ease: "bounce.out" }, t0 - 0.05);
+  });
+  const dim = add(`<div class="dim" style="top:${bottom - F.slabs.length * H}px;height:${F.slabs.length * H}px"></div>`, sc);
+  tl.fromTo(dim, { scaleY: 0, transformOrigin: "50% 100%" }, { scaleY: 1, duration: D.t.slabCues.at(-1) - D.t.slabCues[0] + 0.3, ease: "power1.inOut" }, D.t.slabCues[0]);
+  const ai = add(`<div class="aiblock" style="top:${bottom - F.slabs.length * H - 160}px"><b>${esc(F.ai)}</b><i>${esc(F.ai_sub)}</i></div>`, sc);
+  tl.fromTo(ai, { opacity: 0, y: -500 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.in" }, D.t.aiDrop);
+  tl.to(sc.querySelectorAll(".slab"), { y: 6, duration: 0.08, yoyo: true, repeat: 1 }, D.t.aiDrop + 0.4);
+}
+
+/* ---------- 7. speed / direction punchline ---------- */
+{
+  const S = D.text.speed, [c1, c2, b] = D.t.speed;
+  const p1 = add(`<div class="punch" style="top:1250px">${esc(S.l1)}</div>`);
+  const p2 = add(`<div class="punch" style="top:1350px">${esc(S.l2a)}<em>${esc(S.l2b)}</em></div>`);
+  show(p1, c1, b); show(p2, c2, b);
+  tl.fromTo(p1, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: OUT }, c1);
+  tl.fromTo(p2, { opacity: 0, y: 40, scale: .95 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: POP }, c2);
+  tl.to([p1, p2], { opacity: 0, duration: 0.25 }, b - 0.25);
+}
+
+/* ---------- 8. CTA ---------- */
+{
+  const C = D.text.cta, a = D.t.cta;
+  shadeOn(a, D.dur + 0.3);
+  const el = add(`<div class="cta"><div class="ico"><svg width="70" height="70" viewBox="0 0 24 24"><path d="M21.5 3.6 2.9 10.8c-1 .4-1 1.8.1 2.1l4.7 1.5 1.8 5.6c.3.9 1.4 1.1 2 .4l2.6-2.6 4.9 3.6c.8.6 1.9.1 2.1-.8l3-15.3c.2-1.2-.9-2.1-2.1-1.6zM9.6 14.6l8.6-7.7-6.9 9.2-.3 3.2-1.4-4.7z" fill="#fff"/></svg></div><div><div class="t1">${esc(C.l1)}</div><div class="t2">${esc(C.l2)} ↑</div></div></div>`);
+  show(el, a, null);
+  tl.fromTo(el, { opacity: 0, y: -60, scale: .9 }, { opacity: 1, y: 0, scale: 1, duration: 0.55, ease: POP }, a + 0.05);
+  tl.fromTo(el.querySelector(".ico"), { rotation: -20 }, { rotation: 0, duration: 0.8, ease: "elastic.out(1,.5)" }, a + 0.2);
+}
+
+/* ---------- subtitles: 1-3 words, each pops in when spoken, the spoken one turns ink on a lime chip ---------- */
+{
+  const subs = document.getElementById("subs");
+  D.groups.forEach((g, gi) => {
+    const el = add(`<div class="g${g.hi ? " hi" : ""}">${g.words.map((w) => `<span class="w"><b></b><i>${esc(w.w)}</i></span>`).join("")}</div>`, subs);
+    show(el, g.s, g.e);
+    const spans = el.querySelectorAll(".w");
+    g.words.forEach((w, i) => {
+      const sp = spans[i], pill = sp.querySelector("b");
+      tl.fromTo(sp, { opacity: 0, y: 26, scale: 0.7 }, { opacity: 1, y: 0, scale: 1, duration: 0.22, ease: "back.out(2.6)" }, w.s - 0.04);
+      tl.fromTo(pill, { opacity: 0, scaleX: 0.6 }, { opacity: 1, scaleX: 1, duration: 0.14, ease: "power2.out" }, w.s - 0.02);
+      const nx = i + 1 < g.words.length ? g.words[i + 1].s - 0.02 : g.e;
+      tl.set(pill, { opacity: 0 }, nx);
+      tl.set(sp.querySelector("i"), { color: "#10140C", textShadow: "none" }, w.s - 0.02);
+      tl.set(sp.querySelector("i"), { color: "#fff", textShadow: "0 3px 0 rgba(0,0,0,.35), 0 6px 26px rgba(0,0,0,.65)" }, nx);
+    });
+  });
+}
+
+window.__timelines = window.__timelines || {};
+window.__timelines["main"] = tl;
+tl.seek(0);
+</script>
+</body>
+</html>
