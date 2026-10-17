@@ -1,0 +1,118 @@
+{
+ "src": "orig-g.mp4",
+ "words": "words-g.json",
+ "out": "reel18-v4.mp4",
+ "subs": {
+  "style": "pop",
+  "hl": "#FFD43B",
+  "text": "#FFFFFF",
+  "top": 1230
+ },
+ "hook": {
+  "style": "pop",
+  "small": "сайт, который сам",
+  "big": "подбирает",
+  "tag": "обучение под врача",
+  "start": 0,
+  "end": 3.0,
+  "top": 830
+ },
+ "zooms": [
+  {
+   "start": 14.8,
+   "end": 17.6,
+   "scale": 1.12
+  },
+  {
+   "start": 19.6,
+   "end": 22.3,
+   "scale": 1.08
+  },
+  {
+   "start": 30.2,
+   "end": 33.3,
+   "scale": 1.15
+  },
+  {
+   "start": 44.4,
+   "end": 47.2,
+   "scale": 1.12
+  }
+ ],
+ "cards": [
+  {
+   "start": 3.0,
+   "end": 4.7,
+   "kind": "clip",
+   "file": "broll/7872722.mp4",
+   "from": 3.0,
+   "transition": "sharp"
+  },
+  {
+   "start": 5.8,
+   "end": 7.3,
+   "kind": "clip",
+   "file": "broll/5356843.mp4",
+   "from": 2.0,
+   "transition": "smooth"
+  },
+  {
+   "start": 7.3,
+   "end": 9.0,
+   "kind": "clip",
+   "file": "broll/6325280.mp4",
+   "from": 2.5,
+   "transition": "cut"
+  },
+  {
+   "start": 11.7,
+   "end": 13.7,
+   "kind": "clip",
+   "file": "broll/6914697.mp4",
+   "from": 6.0,
+   "transition": "sharp"
+  },
+  {
+   "start": 22.3,
+   "end": 30.2,
+   "kind": "clip",
+   "file": "code/quiz/renders/quiz.mp4",
+   "from": 0,
+   "transition": "cut",
+   "grade": false
+  },
+  {
+   "start": 36.5,
+   "end": 41.4,
+   "kind": "clip",
+   "file": "code/check/renders/check.mp4",
+   "from": 0,
+   "transition": "cut",
+   "grade": false
+  },
+  {
+   "start": 42.1,
+   "end": 44.3,
+   "kind": "clip",
+   "file": "broll/8322053.mp4",
+   "from": 5.0,
+   "transition": "sharp"
+  },
+  {
+   "start": 47.2,
+   "end": 49.0,
+   "kind": "clip",
+   "file": "broll/33504471.mp4",
+   "from": 4.0,
+   "transition": "smooth"
+  }
+ ],
+ "cta": {
+  "style": "pop",
+  "small": "чек-лист сайта врача",
+  "big": "гайд №11",
+  "tag": "в телеграме · ссылка в шапке",
+  "start": 49.4,
+  "top": 830
+ }
+}

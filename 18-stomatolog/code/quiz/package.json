@@ -1,0 +1,9 @@
+{
+  "name": "reel-code-video",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "npx --yes hyperframes@0.8.121 check",
+    "render": "PUPPETEER_EXECUTABLE_PATH=/opt/pw-browsers/chromium npx --yes hyperframes@0.8.121 render -o renders/reel.mp4 --fps 30"
+  }
+}

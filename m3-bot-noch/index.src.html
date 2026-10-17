@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<script src="assets/gsap.min.js"></script>
+<style>
+  @font-face { font-family: "Unbounded"; src: url("assets/fonts/unbounded-cyr.woff2") format("woff2"); font-weight: 200 900; unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+  @font-face { font-family: "Unbounded"; src: url("assets/fonts/unbounded-lat.woff2") format("woff2"); font-weight: 200 900; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+20BD, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+  @font-face { font-family: "Manrope"; src: url("assets/fonts/manrope-cyr.woff2") format("woff2"); font-weight: 200 800; unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+  @font-face { font-family: "Manrope"; src: url("assets/fonts/manrope-lat.woff2") format("woff2"); font-weight: 200 800; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+20BD, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: #060819; }
+  #root { width: 100%; height: 100%; position: relative; overflow: hidden; font-family: "Manrope", sans-serif; color: #F3F1FF; }
+  .abs { position: absolute; }
+  .layer { position: absolute; inset: 0; }
+
+  /* ---------- world: sky, stars, moon, skyline ---------- */
+  #world { position: absolute; inset: 0; transform-origin: 540px 900px; }
+  #sky { position: absolute; inset: 0; background: linear-gradient(180deg, #05071A 0%, #0D0B2E 45%, #1C1550 78%, #2A1B5E 100%); }
+  #dawn { position: absolute; inset: 0; opacity: 0; background: linear-gradient(180deg, #1B2A5C 0%, #6B4E8E 45%, #F29E6B 80%, #FFC98A 100%); }
+  #stars { position: absolute; inset: 0; }
+  .star { position: absolute; width: 4px; height: 4px; border-radius: 50%; background: #fff; }
+  #moon { position: absolute; left: 700px; top: 250px; width: 150px; height: 150px; border-radius: 50%;
+    box-shadow: inset -34px 14px 0 0 #FFE2A8; filter: drop-shadow(0 0 40px rgba(255,214,140,.55)); }
+  #sun { position: absolute; left: 390px; top: 860px; width: 300px; height: 300px; border-radius: 50%; opacity: 0;
+    background: radial-gradient(circle, #FFE9B0 0%, #FFC46B 45%, rgba(255,160,90,0) 70%); }
+  #city { position: absolute; left: 0; top: 640px; width: 1080px; height: 420px; }
+  .shade { position: absolute; left: 0; right: 0; top: 960px; height: 960px; background: linear-gradient(180deg, rgba(6,8,25,0) 0%, #060819 18%, #060819 100%); }
+
+  /* ---------- scene 1-3: clock, stamp, sleep ---------- */
+  #notif { left: 140px; top: 270px; width: 800px; height: 128px; border-radius: 40px; background: rgba(255,255,255,.12);
+    border: 2px solid rgba(255,255,255,.18); display: flex; align-items: center; gap: 26px; padding: 0 34px; backdrop-filter: blur(18px); }
+  #notif .ic { width: 72px; height: 72px; border-radius: 20px; background: linear-gradient(135deg, #8B7CFF, #5B4BE0); display: flex; align-items: center; justify-content: center; font: 800 34px "Unbounded"; }
+  #notif .tx b { display: block; font: 800 32px "Manrope"; }
+  #notif .tx span { font: 600 30px "Manrope"; color: #CFCBEF; }
+  #notif .tm { margin-left: auto; font: 700 28px "Manrope"; color: #CFCBEF; }
+
+  #clock { left: 0; width: 1080px; top: 440px; display: flex; justify-content: center; align-items: center; gap: 6px; }
+  .dg { width: 150px; height: 230px; overflow: hidden; border-radius: 26px; background: linear-gradient(180deg, #1A1747, #100E33); border: 2px solid rgba(139,124,255,.35); position: relative; }
+  .dg .strip { position: absolute; left: 0; top: 0; width: 100%; }
+  .dg .strip div { height: 230px; display: flex; align-items: center; justify-content: center; font: 800 170px "Unbounded"; color: #FFF4DC; }
+  .dg::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 2px; background: rgba(0,0,0,.45); }
+  .colon { font: 800 150px "Unbounded"; color: #FFC56B; width: 60px; text-align: center; margin-top: -20px; }
+
+  #stamp { left: 0; width: 1080px; top: 720px; display: flex; justify-content: center; align-items: center; gap: 30px; }
+  #ring { position: absolute; left: 420px; top: 690px; width: 240px; height: 240px; border-radius: 50%; border: 6px solid #5BE49B; opacity: 0; }
+  .ok { width: 120px; height: 120px; border-radius: 50%; background: #2FCB7A; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 60px rgba(47,203,122,.6); }
+  .ok svg { width: 70px; height: 70px; }
+  #stamp .lbl b { display: block; font: 800 64px "Unbounded"; color: #7CF0B0; }
+  #stamp .lbl span { font: 700 44px "Manrope"; color: #E6FFF1; }
+  .pt { opacity: 0; position: absolute; width: 16px; height: 16px; border-radius: 50%; left: 532px; top: 772px; }
+
+  #dnd { left: 240px; top: 440px; width: 600px; height: 150px; border-radius: 75px; background: rgba(139,124,255,.18); border: 2px solid rgba(139,124,255,.45);
+    display: flex; align-items: center; gap: 28px; padding: 0 44px; }
+  #dnd .mi { width: 84px; height: 84px; border-radius: 50%; background: #8B7CFF; display: flex; align-items: center; justify-content: center; }
+  #dnd span { font: 800 46px "Manrope"; }
+  .z { position: absolute; font: 800 70px "Unbounded"; color: #CFC8FF; }
+
+  /* ---------- scene 4: phone chat ---------- */
+  #phoneWrap { left: 290px; top: 225px; width: 500px; height: 770px; perspective: 1800px; }
+  #phone { width: 500px; height: 770px; border-radius: 70px; background: #0B0B14; border: 10px solid #26243A; position: relative; overflow: hidden;
+    box-shadow: 0 50px 140px rgba(0,0,0,.6), 0 0 0 2px #3A3755, 0 0 90px rgba(139,124,255,.25); }
+  #phone .island { position: absolute; left: 175px; top: 16px; width: 130px; height: 36px; border-radius: 18px; background: #000; z-index: 3; }
+  #phone .hdr { position: absolute; left: 0; right: 0; top: 0; height: 150px; padding: 66px 26px 0; background: #15142A; display: flex; align-items: center; gap: 16px; z-index: 2; border-bottom: 1px solid #2A2846; }
+  #phone .av { width: 62px; height: 62px; border-radius: 50%; background: linear-gradient(135deg, #FF8FA3, #FFC56B); display: flex; align-items: center; justify-content: center; }
+  #phone .hdr b { display: block; font: 800 28px "Manrope"; }
+  #phone .hdr span { font: 600 22px "Manrope"; color: #7CF0B0; }
+  #feed { position: absolute; left: 0; right: 0; top: 150px; bottom: 0; overflow: hidden; background: radial-gradient(400px 500px at 80% 20%, #1A1838, #0E0D1C); }
+  #msgs { position: absolute; left: 0; right: 0; top: 0; padding: 22px 20px; display: flex; flex-direction: column; gap: 14px; }
+  .m { max-width: 360px; padding: 16px 20px; border-radius: 26px; font: 600 25px/1.3 "Manrope"; position: relative; }
+  .m small { display: block; font: 600 17px "Manrope"; opacity: .6; margin-top: 4px; text-align: right; }
+  .cl { align-self: flex-end; background: #6D5DF6; border-bottom-right-radius: 8px; }
+  .bt { align-self: flex-start; background: #23213D; border-bottom-left-radius: 8px; }
+  .slot { align-self: flex-start; position: relative; }
+  .typing { position: absolute; left: 0; top: 0; background: #23213D; border-radius: 26px; padding: 18px 22px; display: flex; gap: 8px; height: 60px; }
+  .typing i { width: 12px; height: 12px; border-radius: 50%; background: #A9A3E8; display: block; }
+  .prods { align-self: flex-start; display: flex; gap: 10px; }
+  .pr { width: 132px; border-radius: 22px; background: #23213D; padding: 10px; border: 3px solid transparent; }
+  .pr .pic { height: 110px; border-radius: 14px; position: relative; overflow: hidden; }
+  .pr b { display: block; font: 700 19px "Manrope"; margin-top: 8px; }
+  .pr span { font: 800 20px "Manrope"; color: #FFC56B; }
+  .pay { align-self: flex-start; width: 330px; border-radius: 26px; background: #23213D; padding: 18px; }
+  .pay b { display: block; font: 700 22px "Manrope"; color: #CFCBEF; margin-bottom: 12px; }
+  .btn { height: 74px; border-radius: 20px; background: linear-gradient(90deg, #FFC56B, #FF9F5A); color: #1A1030; display: flex; align-items: center; justify-content: center; font: 800 28px "Manrope"; position: relative; overflow: hidden; }
+  .btn .paid { position: absolute; inset: 0; background: #2FCB7A; color: #fff; display: flex; align-items: center; justify-content: center; gap: 10px; }
+  .tap { position: absolute; width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,.7); left: 135px; top: 7px; }
+
+  /* ---------- scene 5: 24h dial ---------- */
+  #dialWrap { left: 240px; top: 250px; width: 600px; height: 600px; }
+  #dial { width: 600px; height: 600px; }
+  .chip { position: absolute; height: 84px; padding: 0 34px; border-radius: 42px; display: flex; align-items: center; font: 800 38px "Manrope"; background: rgba(139,124,255,.22); border: 2px solid rgba(139,124,255,.6); }
+  #lost { left: 150px; top: 330px; width: 780px; }
+  .bubble { padding: 30px 36px; border-radius: 36px; border-bottom-left-radius: 10px; background: rgba(255,255,255,.14); border: 2px solid rgba(255,255,255,.2); font: 700 42px/1.25 "Manrope"; }
+  .bubble small { display: block; margin-top: 10px; font: 600 26px "Manrope"; color: #E9E4FF; opacity: .75; }
+  #loss { margin-top: 40px; font: 800 120px "Unbounded"; color: #FF6B6B; text-shadow: 0 0 50px rgba(255,90,90,.5); }
+  #replied { margin-bottom: 30px; display: inline-flex; align-items: center; gap: 16px; height: 72px; padding: 0 30px; border-radius: 36px; background: rgba(255,255,255,.2); font: 800 32px "Manrope"; color: #2A1B3E; background: #FFE2A8; }
+
+  /* ---------- scene 6: diagram ---------- */
+  #net { left: 0; top: 0; width: 1080px; height: 1000px; }
+  .ch { position: absolute; width: 130px; height: 130px; border-radius: 36px; display: flex; align-items: center; justify-content: center; box-shadow: 0 20px 60px rgba(0,0,0,.4); }
+  .ch svg { width: 74px; height: 74px; }
+  .chl { position: absolute; font: 700 26px "Manrope"; color: #CFCBEF; width: 200px; text-align: center; }
+  #core { position: absolute; left: 430px; top: 470px; width: 220px; height: 220px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(circle at 35% 30%, #A99CFF, #5B4BE0 60%, #3A2DB0); box-shadow: 0 0 120px rgba(139,124,255,.7); font: 800 64px "Unbounded"; }
+  #orbit { position: absolute; left: 395px; top: 435px; width: 290px; height: 290px; border-radius: 50%; border: 4px dashed rgba(199,190,255,.55); }
+  #crm { position: absolute; left: 690px; top: 395px; width: 245px; border-radius: 28px; background: rgba(21,20,42,.92); border: 2px solid rgba(139,124,255,.45); padding: 18px; box-shadow: 0 30px 80px rgba(0,0,0,.5); }
+  #crm h4 { font: 800 28px "Unbounded"; margin-bottom: 12px; color: #FFC56B; }
+  .row { height: 54px; border-radius: 14px; background: rgba(255,255,255,.06); margin-top: 10px; display: flex; align-items: center; gap: 10px; padding: 0 12px; font: 700 19px "Manrope"; white-space: nowrap; overflow: hidden; }
+  .row i { width: 14px; height: 14px; border-radius: 50%; background: #2FCB7A; display: block; flex: 0 0 14px; }
+  .flow { position: absolute; width: 18px; height: 18px; border-radius: 50%; background: #FFE2A8; box-shadow: 0 0 20px #FFC56B; left: -9px; top: -9px; }
+
+  /* ---------- scene 7: CTA ---------- */
+  #cta { left: 80px; top: 300px; width: 860px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+  #cta .t1 { font: 700 50px "Manrope"; color: #DCD6FF; }
+  #word { display: flex; gap: 18px; margin: 40px 0 34px; perspective: 1200px; }
+  #word div { width: 230px; height: 270px; border-radius: 40px; background: linear-gradient(160deg, #FFD88F, #FF9F5A); color: #1A1030; display: flex; align-items: center; justify-content: center; font: 800 190px "Unbounded"; box-shadow: 0 30px 90px rgba(255,170,90,.35); }
+  #cta .t2 { font: 700 44px/1.3 "Manrope"; color: #DCD6FF; max-width: 760px; }
+  #cta .h { margin-top: 44px; font: 800 40px "Manrope"; color: #FFC56B; }
+
+  /* ---------- subtitles ---------- */
+  #subs { left: 60px; width: 890px; top: 1030px; height: 150px; }
+  .chunk { position: absolute; left: 0; right: 0; top: 0; display: flex; justify-content: center; gap: 28px; font: 800 66px/1.1 "Unbounded"; letter-spacing: -0.01em; }
+  .chunk span { color: #FFFFFF; display: inline-block; text-shadow: 0 6px 30px rgba(0,0,0,.6); }
+  #ens { left: 60px; width: 890px; top: 1122px; height: 60px; }
+  .en { position: absolute; left: 0; right: 0; top: 0; text-align: center; font: italic 600 38px "Manrope"; color: #BFB8F0; text-shadow: 0 4px 20px rgba(0,0,0,.7); }
+
+  #vignette { position: absolute; inset: 0; background: radial-gradient(1100px 1500px at 50% 40%, rgba(0,0,0,0) 55%, rgba(0,0,0,.55) 100%); pointer-events: none; }
+  #flash { position: absolute; inset: 0; background: #fff; opacity: 0; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-duration="/*DUR*/" data-width="1080" data-height="1920">
+  <audio id="vo" src="assets/golos.wav" data-start="0" data-duration="/*DUR*/" data-track-index="5" data-volume="1"></audio>
+
+  <div id="world">
+    <div id="sky"></div>
+    <div id="dawn"></div>
+    <div id="stars"></div>
+    <div id="sun"></div>
+    <div id="moon"></div>
+    <svg id="city" viewBox="0 0 1080 420"></svg>
+  </div>
+  <div class="shade"></div>
+
+  <!-- scene 1-2 -->
+  <div id="notif" class="abs"><div class="ic">B</div><div class="tx"><b>Новый клиент</b><span>Здравствуйте! Можно букет на завтра?</span></div><div class="tm">03:12</div></div>
+  <div id="clock" class="abs">
+    <div class="dg" id="d0"><div class="strip"></div></div><div class="dg" id="d1"><div class="strip"></div></div>
+    <div class="colon" id="colon">:</div>
+    <div class="dg" id="d2"><div class="strip"></div></div><div class="dg" id="d3"><div class="strip"></div></div>
+  </div>
+  <div id="ring" class="abs"></div>
+  <div id="parts"></div>
+  <div id="stamp" class="abs"><div class="ok" id="okc"><svg viewBox="0 0 24 24"><path d="M4.5 12.5l5 5L19.5 7" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/></svg></div>
+    <div class="lbl"><b>Оплачено</b><span>4&nbsp;900&nbsp;₽ · 03:14</span></div></div>
+
+  <!-- scene 3 -->
+  <div id="dnd" class="abs"><div class="mi"><svg width="46" height="46" viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="#fff"/></svg></div><span>Не беспокоить</span></div>
+  <div class="z" id="z1" style="left:600px;top:660px">z</div><div class="z" id="z2" style="left:660px;top:640px">z</div><div class="z" id="z3" style="left:720px;top:620px">Z</div>
+
+  <!-- scene 4 -->
+  <div id="phoneWrap" class="abs"><div id="phone">
+    <div class="island"></div>
+    <div class="hdr"><div class="av"><svg width="34" height="34" viewBox="0 0 24 24"><circle cx="12" cy="9" r="5" fill="#fff"/><path d="M12 14v8M12 18c-3 0-5-2-5-2M12 18c3 0 5-2 5-2" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg></div><div><b>Цветы «Рассвет»</b><span>AI-бот · онлайн</span></div></div>
+    <div id="feed"><div id="msgs">
+      <div class="m cl" id="m1">Здравствуйте! Можно букет на завтра?<small>03:12</small></div>
+      <div class="slot" id="s2"><div class="typing" id="ty1"><i></i><i></i><i></i></div><div class="m bt" id="m2">Конечно! Вот что есть:<small>03:12</small></div></div>
+      <div class="prods" id="prods">
+        <div class="pr" id="pr1"><div class="pic" style="background:radial-gradient(circle at 50% 45%, #FF8FA3 0 22%, #E2486A 23% 38%, #3E8E5A 39%)"></div><b>Рассвет</b><span>4 900 ₽</span></div>
+        <div class="pr" id="pr2"><div class="pic" style="background:radial-gradient(circle at 50% 45%, #FFF2C8 0 22%, #F6C445 23% 38%, #3E8E5A 39%)"></div><b>Солнце</b><span>3 700 ₽</span></div>
+      </div>
+      <div class="m cl" id="m3">Успеете до 10 утра?<small>03:13</small></div>
+      <div class="slot" id="s4"><div class="typing" id="ty2"><i></i><i></i><i></i></div><div class="m bt" id="m4">Да, привезём к 9:00 бесплатно.<small>03:13</small></div></div>
+      <div class="pay" id="pay"><b>Букет «Рассвет»</b><div class="btn" id="btn">Оплатить 4 900 ₽<div class="tap" id="tap"></div><div class="paid" id="paid"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M4.5 12.5l5 5L19.5 7" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Оплачено</div></div></div>
+    </div></div>
+  </div></div>
+
+  <!-- scene 5 -->
+  <div id="dialWrap" class="abs"><svg id="dial" viewBox="0 0 600 600"></svg></div>
+  <div class="chip" id="c1" style="left:90px;top:300px">ночью</div>
+  <div class="chip" id="c2" style="left:640px;top:330px">в выходные</div>
+  <div class="chip" id="c3" style="left:320px;top:860px">в праздники</div>
+  <div id="lost" class="abs">
+    <div id="replied"><svg width="36" height="36" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" fill="#C9781E"/><g stroke="#C9781E" stroke-width="2" stroke-linecap="round"><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></g></svg>08:30 · ты ответил</div>
+    <div class="bubble" id="lostb">Спасибо, уже купил в другом месте<small>Клиент · 08:31</small></div>
+    <div id="loss">−4 900 ₽</div>
+  </div>
+
+  <!-- scene 6 -->
+  <div id="net" class="abs">
+    <svg id="wires" width="1080" height="1000" style="position:absolute;left:0;top:0"></svg>
+    <div class="ch" id="ig" style="left:110px;top:340px;background:linear-gradient(45deg,#F9A13A,#E1306C,#8A3AB9)"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="#fff" stroke-width="2.2"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="#fff" stroke-width="2.2"/><circle cx="17.3" cy="6.7" r="1.3" fill="#fff"/></svg></div>
+    <div class="ch" id="tg" style="left:110px;top:515px;background:#2AABEE;border-radius:50%"><svg viewBox="0 0 24 24"><path d="M3 11.5l17-7-3 15-5.5-4-3 3 .5-4.5L17 7.5 7.5 13z" fill="#fff"/></svg></div>
+    <div class="ch" id="wa" style="left:110px;top:690px;background:#25D366;border-radius:50%"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3z" fill="none" stroke="#fff" stroke-width="2"/><path d="M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.6-2-1-1 .8c-1-.5-2-1.5-2.5-2.5l.8-1-1-2z" fill="#fff"/></svg></div>
+    <div id="orbit"></div>
+    <div id="core">AI</div>
+    <div id="crm"><h4>CRM</h4>
+      <div class="row" id="w1"><i></i>Анна · букет</div>
+      <div class="row" id="w2"><i></i>Ильдар · к 9:00</div>
+      <div class="row" id="w3"><i></i>Марат · оплачено</div>
+    </div>
+    <div class="flow" id="f0"></div><div class="flow" id="f1"></div><div class="flow" id="f2"></div><div class="flow" id="f3"></div>
+  </div>
+
+  <!-- scene 7 -->
+  <div id="cta" class="abs">
+    <div class="t1" id="ct1">Хочешь такого же бота?</div>
+    <div id="word"><div>Б</div><div>О</div><div>Т</div></div>
+    <div class="t2" id="ct2">Напиши это слово в директ, пришлю схему, как его настроить</div>
+    <div class="h" id="cth">@islam.devai</div>
+  </div>
+
+  <div id="subs" class="abs"></div>
+  <div id="ens" class="abs"></div>
+  <div id="vignette"></div>
+  <div id="flash"></div>
+</div>
+
+<script>
+const DATA = /*WORDS*/;
+const EN = /*EN*/;
+const W = DATA.words, DUR = DATA.duration;
+const T = i => W[i].s;
+// seeded PRNG: renders must be deterministic
+let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+const $ = s => document.querySelector(s);
+const OUT = "expo.out", SOFT = "power3.out", IN = "power2.in";
+const tl = gsap.timeline({ paused: true });
+
+/* ---------- build world ---------- */
+const stars = $("#stars");
+for (let i = 0; i < 90; i++) {
+  const s = document.createElement("div"); s.className = "star";
+  const sz = 2 + rnd() * 4; s.style.width = s.style.height = sz + "px";
+  s.style.left = (rnd() * 1080) + "px"; s.style.top = (rnd() * 820) + "px"; s.style.opacity = .3 + rnd() * .7;
+  stars.appendChild(s);
+}
+const NS = "http://www.w3.org/2000/svg";
+const city = $("#city"); const wins = [];
+let x = -10;
+while (x < 1090) {
+  const w = 70 + rnd() * 90, h = 140 + rnd() * 250, y = 420 - h;
+  const b = document.createElementNS(NS, "rect");
+  Object.entries({ x, y, width: w, height: h, fill: rnd() > .5 ? "#120F33" : "#0E0C2A" }).forEach(([k, v]) => b.setAttribute(k, v));
+  city.appendChild(b);
+  for (let wy = y + 18; wy < 400; wy += 34) for (let wx = x + 12; wx < x + w - 18; wx += 26) {
+    if (rnd() < .28) {
+      const r = document.createElementNS(NS, "rect");
+      Object.entries({ x: wx, y: wy, width: 12, height: 18, rx: 2, fill: "#FFC56B" }).forEach(([k, v]) => r.setAttribute(k, v));
+      r.style.opacity = .55 + rnd() * .45; city.appendChild(r); wins.push(r);
+    }
+  }
+  x += w + 4 + rnd() * 10;
+}
+
+/* clock digit strips */
+document.querySelectorAll(".dg .strip").forEach(st => { for (let k = 0; k < 10; k++) { const d = document.createElement("div"); d.textContent = k; st.appendChild(d); } });
+const roll = (id, digit, at, dur = 0.8) => tl.to(`#${id} .strip`, { y: -230 * digit, duration: dur, ease: "power4.out" }, at);
+
+/* particles for the paid stamp */
+const parts = $("#parts"); const P = [];
+for (let i = 0; i < 18; i++) { const p = document.createElement("div"); p.className = "pt"; p.style.background = ["#7CF0B0", "#FFC56B", "#A99CFF"][i % 3]; parts.appendChild(p); P.push(p); }
+
+/* dial: 24h ring with night arc and message dots */
+const dial = $("#dial");
+const arc = (r, a0, a1) => { const p = a => [300 + r * Math.sin(a), 300 - r * Math.cos(a)]; const [x0, y0] = p(a0), [x1, y1] = p(a1); return `M${x0} ${y0} A${r} ${r} 0 ${a1 - a0 > Math.PI ? 1 : 0} 1 ${x1} ${y1}`; };
+const H = h => h / 24 * Math.PI * 2;
+dial.innerHTML = `
+  <circle cx="300" cy="300" r="250" fill="rgba(20,18,50,.85)" stroke="rgba(139,124,255,.35)" stroke-width="4"/>
+  <path id="nightArc" d="${arc(225, H(-2), H(8))}" fill="none" stroke="#8B7CFF" stroke-width="34" stroke-linecap="round" pathLength="1"/>
+  <path id="dayArc" d="${arc(225, H(8), H(22))}" fill="none" stroke="rgba(255,197,107,.35)" stroke-width="34" stroke-linecap="round" pathLength="1"/>
+  ${[0, 6, 12, 18].map(h => { const a = H(h); return `<text x="${300 + 165 * Math.sin(a)}" y="${300 - 165 * Math.cos(a) + 14}" fill="#CFCBEF" font-family="Manrope" font-weight="700" font-size="38" text-anchor="middle">${String(h).padStart(2, "0")}</text>`; }).join("")}
+  <g id="hand"><line x1="300" y1="300" x2="300" y2="120" stroke="#FFE2A8" stroke-width="10" stroke-linecap="round"/><circle cx="300" cy="300" r="16" fill="#FFE2A8"/></g>
+  <g id="dots"></g>`;
+const dots = $("#dots"); const D = [];
+for (let i = 0; i < 9; i++) {
+  const a = H(-1.6 + rnd() * 9.2), r = 225;
+  const c = document.createElementNS(NS, "circle");
+  Object.entries({ cx: 300 + r * Math.sin(a), cy: 300 - r * Math.cos(a), r: 15, fill: "#FFE2A8" }).forEach(([k, v]) => c.setAttribute(k, v));
+  c.style.transformOrigin = `${300 + r * Math.sin(a)}px ${300 - r * Math.cos(a)}px`; dots.appendChild(c); D.push(c);
+}
+
+/* diagram wires */
+const bez = (d, t) => { const n = d.match(/-?[\d.]+/g).map(Number); const u = 1 - t;
+  return [0, 1].map(k => u*u*u*n[k] + 3*u*u*t*n[2+k] + 3*u*t*t*n[4+k] + t*t*t*n[6+k]); };
+const wires = $("#wires");
+const paths = [
+  "M240 405 C 330 405, 360 560, 440 575", "M240 580 C 320 580, 360 580, 430 580", "M240 755 C 330 755, 360 600, 440 590",
+  "M650 580 C 670 580, 670 560, 690 540"];
+wires.innerHTML = paths.map((d, i) => `<path id="wp${i}" d="${d}" fill="none" stroke="rgba(199,190,255,.55)" stroke-width="5" stroke-dasharray="1" stroke-dashoffset="1" pathLength="1"/>`).join("");
+
+/* subtitles: 2-3 words per chunk, break on punctuation */
+const subs = $("#subs"), chunks = [];
+let cur = [];
+W.forEach((w, i) => {
+  cur.push(i);
+  const end = /[.,!?]$/.test(w.w) || i === W.length - 1 || W[i + 1].p !== w.p;
+  if (end || cur.length === 3 || (cur.length === 2 && W[i + 1] && /[.,]$/.test(W[i + 1].w) && W[i + 1].w.length > 7)) { chunks.push(cur); cur = []; }
+});
+chunks.forEach((c, k) => {
+  const el = document.createElement("div"); el.className = "chunk";
+  c.forEach(i => { const s = document.createElement("span"); s.textContent = W[i].w.replace(/[.,]$/, ""); s.id = "w" + i; el.appendChild(s); });
+  subs.appendChild(el);
+  const t0 = T(c[0]) - 0.06;
+  const next = chunks[k + 1];
+  const t1 = next && W[next[0]].p === W[c[0]].p ? T(next[0]) - 0.06 : W[c[c.length - 1]].e + 0.25;
+  tl.fromTo(el, { opacity: 0, y: 26, scale: .94 }, { opacity: 1, y: 0, scale: 1, duration: .22, ease: OUT }, t0);
+  tl.to(el, { opacity: 0, duration: .08, ease: "none" }, t1 - 0.08);
+  c.forEach(i => {
+    tl.fromTo("#w" + i, { color: "#FFFFFF", scale: 1 }, { color: "#FFC56B", scale: 1.04, duration: .12, ease: OUT }, T(i));
+    tl.to("#w" + i, { color: "#FFFFFF", scale: 1, duration: .15, ease: "power1.out" }, W[i].e + 0.02);
+  });
+});
+/* English line */
+const ens = $("#ens");
+EN.forEach(([i0, txt], k) => {
+  const el = document.createElement("div"); el.className = "en"; el.textContent = txt; ens.appendChild(el);
+  const nx = EN[k + 1];
+  const t1 = nx && W[nx[0]].p === W[i0].p ? T(nx[0]) - 0.06 : (() => { let j = i0; while (W[j + 1] && W[j + 1].p === W[i0].p) j++; return W[j].e + 0.25; })();
+  tl.fromTo(el, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: .25, ease: SOFT }, T(i0) - 0.04);
+  tl.to(el, { opacity: 0, duration: .1 }, t1 - 0.1);
+});
+
+/* ---------- camera + ambient ---------- */
+tl.fromTo("#world", { scale: 1.12, y: 40 }, { scale: 1.0, y: 0, duration: 7, ease: "power2.out" }, 0);
+tl.to("#world", { scale: 1.06, duration: 6, ease: "sine.inOut" }, 7);
+tl.to("#world", { scale: 1.0, duration: DUR - 13, ease: "sine.inOut" }, 13);
+document.querySelectorAll(".star").forEach((s, i) => tl.to(s, { opacity: .15, duration: .9 + rnd() * 1.4, ease: "sine.inOut", yoyo: true, repeat: 9 }, rnd() * 2));
+tl.fromTo("#moon", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 1.4, ease: SOFT }, 0);
+tl.fromTo("#city", { y: 80 }, { y: 0, duration: 1.6, ease: OUT }, 0);
+
+/* ---------- S1: 03:12 ---------- */
+tl.fromTo("#notif", { y: -220, opacity: 0, scale: .9 }, { y: 0, opacity: 1, scale: 1, duration: .6, ease: "back.out(1.6)" }, 0.15);
+tl.fromTo("#clock", { opacity: 0, scale: 1.25, filter: "blur(18px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: .55, ease: OUT }, T(2) - .15);
+["d0", "d1", "d2", "d3"].forEach((id, k) => { tl.set(`#${id} .strip`, { y: -230 * ((k * 3 + 5) % 10) }, 0); roll(id, [0, 3, 1, 2][k], T(3) - .1 + k * .07, .9); });
+tl.to("#colon", { opacity: .2, duration: .25, yoyo: true, repeat: 7, ease: "steps(1)" }, T(5));
+tl.fromTo("#flash", { opacity: .0 }, { opacity: .35, duration: .06, yoyo: true, repeat: 1 }, T(3) - .05);
+
+/* ---------- S2: paid ---------- */
+tl.to("#notif", { y: -40, opacity: 0, duration: .3, ease: IN }, T(6) - .1);
+roll("d3", 4, T(8), .7);
+tl.fromTo("#clock", { y: 0 }, { y: -40, duration: .5, ease: SOFT }, T(8));
+tl.fromTo("#stamp", { opacity: 0, scale: .4, rotation: -8 }, { opacity: 1, scale: 1, rotation: 0, duration: .55, ease: "back.out(2.2)" }, T(11) - .05);
+tl.fromTo("#okc path", { strokeDasharray: 1, strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: .35, ease: "power2.out" }, T(11) + .15);
+tl.fromTo("#ring", { opacity: .9, scale: .3 }, { opacity: 0, scale: 1.9, duration: .8, ease: "power2.out", immediateRender: false }, T(11));
+P.forEach((p, i) => { const a = i / P.length * Math.PI * 2 + rnd() * .3, r = 220 + rnd() * 160;
+  tl.fromTo(p, { x: 0, y: 0, opacity: 1, scale: 1 }, { x: Math.cos(a) * r, y: Math.sin(a) * r * .8, opacity: 0, scale: .3, duration: .9, ease: "power3.out", immediateRender: false }, T(11)); });
+
+/* ---------- S3: owner asleep ---------- */
+tl.to(["#clock", "#stamp"], { opacity: 0, y: -80, scale: .9, duration: .35, ease: IN, stagger: .05 }, T(13) - .1);
+tl.fromTo("#dnd", { opacity: 0, y: 60, scale: .9 }, { opacity: 1, y: 0, scale: 1, duration: .5, ease: OUT }, T(14));
+const off = wins.slice().sort(() => 0).filter((_, i) => i % 1 === 0);
+off.forEach((w, i) => tl.to(w, { opacity: 0.05, duration: .12, ease: "none" }, T(15) + (i % 40) * .03 + Math.floor(i / 40) * .02));
+tl.to("#moon", { scale: 1.15, filter: "drop-shadow(0 0 80px rgba(255,214,140,.9))", duration: 1.5, ease: SOFT }, T(15));
+["#z1", "#z2", "#z3"].forEach((z, i) => tl.fromTo(z, { opacity: 0, y: 30, scale: .6 }, { opacity: 1, y: -90 - i * 20, scale: 1 + i * .2, duration: .9, ease: "sine.out" }, T(14) + i * .2));
+tl.to(["#dnd", "#z1", "#z2", "#z3"], { opacity: 0, duration: .3, ease: IN }, T(20) - .35);
+
+/* ---------- S4: phone chat ---------- */
+const mIds = ["#m1", "#ty1", "#m2", "#prods", "#m3", "#ty2", "#m4", "#pay"];
+tl.set(["#s2", "#s4"], { opacity: 1 }, 0);
+mIds.forEach(id => tl.set(id, { opacity: 0, y: 30 }, 0));
+tl.fromTo("#phone", { rotationY: -38, rotationX: 12, y: 700, opacity: 0 }, { rotationY: 0, rotationX: 0, y: 0, opacity: 1, duration: .9, ease: "expo.out" }, T(20) - .3);
+tl.to("#world", { filter: "blur(8px) brightness(.6)", duration: .6 }, T(20) - .3);
+const pop = (id, at) => tl.to(id, { opacity: 1, y: 0, duration: .35, ease: "back.out(1.6)" }, at);
+const hide = (id, at) => tl.to(id, { opacity: 0, scale: .6, duration: .15 }, at);
+pop("#m1", T(20) - .05);
+pop("#ty1", T(20) + .3);
+document.querySelectorAll("#ty1 i, #ty2 i").forEach((d, i) => tl.to(d, { y: -8, duration: .25, yoyo: true, repeat: 3, ease: "sine.inOut" }, (i < 3 ? T(20) + .35 : T(25) + .2) + (i % 3) * .1));
+hide("#ty1", T(22) - .1); pop("#m2", T(22) - .05);
+pop("#prods", T(23));
+tl.fromTo("#pr1", { borderColor: "rgba(255,197,107,0)" }, { borderColor: "rgba(255,197,107,1)", duration: .2 }, T(24));
+tl.fromTo("#pr1", { scale: 1 }, { scale: 1.06, duration: .2, yoyo: true, repeat: 1 }, T(24));
+pop("#m3", T(25) - .1);
+pop("#ty2", T(25) + .15); hide("#ty2", T(27)); pop("#m4", T(27) + .05);
+pop("#pay", T(29));
+tl.to("#msgs", { y: -330, duration: .5, ease: "power3.inOut" }, T(29) - .2);
+tl.fromTo("#tap", { scale: 0, opacity: .9 }, { scale: 6, opacity: 0, duration: .5, ease: "power2.out" }, T(31));
+tl.fromTo("#paid", { yPercent: 100 }, { yPercent: 0, duration: .3, ease: OUT }, T(32));
+tl.to("#phone", { rotationY: 30, x: 0, y: -40, scale: .9, opacity: 0, duration: .45, ease: IN }, W[32].e + .2);
+tl.to("#world", { filter: "blur(0px) brightness(1)", duration: .5 }, W[32].e + .3);
+
+/* ---------- S5: night messages, then the morning ---------- */
+tl.fromTo("#dialWrap", { opacity: 0, scale: .6, rotation: -60 }, { opacity: 1, scale: 1, rotation: 0, duration: .7, ease: OUT }, T(33) - .2);
+tl.fromTo("#nightArc", { strokeDasharray: 1, strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: .8, ease: "power2.inOut" }, T(33));
+tl.fromTo("#dayArc", { strokeDasharray: 1, strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: .8, ease: "power2.inOut" }, T(33) + .2);
+tl.fromTo("#hand", { rotation: 0, svgOrigin: "300 300" }, { rotation: 45, svgOrigin: "300 300", duration: 1.2, ease: "power2.out" }, T(34));
+D.forEach((d, i) => tl.fromTo(d, { scale: 0 }, { scale: 1, duration: .3, ease: "back.out(3)" }, T(35) + i * .12));
+[["#c1", 35], ["#c2", 37], ["#c3", 40]].forEach(([id, wi]) => tl.fromTo(id, { opacity: 0, scale: .5, y: 20 }, { opacity: 1, scale: 1, y: 0, duration: .4, ease: "back.out(2)" }, T(wi) - .05));
+tl.to(["#c1", "#c2", "#c3", "#dialWrap"], { opacity: 0, scale: .8, duration: .35, ease: IN, stagger: .04 }, T(41) - .3);
+// the sun comes up
+tl.to("#dawn", { opacity: 1, duration: 1.2, ease: "power1.inOut" }, T(41) - .2);
+tl.to("#stars", { opacity: 0, duration: .8 }, T(41));
+tl.to("#moon", { y: -300, opacity: 0, duration: 1.2, ease: IN }, T(41) - .2);
+tl.fromTo("#sun", { y: 200, opacity: 0 }, { y: -120, opacity: 1, duration: 1.4, ease: SOFT }, T(42));
+tl.set("#lost", { opacity: 1 }, T(43) - .2);
+tl.fromTo("#replied", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .4, ease: OUT }, T(43) - .2);
+tl.fromTo("#lostb", { opacity: 0, x: -80 }, { opacity: 1, x: 0, duration: .45, ease: OUT }, T(45));
+tl.fromTo("#loss", { opacity: 0, scale: 1.6 }, { opacity: 1, scale: 1, duration: .4, ease: "back.out(2)" }, T(48));
+tl.to("#loss", { x: 10, duration: .05, yoyo: true, repeat: 5, ease: "none" }, T(48) + .4);
+tl.to("#lost", { opacity: 0, y: -60, duration: .35, ease: IN }, T(50) - .35);
+// back to night
+tl.to("#dawn", { opacity: 0, duration: .9 }, T(50) - .4);
+tl.to("#sun", { y: 200, opacity: 0, duration: .8, ease: IN }, T(50) - .4);
+tl.to("#stars", { opacity: 1, duration: .8 }, T(50));
+tl.to("#moon", { y: 0, opacity: 1, scale: 1, duration: 1, ease: SOFT }, T(50));
+tl.to(wins, { opacity: .8, duration: .4, stagger: { each: .004 } }, T(50));
+
+/* ---------- S6: channels -> AI -> CRM ---------- */
+tl.set("#net", { opacity: 1 }, T(50) - .1);
+tl.fromTo("#core", { scale: 0 }, { scale: 1, duration: .6, ease: "back.out(1.8)" }, T(50) - .1);
+tl.fromTo("#orbit", { scale: .3, opacity: 0 }, { scale: 1, opacity: 1, duration: .6, ease: OUT }, T(50));
+tl.to("#orbit", { rotation: 360, duration: DUR - T(50), ease: "none" }, T(50));
+tl.to("#core", { boxShadow: "0 0 180px rgba(139,124,255,.95)", duration: .6, yoyo: true, repeat: 5, ease: "sine.inOut" }, T(51));
+[["#ig", 53, 0], ["#tg", 54, 1], ["#wa", 56, 2]].forEach(([id, wi, k]) => {
+  tl.fromTo(id, { x: -200, opacity: 0, rotation: -20 }, { x: 0, opacity: 1, rotation: 0, duration: .5, ease: "back.out(1.7)" }, T(wi) - .1);
+  tl.to(`#wp${k}`, { strokeDashoffset: 0, duration: .5, ease: "power2.inOut" }, T(wi) + .1);
+});
+tl.fromTo("#crm", { x: 160, opacity: 0 }, { x: 0, opacity: 1, duration: .5, ease: OUT }, T(57));
+tl.to("#wp3", { strokeDashoffset: 0, duration: .35 }, T(57) + .1);
+// leads travel along the wires
+const flowAlong = (el, pathIds, at, dur) => {
+  const st = { t: 0 };
+  tl.fromTo(st, { t: 0 }, { t: 1, duration: dur, ease: "none", onUpdate: () => {
+    const seg = Math.min(pathIds.length - 1, Math.floor(st.t * pathIds.length)), lt = st.t * pathIds.length - seg;
+    const pt = bez(paths[+pathIds[seg].slice(2)], Math.min(1, lt));
+    el.style.transform = `translate(${pt[0]}px, ${pt[1]}px)`; } }, at);
+  tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: .1 }, at);
+  tl.to(el, { opacity: 0, duration: .1 }, at + dur - .1);
+};
+flowAlong($("#f0"), ["wp0", "wp3"], T(58), .9);
+flowAlong($("#f1"), ["wp1", "wp3"], T(59) + .1, .9);
+flowAlong($("#f2"), ["wp2", "wp3"], T(61) - .1, .9);
+[["#w1", 58], ["#w2", 59], ["#w3", 61]].forEach(([id, wi], k) => tl.fromTo(id, { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: .35, ease: "back.out(1.6)" }, T(wi) + .85 + (k === 1 ? .1 : 0)));
+tl.to(["#ig", "#tg", "#wa", "#crm", "#wires"], { opacity: 0, duration: .3, ease: IN }, T(64) - .45);
+tl.to("#core", { scale: 3, opacity: 0, duration: .45, ease: "power3.in" }, T(64) - .4);
+tl.to("#orbit", { opacity: 0, duration: .3 }, T(64) - .4);
+
+/* ---------- S7: CTA ---------- */
+tl.fromTo("#flash", { opacity: 0 }, { opacity: .4, duration: .06, yoyo: true, repeat: 1 }, T(64) - .05);
+tl.set("#cta", { opacity: 1 }, T(64) - .1);
+tl.to("#moon", { opacity: 0, y: -60, duration: .4, ease: IN }, T(64) - .3);
+tl.fromTo("#ct1", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .4, ease: OUT }, T(64) - .05);
+document.querySelectorAll("#word div").forEach((d, i) => tl.fromTo(d, { opacity: 0, rotationX: -90, y: 60 }, { opacity: 1, rotationX: 0, y: 0, duration: .55, ease: "back.out(1.8)" }, T(66) - .15 + i * .09));
+tl.fromTo("#ct2", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .45, ease: SOFT }, T(68));
+tl.fromTo("#cth", { opacity: 0 }, { opacity: 1, duration: .4 }, T(71));
+tl.to("#word div", { y: -14, duration: .5, yoyo: true, repeat: 3, ease: "sine.inOut", stagger: .12 }, T(72));
+
+["#notif", "#clock", "#stamp", "#dnd", "#z1", "#z2", "#z3", "#phone", "#dialWrap", "#c1", "#c2", "#c3", "#lost", "#net", "#cta"].forEach(id => tl.set(id, { opacity: 0 }, 0));
+tl.set("#phone", { opacity: 0 }, 0);
+
+window.__timelines["main"] = tl;
+tl.seek(0);
+</script>
+</body>
+</html>
