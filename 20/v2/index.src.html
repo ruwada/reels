@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<script src="assets/gsap.min.js"></script>
+<style>
+@font-face { font-family: "Unbounded"; src: url("assets/fonts/unbounded-cyr.woff2") format("woff2"); font-weight: 200 900; unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: "Unbounded"; src: url("assets/fonts/unbounded-lat.woff2") format("woff2"); font-weight: 200 900; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Manrope"; src: url("assets/fonts/manrope-cyr.woff2") format("woff2"); font-weight: 200 800; unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: "Manrope"; src: url("assets/fonts/manrope-lat.woff2") format("woff2"); font-weight: 200 800; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2190-2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "JBM"; src: url("assets/fonts/jetbrains-mono-cyrillic-700-normal.woff2") format("woff2"); font-weight: 700; unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: "JBM"; src: url("assets/fonts/jetbrains-mono-latin-700-normal.woff2") format("woff2"); font-weight: 700; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+2190-2193, U+2212, U+FEFF; }
+@font-face { font-family: "JBM"; src: url("assets/fonts/jetbrains-mono-cyrillic-500-normal.woff2") format("woff2"); font-weight: 500; unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: "JBM"; src: url("assets/fonts/jetbrains-mono-latin-500-normal.woff2") format("woff2"); font-weight: 500; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+2190-2193, U+2212, U+FEFF; }
+
+/* reel 20: warm graphite + safety orange, cream paper UI (not the blue blueprint of 19, not the cyan of 20 v1) */
+:root { --ink: #17110E; --ink2: #241A15; --orange: #FF7A2F; --cream: #FFF4E6; --paper: #FFFAF3; --muted: #8C7B6E; --line: rgba(255, 190, 150, .22); }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; }
+#root { width: 1080px; height: 1920px; position: relative; overflow: hidden; font-family: "Manrope", sans-serif; color: var(--cream); }
+.full { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
+video { display: block; width: 1080px; height: 1920px; object-fit: cover; }
+
+#sheet { z-index: 4; background:
+  radial-gradient(rgba(255,190,150,.16) 2px, transparent 2.5px) 0 0 / 40px 40px,
+  radial-gradient(1000px 1200px at 30% 25%, #2A1D16 0%, #17110E 70%); }
+#pip { z-index: 6; position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: hidden; }
+#pip video { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+#frame { z-index: 6; position: absolute; border-radius: 30px; border: 5px solid var(--orange); box-shadow: 0 20px 50px rgba(0,0,0,.5); opacity: 0; }
+#frame i { position: absolute; left: 16px; bottom: 14px; font: 700 18px "JBM"; font-style: normal; color: #fff; background: rgba(0,0,0,.55); padding: 4px 10px; border-radius: 8px; }
+#frame i:before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 5px; background: #FF3B30; margin-right: 8px; vertical-align: 1px; }
+.broll { z-index: 7; overflow: hidden; }
+.flash { z-index: 9; background: #fff; opacity: 0; }
+#shadeTop { z-index: 8; height: 820px; background: linear-gradient(180deg, rgba(14,9,6,.85) 0%, rgba(14,9,6,.55) 55%, rgba(14,9,6,0) 100%); opacity: 0; }
+#shadeLow { z-index: 8; top: 860px; height: 520px; background: linear-gradient(180deg, rgba(14,9,6,0) 0%, rgba(14,9,6,.6) 45%, rgba(14,9,6,.6) 70%, rgba(14,9,6,0) 100%); opacity: 0; }
+.scene { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; z-index: 5; }
+.kick { font: 700 30px "JBM"; color: var(--orange); letter-spacing: .06em; }
+
+/* hook plate under the face */
+.hook { position: absolute; left: 0; width: 1080px; top: 1000px; z-index: 12; text-align: center; }
+.hook .l { font: 900 76px/1.05 "Unbounded"; letter-spacing: -.03em; text-transform: uppercase; text-shadow: 0 6px 30px rgba(0,0,0,.7); }
+.hook .pill { display: inline-block; margin-top: 18px; font: 900 76px/1 "Unbounded"; letter-spacing: -.03em; text-transform: uppercase; color: var(--ink);
+              background: var(--orange); padding: 16px 34px 22px; border-radius: 24px; box-shadow: 0 16px 50px rgba(255,122,47,.45); }
+
+/* CRM window */
+.clock { position: absolute; left: 70px; top: 270px; }
+.clock .n { font: 900 150px/1 "Unbounded"; letter-spacing: -.05em; }
+.clock .c { font: 700 30px "JBM"; color: var(--muted); margin-top: 14px; }
+.clock .c b { color: var(--orange); }
+.win { position: absolute; left: 60px; top: 560px; width: 960px; height: 470px; border-radius: 26px; background: var(--paper); color: #241A15; overflow: hidden;
+       box-shadow: 0 40px 90px rgba(0,0,0,.55), 0 0 0 2px rgba(255,255,255,.4); }
+.win .bar { position: absolute; left: 0; top: 0; width: 960px; height: 66px; background: #F1E6D8; display: flex; align-items: center; padding: 0 24px; gap: 14px; }
+.win .dot { width: 14px; height: 14px; border-radius: 7px; background: #D9C8B4; }
+.win .logo { font: 800 26px "Unbounded"; margin-left: 12px; letter-spacing: -.02em; }
+.win .srch { position: absolute; left: 350px; top: 12px; width: 586px; height: 42px; border-radius: 12px; background: #fff; border: 2px solid #E2D3C1; font: 500 24px "JBM"; color: #241A15; padding: 5px 16px; }
+.win .srch.on { border-color: var(--orange); }
+.win .srch s { text-decoration: none; color: #B4A493; }
+.win .list { position: absolute; left: 0; top: 66px; width: 330px; height: 404px; border-right: 2px solid #EFE3D4; }
+.win .row { height: 72px; display: flex; align-items: center; gap: 14px; padding: 0 22px; font: 700 26px "Manrope"; border-bottom: 1px solid #F1E7DA; }
+.win .row u { width: 40px; height: 40px; border-radius: 20px; background: #E7D7C4; flex: none; text-decoration: none; display: flex; align-items: center; justify-content: center; font: 800 18px "Unbounded"; color: #6B5A4C; }
+.win .row.sel { background: #FFE8D8; }
+.win .pane { position: absolute; left: 356px; top: 80px; width: 580px; }
+.win .nm { font: 800 36px "Manrope"; letter-spacing: -.01em; }
+.win .co { font: 600 24px "Manrope"; color: var(--muted); margin-top: 2px; }
+.win .chip { position: absolute; right: 0; top: 4px; font: 800 22px "Unbounded"; padding: 10px 18px; border-radius: 30px; background: #E7DCCF; color: #6B5A4C; }
+.win .chip.on { background: var(--orange); color: var(--ink); }
+.win .hist { margin-top: 24px; }
+.win .hist div { font: 500 23px "JBM"; color: #4A3B30; padding: 8px 0 8px 18px; border-left: 3px solid #E2D3C1; }
+.win .msg { position: absolute; left: 356px; top: 330px; width: 580px; height: 60px; border-radius: 14px; border: 2px solid #E2D3C1; background: #fff; font: 600 23px "Manrope"; padding: 15px 18px; white-space: nowrap; overflow: hidden; }
+.win .msg.on { border-color: var(--orange); }
+.win .task { position: absolute; left: 356px; top: 400px; width: 580px; height: 56px; border-radius: 14px; background: var(--ink); color: var(--cream); font: 700 23px "JBM"; display: flex; align-items: center; gap: 12px; padding: 0 18px; }
+.win .task b { color: var(--orange); }
+#cursor { position: absolute; z-index: 11; width: 46px; height: 46px; left: 0; top: 0; filter: drop-shadow(0 6px 10px rgba(0,0,0,.4)); }
+.ripple { position: absolute; z-index: 11; width: 70px; height: 70px; margin: -35px 0 0 -35px; border-radius: 35px; border: 4px solid var(--orange); opacity: 0; }
+
+/* which CRM -> which part */
+.q { position: absolute; left: 70px; width: 960px; z-index: 12; font: 900 62px/1.08 "Unbounded"; letter-spacing: -.03em; text-transform: uppercase; text-shadow: 0 6px 30px rgba(0,0,0,.6); }
+.q .s { position: relative; display: inline-block; }
+.q .x { position: absolute; left: -10px; right: -10px; top: 50%; height: 14px; margin-top: -7px; background: var(--orange); border-radius: 7px; transform-origin: 0 50%; }
+.q em { font-style: normal; display: inline-block; color: var(--ink); background: var(--orange); padding: 6px 20px 12px; border-radius: 20px; margin-top: 12px; }
+
+/* agent / human split */
+.st { position: absolute; left: 70px; top: 250px; font: 900 64px/1.06 "Unbounded"; letter-spacing: -.03em; text-transform: uppercase; }
+.st em { font-style: normal; color: var(--orange); }
+.col { position: absolute; top: 545px; width: 450px; border-radius: 26px; padding: 26px 26px 18px; }
+.col.a { left: 60px; background: var(--orange); color: var(--ink); box-shadow: 0 24px 60px rgba(255,122,47,.35); }
+.col.h { left: 570px; background: var(--paper); color: var(--ink); box-shadow: 0 24px 60px rgba(0,0,0,.4); }
+.col .hd { font: 900 40px "Unbounded"; text-transform: uppercase; letter-spacing: -.02em; margin-bottom: 14px; display: flex; align-items: center; gap: 14px; }
+.col .hd svg { width: 48px; height: 48px; }
+.col .it { font: 800 30px/1.15 "Manrope"; padding: 16px 0; border-top: 2px solid rgba(23,17,14,.15); display: flex; gap: 14px; align-items: center; }
+.col .it i { font-style: normal; font: 700 26px "JBM"; width: 36px; flex: none; }
+
+/* CTA */
+.cta { position: absolute; z-index: 12; left: 90px; top: 262px; width: 900px; padding: 34px 36px; border-radius: 34px; background: rgba(23,17,14,.9); border: 3px solid var(--orange);
+       display: flex; align-items: center; gap: 30px; box-shadow: 0 24px 60px rgba(0,0,0,.45); }
+.cta .ico { width: 124px; height: 124px; border-radius: 62px; background: #2AABEE; flex: none; display: flex; align-items: center; justify-content: center; }
+.cta .t1 { font: 800 44px/1.1 "Unbounded"; white-space: nowrap; letter-spacing: -.02em; }
+.cta .t2 { font: 700 30px "JBM"; color: var(--orange); margin-top: 12px; }
+
+/* subtitles: cream caps, the spoken word flips onto a cream chip with ink text */
+#subs { z-index: 20; }
+.g { position: absolute; left: 50px; width: 980px; top: 1080px; display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 16px; }
+.w { position: relative; isolation: isolate; display: inline-block; font: 800 60px/1.18 "Unbounded"; letter-spacing: -.02em; text-transform: uppercase; color: var(--cream); padding: 2px 6px;
+     text-shadow: 0 3px 0 rgba(0,0,0,.4), 0 6px 26px rgba(0,0,0,.7); }
+.w b { position: absolute; left: -10px; right: -10px; top: 4px; bottom: 0; background: var(--cream); border-radius: 14px; z-index: -1; box-shadow: 0 10px 30px rgba(0,0,0,.35); transform: rotate(-2deg); }
+.w i { font-style: normal; position: relative; }
+.w.on i { color: var(--ink); text-shadow: none; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-duration="/*DUR*/" data-width="1080" data-height="1920">
+  <div id="sheet" class="full"></div>
+  <div id="pip"><video id="base" class="clip" src="assets/base.mp4" data-start="0" data-duration="/*DUR*/" muted playsinline></video></div>
+  <div id="frame"><i>LIVE</i></div>
+  <div id="brolls">/*BROLL*/</div>
+  <div id="shadeTop" class="full"></div>
+  <div id="shadeLow" class="full"></div>
+  <div id="fx"></div>
+  <div id="subs" class="full"></div>
+</div>
+<script>
+const D = /*DATA*/;
+const tl = gsap.timeline({ paused: true });
+const $ = (h) => { const t = document.createElement("template"); t.innerHTML = h.trim(); return t.content.firstChild; };
+const fx = document.getElementById("fx");
+const OUT = "expo.out", SOFT = "power3.out", IN = "power2.in", POP = "back.out(1.9)";
+const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+const add = (h, parent = fx) => { const el = $(h); parent.appendChild(el); return el; };
+const show = (el, t0, t1) => { gsap.set(el, { autoAlpha: 0 }); tl.set(el, { autoAlpha: 1 }, t0); if (t1 != null) tl.set(el, { autoAlpha: 0 }, t1); };
+const typeIn = (el, text, t0, cps = 26) => { const o = { n: 0 }; tl.to(o, { n: text.length, duration: text.length / cps, ease: "none",
+  onUpdate: () => { el.textContent = text.slice(0, Math.round(o.n)); } }, t0); };
+
+/* ---------- B-roll ---------- */
+D.broll.forEach((c, k) => {
+  const w = document.getElementById(`br${k}`);
+  show(w, c.at, c.at + c.dur);
+  const v = w.querySelector("video");
+  if (c.in === "sharp") {
+    tl.fromTo(v, { scale: 1.16 }, { scale: 1.0, duration: 0.45, ease: OUT }, c.at);
+    const f = add(`<div class="flash full"></div>`);
+    show(f, c.at, c.at + 0.2);
+    tl.fromTo(f, { opacity: 0.5 }, { opacity: 0, duration: 0.18, ease: "power1.out" }, c.at);
+    tl.fromTo(v, { scale: 1.0 }, { scale: 1.05, duration: c.dur - 0.45, ease: "none" }, c.at + 0.45);
+  } else if (c.in === "smooth") {
+    tl.fromTo(w, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power1.inOut" }, c.at - 0.05);
+    tl.fromTo(v, { scale: 1.06 }, { scale: 1.0, duration: c.dur, ease: "none" }, c.at);
+  } else {
+    tl.fromTo(v, { scale: 1.0 }, { scale: 1.08, duration: c.dur, ease: "none" }, c.at);
+  }
+  if (c.out === "smooth") tl.to(w, { opacity: 0, duration: 0.25, ease: "power1.in" }, c.at + c.dur - 0.25);
+});
+
+/* ---------- PiP: the speaker shrinks into a rounded "live" tile top-right while a scene plays ---------- */
+const pip = document.getElementById("pip"), base = document.getElementById("base"), sheet = document.getElementById("sheet"), frame = document.getElementById("frame");
+gsap.set(sheet, { autoAlpha: 0 });
+const BX = 790, BY = 210, BW = 220, BH = 300, PS = 0.42, FX = 540, FY = 600;
+gsap.set(frame, { left: BX, top: BY, width: BW, height: BH });
+const CLIP0 = "inset(0px 0px 0px 0px round 0px)", CLIP1 = `inset(${BY}px ${1080 - BX - BW}px ${1920 - BY - BH}px ${BX}px round 30px)`;
+gsap.set(pip, { clipPath: CLIP0 });
+function pipScene(a, b) {
+  tl.set(sheet, { autoAlpha: 1 }, a);
+  tl.fromTo(sheet, { opacity: 0 }, { opacity: 1, duration: 0.35, ease: "power1.out" }, a);
+  tl.fromTo(pip, { clipPath: CLIP0 }, { clipPath: CLIP1, duration: 0.5, ease: "power3.inOut" }, a);
+  tl.fromTo(base, { scale: 1, x: 0, y: 0 }, { scale: PS, x: BX + BW / 2 - FX * PS, y: BY + BH / 2 - FY * PS, duration: 0.5, ease: "power3.inOut" }, a);
+  tl.fromTo(frame, { opacity: 0, scale: 1.25 }, { opacity: 1, scale: 1, duration: 0.3, ease: "power2.out" }, a + 0.3);
+  tl.to(frame, { opacity: 0, duration: 0.15 }, b - 0.42);
+  tl.to(pip, { clipPath: CLIP0, duration: 0.42, ease: "power3.inOut" }, b - 0.42);
+  tl.to(base, { scale: 1, x: 0, y: 0, duration: 0.42, ease: "power3.inOut" }, b - 0.42);
+  tl.to(sheet, { opacity: 0, duration: 0.3, ease: "power1.in" }, b - 0.3);
+  tl.set(sheet, { autoAlpha: 0, opacity: 1 }, b);
+}
+tl.fromTo(sheet, { backgroundPosition: "0 0,0 0" }, { backgroundPosition: "0 -400px,0 0", duration: D.dur, ease: "none" }, 0);
+
+const shade = document.getElementById("shadeTop"), shadeLow = document.getElementById("shadeLow");
+function shadeOn(el, a, b) { tl.to(el, { opacity: 1, duration: 0.3 }, a); tl.to(el, { opacity: 0, duration: 0.3 }, b - 0.3); }
+
+/* ---------- 1. hook: plate under the face (the glass «CRM» behind his head is in base.mp4) ---------- */
+{
+  const H = D.text.hook, t = D.t;
+  shadeOn(shadeLow, 0, t.hookEnd);
+  const el = add(`<div class="hook"><div class="l" id="h1">${esc(H.l1)}</div><div class="pill" id="hp">${esc(H.pill)}</div></div>`);
+  show(el, 0, t.hookEnd);
+  tl.fromTo("#h1", { opacity: 0, y: 50, scale: .92 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: OUT }, 0.15);
+  gsap.set("#hp", { autoAlpha: 0 });
+  tl.set("#hp", { autoAlpha: 1 }, t.hookPill - 0.05);
+  tl.fromTo("#hp", { scale: 0.4, rotation: -8 }, { scale: 1, rotation: -2, duration: 0.45, ease: POP }, t.hookPill - 0.05);
+  tl.to(el, { opacity: 0, y: 40, duration: 0.2, ease: IN }, t.hookEnd - 0.2);
+}
+
+/* ---------- 2. the manual CRM routine: every spoken action happens on screen ---------- */
+{
+  const C = D.text.crm, a = D.t.crmA, b = D.t.crmB, [tOpen, tSearch, tHist, tStatus, tMsg, tTask] = D.t.crm;
+  pipScene(a, b);
+  const sc = add(`<div class="scene">
+    <div class="clock"><div class="kick" style="margin-bottom:18px">${esc(C.kicker)}</div><div class="n" id="ck">09:00</div><div class="c">кликов: <b id="cl">0</b></div></div>
+    <div class="win" id="win">
+      <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="logo">CRM</span>
+        <div class="srch" id="srch"><s id="sph">Поиск клиента…</s><span id="sq"></span></div></div>
+      <div class="list">${C.list.map((n, i) => `<div class="row" id="r${i}"><u>${esc(n[0])}</u>${esc(n)}</div>`).join("")}</div>
+      <div class="pane" id="pane"><div class="nm">${esc(C.client)}</div><div class="co">${esc(C.company)}</div><div class="chip" id="chip">${esc(C.status_from)}</div>
+        <div class="hist">${C.history.map((h, i) => `<div id="hh${i}">${esc(h)}</div>`).join("")}</div></div>
+      <div class="msg" id="msg"></div>
+      <div class="task" id="task"><b>＋ задача</b><span id="tt"></span></div>
+    </div></div>`);
+  show(sc, a, b);
+  const cur = add(`<svg id="cursor" viewBox="0 0 24 24"><path d="M4 2l15 9-6.5 1.6L16 20l-3 1.4-3.4-7.3L4 18z" fill="#fff" stroke="#17110E" stroke-width="1.6" stroke-linejoin="round"/></svg>`);
+  show(cur, tOpen + 0.3, b - 0.4);
+  // window and clock
+  tl.fromTo("#win", { opacity: 0, y: 120, scale: 0.9, rotationX: 18, transformPerspective: 1600 }, { opacity: 1, y: 0, scale: 1, rotationX: 0, duration: 0.55, ease: OUT }, tOpen - 0.05);
+  tl.fromTo(sc.querySelector(".clock"), { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.4, ease: SOFT }, a + 0.3);
+  const ck = sc.querySelector("#ck"), cl = sc.querySelector("#cl"), o = { m: 9 * 60, c: 0 };
+  tl.to(o, { m: 18 * 60 + 40, c: 147, duration: b - a - 0.6, ease: "power1.in",
+    onUpdate: () => { const h = Math.floor(o.m / 60), mm = Math.floor(o.m % 60); ck.textContent = `${String(h).padStart(2, "0")}:${String(mm).padStart(2, "0")}`; cl.textContent = Math.round(o.c); } }, a + 0.4);
+  // hide later parts until their words
+  ["#pane", "#msg", "#task"].forEach((s) => gsap.set(sc.querySelector(s), { opacity: 0 }));
+  C.history.forEach((_, i) => gsap.set(sc.querySelector(`#hh${i}`), { opacity: 0 }));
+  const click = (x, y, t0) => {
+    tl.to(cur, { x: x, y: y, duration: 0.32, ease: "power2.inOut" }, t0 - 0.34);
+    tl.to(cur, { scale: 0.82, duration: 0.06, yoyo: true, repeat: 1, transformOrigin: "0 0" }, t0);
+    const r = add(`<div class="ripple" style="left:${x}px;top:${y}px"></div>`);
+    tl.fromTo(r, { opacity: 0.9, scale: 0.3 }, { opacity: 0, scale: 1.3, duration: 0.4, ease: "power2.out" }, t0);
+  };
+  gsap.set(cur, { x: 540, y: 1240 });
+  // search the client
+  click(660, 590, tSearch - 0.05);
+  tl.set(sc.querySelector("#srch"), { className: "srch on" }, tSearch);
+  tl.set(sc.querySelector("#sph"), { display: "none" }, tSearch);
+  typeIn(sc.querySelector("#sq"), C.search, tSearch + 0.05, 14);
+  [1, 2, 3, 4].forEach((i) => tl.to(sc.querySelector(`#r${i}`), { opacity: 0.25, duration: 0.2 }, tSearch + 0.4));
+  click(230, 665, tSearch + 0.6);
+  tl.set(sc.querySelector("#r0"), { className: "row sel" }, tSearch + 0.6);
+  tl.to(sc.querySelector("#pane"), { opacity: 1, duration: 0.25 }, tSearch + 0.62);
+  // history
+  click(700, 780, tHist);
+  C.history.forEach((_, i) => tl.fromTo(sc.querySelector(`#hh${i}`), { opacity: 0, x: 30 }, { opacity: 1, x: 0, duration: 0.25, ease: SOFT }, tHist + 0.05 + i * 0.12));
+  // status
+  click(930, 660, tStatus);
+  const chip = sc.querySelector("#chip");
+  tl.to(chip, { scale: 1.15, duration: 0.1, yoyo: true, repeat: 1 }, tStatus + 0.05);
+  tl.call(() => {}, null, tStatus);
+  tl.set(chip, { className: "chip on", textContent: C.status_to }, tStatus + 0.15);
+  // message
+  click(700, 915, tMsg - 0.1);
+  tl.to(sc.querySelector("#msg"), { opacity: 1, duration: 0.2 }, tMsg - 0.15);
+  tl.set(sc.querySelector("#msg"), { className: "msg on" }, tMsg);
+  typeIn(sc.querySelector("#msg"), C.msg, tMsg, 34);
+  // next task
+  click(900, 985, tTask);
+  tl.fromTo(sc.querySelector("#task"), { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.3, ease: POP }, tTask + 0.05);
+  typeIn(sc.querySelector("#tt"), C.task, tTask + 0.2, 40);
+  tl.to("#win", { y: 30, opacity: 0, duration: 0.3, ease: IN }, b - 0.45);
+}
+
+/* ---------- 3. which CRM to buy -> which part to give to AI (the headline wall before it is in base.mp4) ---------- */
+{
+  const Q = D.text.q, [a, c, b] = D.t.q;
+  shadeOn(shade, a, b);
+  const l1 = add(`<div class="q" style="top:230px;white-space:nowrap"><span class="s">${esc(Q.old)}<i class="x" id="qx"></i></span></div>`);
+  const l2 = add(`<div class="q" style="top:350px">${esc(Q.new_a)}<br><em>${esc(Q.new_b)}</em></div>`);
+  show(l1, a, b); show(l2, c, b);
+  tl.fromTo(l1, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.3, ease: OUT }, a + 0.02);
+  tl.fromTo("#qx", { scaleX: 0 }, { scaleX: 1, duration: 0.25, ease: "power2.inOut" }, c - 0.05);
+  tl.to(l1, { opacity: 0.45, duration: 0.2 }, c + 0.15);
+  tl.fromTo(l2, { opacity: 0, y: 40, scale: .95 }, { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: POP }, c + 0.1);
+  tl.to([l1, l2], { opacity: 0, duration: 0.2 }, b - 0.2);
+}
+
+/* ---------- 4. what goes to the agent, what stays with a person ---------- */
+{
+  const S = D.text.split, [a, ca, ch, b] = D.t.split;
+  pipScene(a, b);
+  const ok = `<svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="#17110E"/><path d="M14 25l7 7 13-15" fill="none" stroke="#FF7A2F" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  const hand = `<svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="#17110E"/><circle cx="24" cy="19" r="7" fill="#FFF4E6"/><path d="M11 38c2-8 8-11 13-11s11 3 13 11" fill="#FFF4E6"/></svg>`;
+  const sc = add(`<div class="scene"><div class="st" id="stt">Что отдать<br><em>агенту</em>,<br>а что — нет</div>
+    <div class="col a" id="ca"><div class="hd">${ok}${esc(S.agent)}</div>${S.agent_items.map((x) => `<div class="it"><i>✓</i>${esc(x)}</div>`).join("")}</div>
+    <div class="col h" id="ch"><div class="hd">${hand}${esc(S.human)}</div>${S.human_items.map((x) => `<div class="it"><i>✋</i>${esc(x)}</div>`).join("")}</div></div>`);
+  show(sc, a, b);
+  tl.fromTo(sc.querySelector("#stt"), { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.45, ease: OUT }, a + 0.25);
+  [["#ca", ca - 0.5], ["#ch", ch - 0.65]].forEach(([s, t0], j) => {
+    const col = sc.querySelector(s);
+    tl.fromTo(col, { opacity: 0, y: 80, rotation: j ? 3 : -3 }, { opacity: 1, y: 0, rotation: j ? 1 : -1, duration: 0.45, ease: "back.out(1.4)" }, t0);
+    tl.fromTo(col.querySelectorAll(".it"), { opacity: 0, x: j ? 30 : -30 }, { opacity: 1, x: 0, duration: 0.25, stagger: 0.12, ease: SOFT }, t0 + 0.2);
+  });
+}
+
+/* ---------- 5. CTA: the guide in Telegram, held on the last frame ---------- */
+{
+  const C = D.text.cta, a = D.t.cta;
+  shadeOn(shade, a, D.dur + 0.3);
+  const el = add(`<div class="cta"><div class="ico"><svg width="70" height="70" viewBox="0 0 24 24"><path d="M21.5 3.6 2.9 10.8c-1 .4-1 1.8.1 2.1l4.7 1.5 1.8 5.6c.3.9 1.4 1.1 2 .4l2.6-2.6 4.9 3.6c.8.6 1.9.1 2.1-.8l3-15.3c.2-1.2-.9-2.1-2.1-1.6zM9.6 14.6l8.6-7.7-6.9 9.2-.3 3.2-1.4-4.7z" fill="#fff"/></svg></div><div><div class="t1">${esc(C.l1)}</div><div class="t2">${esc(C.l2)} ↑</div></div></div>`);
+  show(el, a, null);
+  tl.fromTo(el, { opacity: 0, y: -60, scale: .9 }, { opacity: 1, y: 0, scale: 1, duration: 0.55, ease: POP }, a + 0.05);
+  tl.fromTo(el.querySelector(".ico"), { rotation: -20 }, { rotation: 0, duration: 0.8, ease: "elastic.out(1,.5)" }, a + 0.2);
+  tl.to(el, { scale: 1.04, duration: 0.5, yoyo: true, repeat: 3, ease: "sine.inOut" }, a + 0.9);
+}
+
+/* ---------- subtitles ---------- */
+{
+  const subs = document.getElementById("subs");
+  D.groups.forEach((g) => {
+    const el = add(`<div class="g">${g.words.map((w) => `<span class="w"><b></b><i>${esc(w.w)}</i></span>`).join("")}</div>`, subs);
+    show(el, g.s, g.e);
+    const spans = el.querySelectorAll(".w");
+    g.words.forEach((w, i) => {
+      const sp = spans[i], chip = sp.querySelector("b");
+      tl.fromTo(sp, { opacity: 0, y: 24, scale: 0.75 }, { opacity: 1, y: 0, scale: 1, duration: 0.2, ease: "back.out(2.4)" }, w.s - 0.04);
+      tl.fromTo(chip, { opacity: 0, scaleY: 0.4 }, { opacity: 1, scaleY: 1, duration: 0.12, ease: "power2.out" }, w.s - 0.02);
+      tl.set(sp, { className: "w on" }, w.s - 0.02);
+      const nx = i + 1 < g.words.length ? g.words[i + 1].s - 0.02 : g.e;
+      tl.set(chip, { opacity: 0 }, nx);
+      tl.set(sp, { className: "w" }, nx);
+    });
+  });
+}
+
+window.__timelines = window.__timelines || {};
+window.__timelines["main"] = tl;
+tl.seek(0);
+</script>
+</body>
+</html>
