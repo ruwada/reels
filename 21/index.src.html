@@ -329,7 +329,7 @@ function station(svg, sc, x, y, color, label, at, right = false) {
 {
   const C = X.cta, a = T.cta;
   shadeOn(a, D.dur + 0.3);
-  const t1 = esc(C.l1).replace("№4", "<em>№4</em>");
+  const t1 = esc(C.l1).replace("№14", "<em>№14</em>");
   const el = add(`<div class="cta"><div class="ico"><svg width="58" height="58" viewBox="0 0 24 24"><path d="M21.5 3.6 2.9 10.8c-1 .4-1 1.8.1 2.1l4.7 1.5 1.8 5.6c.3.9 1.4 1.1 2 .4l2.6-2.6 4.9 3.6c.8.6 1.9.1 2.1-.8l3-15.3c.2-1.2-.9-2.1-2.1-1.6zM9.6 14.6l8.6-7.7-6.9 9.2-.3 3.2-1.4-4.7z" fill="#fff"/></svg></div><div><div class="t1">${t1}</div><div class="t2">${esc(C.l2)} ↑</div></div></div>`);
   show(el, a, null);
   tl.fromTo(el, { opacity: 0, y: -60, scale: .9 }, { opacity: 1, y: 0, scale: 1, duration: 0.55, ease: POP }, a + 0.05);

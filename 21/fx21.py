@@ -8,7 +8,7 @@ person matte never meets a framing jump.
   checklist  0.00-7.13   «подключил всё»: agent, model, CRM tick in; «продажи» gets a red cross
   glass      9.70-13.50  giant glass word СЦЕНАРИЙ on the wall behind his head
   phone      14.93-16.87 a client's «Сколько стоит?» lands in a phone beside him
-  phone_cta  58.83-63.73 the Telegram channel post with guide #4
+  phone_cta  58.83-63.73 the Telegram channel post with guide #14
 """
 import json, os, subprocess, sys
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "tools", "fx"))
@@ -86,7 +86,7 @@ JOBS = {
                         dict(t=16.45, html='<span style="opacity:.75">AI-агент печатает…</span>')],
                   tap=99, tap_xy=(0, 0)),
     "phone_cta": dict(mod=phone, t0=58.8333, t1=63.7333, enter=58.88, chat="Islam Dev AI",
-                      msgs=[dict(t=59.30, html='<b>Гайд №4</b>Структура сценария AI-агента: этапы воронки, вопросы, '
+                      msgs=[dict(t=59.30, html='<b>Гайд №14</b>Структура сценария AI-агента: этапы воронки, вопросы, '
                                                'ответы на «дорого».'),
                             dict(t=59.95, html='<div class=file style="margin:0"><div class=ic>PDF</div><div><div class=fn>'
                                                'Структура сценария<br>AI-агента.pdf</div><div class=fs>канал · закреп</div></div></div>'),
