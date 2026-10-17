@@ -33,7 +33,7 @@ t = {"hookPill": cue(txt["hook"]["pill_cue"], 0, 3), "hookEnd": seg[0][1]}
 t["crm"] = [cue(v, 3, 9.5) for v in txt["crm"]["cues"].values()]
 t["crmA"], t["crmB"] = round(t["crm"][0] - 0.12, 3), seg[1][1]
 t["q"] = [seg[10][0], cue(txt["q"]["cue"], txt["q"]["lo"], 37), seg[10][1]]
-t["split"] = [39.52, cue(txt["split"]["agent_cue"], 39, 42), cue(txt["split"]["human_cue"], 41, 43), seg[11][1]]
+t["split"] = [39.02, cue(txt["split"]["agent_cue"], 39, 42), cue(txt["split"]["human_cue"], 41, 43), seg[11][1]]
 t["cta"] = round(seg[12][0] - 0.02, 3)
 
 # subtitle groups: 1-3 words, never two groups at once, hidden where an effect carries the words

@@ -4,7 +4,7 @@ usage: mix.py VIDEO VOICE.wav OUT.mp4"""
 import subprocess, sys
 import numpy as np
 SR = 48000; rng = np.random.default_rng(20)
-WHOOSH_AT, GAIN = [3.73, 39.52], 0.07   # rule: minimal, only on long scene transitions
+WHOOSH_AT, GAIN = [3.63, 39.02], 0.07   # rule: minimal, only on long scene transitions
 
 
 def bp(x, lo, hi):

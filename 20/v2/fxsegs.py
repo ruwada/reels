@@ -116,18 +116,20 @@ JOBS["wall"] = tuple(segs[9]["out"])
 def wall():
     a, b = JOBS["wall"]
     m = mod("08_headline_wall")
-    heads = ["Какую CRM купить?", "amoCRM или Битрикс24?", "Сравнение CRM 2026", "Тариф на 10 менеджеров",
-             "Внедрение CRM за 3 месяца", "Опять переезжаем на новую CRM", "Обучить отдел продаж CRM",
-             "Какая CRM лучше для малого бизнеса?"]
-    run("wall", m, Clip(base, a, b), dict(t0=a, start=word("вопрос", 32, 34) - 0.05, every=0.2, headlines=heads,
-                                            spots=[(240, 330), (560, 290), (845, 350), (235, 690), (845, 670), (240, 1010), (845, 1000), (545, 560)]),
+    # close-up: notes go to the free wall on both sides of his head, never behind it (the matte edge of the
+    # head over a card reads as a halo), and he keeps his size (shrinking left the shoulders in the plate)
+    m.STYLES = [x.replace("width:330px", "width:250px").replace("width:360px", "width:260px").replace("width:320px", "width:250px")
+                .replace("44px", "36px").replace("38px", "32px").replace("30px", "26px") for x in m.STYLES]
+    heads = ["Какую CRM купить?", "amoCRM или Битрикс24?", "Тариф на 10 менеджеров", "Сравнение CRM 2026"]
+    run("wall", m, Clip(base, a, b), dict(t0=a, start=word("вопрос", 32, 34) - 0.05, every=0.32, headlines=heads, person_scale=1.0,
+                                            spots=[(170, 360), (900, 330), (175, 690), (895, 660)]),
         swap={"#FFE34D": "#FFB27A"})
 
 
-names = only or list(JOBS)
+names = only or list(JOBS)  # «wall --splice»: re-render one effect, then splice all
 for n in names:
     globals()[n]()
-if preview or only:
+if preview or (only and "--splice" not in sys.argv):
     sys.exit()
 
 # splice: base with every effect span replaced (frame-exact, same 30 fps grid)

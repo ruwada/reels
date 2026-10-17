@@ -56,6 +56,12 @@ for k, idx in enumerate(sent):
         if nxt - words[idx[-1]]["e"] <= GAP_MAX:
             segs[-1]["src"][1] = round((words[idx[-1]]["e"] + nxt) / 2, 3)
 
+# where a pause was not trimmed the next span must start where this one ended: an overlap repeats ~0.1 s of
+# sound and picture at the join (heard as a stutter on «а теперь», «человеку»)
+for p_, n_ in zip(segs, segs[1:]):
+    if n_["src"][0] < p_["src"][1]:
+        n_["src"][0] = p_["src"][1]
+
 # snap to frames and lay out on the new axis
 fps = 30
 t = 0.0
