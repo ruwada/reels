@@ -28,10 +28,10 @@ DEMO = dict(t0=3.00, t1=5.25, start=3.10, every=0.17,
                        "Задач больше, людей не хватает", "Снова собеседования", "Команда растёт, прибыль — нет"])
 
 
-def frames(clip, html, t0, start, every, headlines, person_scale=0.84, seed=3):
+def frames(clip, html, t0, start, every, headlines, person_scale=0.84, seed=3, spots=None):
     rnd = random.Random(seed)
     imgs = [note(html, h, STYLES[j % 4], j % 4) for j, h in enumerate(headlines)]
-    spots = [(205, 340), (545, 300), (880, 350), (190, 680), (890, 660), (210, 1010),
+    spots = spots or [(205, 340), (545, 300), (880, 350), (190, 680), (890, 660), (210, 1010),
              (880, 1000), (190, 1330), (890, 1320), (545, 560)]
     cards = [(spots[j % len(spots)], imgs[j], rnd.uniform(-7, 7)) for j in range(len(imgs))]
     mattes = person_mattes(clip)

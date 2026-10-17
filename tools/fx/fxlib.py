@@ -96,6 +96,19 @@ def write_video(frames, out, audio=None, crf=16):
 
 # ---------------------------------------------------------------- person matte
 _SESS = None
+_ISNET = None
+# "human": u2net_human_seg only. "human+objects": also ISNet general (rembg isnet-general-use.onnx), so things
+# he holds (a cup, a phone) stay in front instead of getting cut out with the background.
+MATTE_MODEL = os.environ.get("FX_MATTE", "human")
+
+
+def _isnet():
+    global _ISNET
+    if _ISNET is None:
+        import onnxruntime as ort
+        _ISNET = ort.InferenceSession(str(MODELS / "isnet-general-use.onnx"), providers=["CPUExecutionProvider"])
+    return _ISNET
+
 
 def _u2net():
     global _SESS
@@ -120,6 +133,12 @@ def matte_frame(bgr):
     o = s.run(None, {s.get_inputs()[0].name: x.transpose(2, 0, 1)[None].astype(np.float32)})[0][0, 0]
     o = (o - o.min()) / max(1e-6, o.max() - o.min())
     m = cv2.resize(o.astype(np.float32), (w, h), interpolation=cv2.INTER_CUBIC)
+    if MATTE_MODEL == "human+objects":
+        r = cv2.cvtColor(cv2.resize(bgr, (1024, 1024), interpolation=cv2.INTER_AREA), cv2.COLOR_BGR2RGB) - 0.5
+        si = _isnet()
+        q = si.run(None, {si.get_inputs()[0].name: r.transpose(2, 0, 1)[None].astype(np.float32)})[0][0, 0]
+        q = np.clip(((q - q.min()) / max(1e-6, q.max() - q.min()) - 0.1) / 0.6, 0, 1)
+        m = np.maximum(m, cv2.resize(q.astype(np.float32), (w, h), interpolation=cv2.INTER_CUBIC))
     g = cv2.cvtColor(bgr, cv2.COLOR_BGR2GRAY)
     small = (w // 2, h // 2)
     gm = guided_filter(cv2.resize(g, small), cv2.resize(m, small), r=6, eps=2e-4)
@@ -129,7 +148,8 @@ def matte_frame(bgr):
 def person_mattes(clip):
     """List of mattes for every frame of `clip`. Cached per source frame on disk, so any segment that
     overlaps an earlier one reuses its mattes."""
-    ph = hashlib.md5(f"{os.path.abspath(clip.path)}|{clip.size}".encode()).hexdigest()[:10]
+    ph = hashlib.md5(f"{os.path.abspath(clip.path)}|{clip.size}".encode() +
+                     (b"" if MATTE_MODEL == "human" else MATTE_MODEL.encode())).hexdigest()[:10]
     d = CACHE / f"matte-{ph}"
     d.mkdir(parents=True, exist_ok=True)
     base = int(round(clip.t0 * FPS))

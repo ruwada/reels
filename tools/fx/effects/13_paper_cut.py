@@ -56,7 +56,7 @@ def letter(html, ch, j, rnd):
                       "body{display:flex;align-items:center;justify-content:center;height:100vh}", size=(200, 220))
 
 
-def frames(clip, html, t0, person_scale, lines, letter_dt, circle):
+def frames(clip, html, t0, person_scale, lines, letter_dt, circle, lines_y=330):
     rnd = random.Random(5)
     bg = page()
     tiles = []
@@ -64,7 +64,7 @@ def frames(clip, html, t0, person_scale, lines, letter_dt, circle):
         n = len(word)
         for j, ch in enumerate(word):
             x = W / 2 - 40 + (j - (n - 1) / 2) * 112
-            y = 330 + li * 160
+            y = lines_y + li * 160
             tiles.append((letter(html, ch, j, rnd), x, y, rnd.uniform(-9, 9), ts + j * letter_dt))
     mattes = person_mattes(clip)
     for i in range(len(clip)):
@@ -94,6 +94,6 @@ def frames(clip, html, t0, person_scale, lines, letter_dt, circle):
             over(out, transform(img, lerp(1.6, 1.0, ease_out_back(k)) * 0.84, ang + jitter, tx=x, ty=y))
         if t >= circle:  # red marker circle drawn on around the letters
             p = min(1, (t - circle) / 0.3)
-            cv2.ellipse(out, (W // 2 - 40, 410), (450, 175), -3 + r.normal(0, 0.6), 200, 200 + 360 * p, (0.18, 0.1, 0.85), 7,
+            cv2.ellipse(out, (W // 2 - 40, lines_y + 80), (450, 175), -3 + r.normal(0, 0.6), 200, 200 + 360 * p, (0.18, 0.1, 0.85), 7,
                         cv2.LINE_AA)
         yield out

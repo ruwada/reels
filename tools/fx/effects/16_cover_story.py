@@ -15,7 +15,7 @@ body{width:1080px;height:1920px;color:#FFF8EE}
 .cl{position:absolute;font:700 40px/1.1 'Playfair Display';width:300px;text-shadow:0 2px 12px rgba(0,0,0,.4)}
 .cl small{display:block;font:700 20px Manrope;letter-spacing:.2em;color:#FFD84D;margin-bottom:6px}
 #iss{position:absolute;left:70px;top:470px;font:600 22px Manrope;letter-spacing:.2em;opacity:.9}
-#bar{position:absolute;right:150px;top:1520px;width:150px;height:96px;background:#fff;padding:8px;
+#bar{position:absolute;right:150px;top:1440px;width:150px;height:96px;background:#fff;padding:8px;
      background-image:repeating-linear-gradient(90deg,#111 0 3px,transparent 3px 5px,#111 5px 6px,transparent 6px 10px);
      background-clip:content-box;border:8px solid #fff}
 """
@@ -39,7 +39,8 @@ DEMO = dict(t0=14.15, t1=15.95, mast_text="ШКОЛА", mast=14.25, kick=14.70, 
             bar=15.3)
 
 
-def frames(clip, html, t0, mast_text, mast, kick, kicker, issue, lines, bar):
+def frames(clip, html, t0, mast_text, mast, kick, kicker, issue, lines, bar, ink=None):
+    """ink: colour of the masthead, kicker and issue line (default cream; use a dark one on a light wall)."""
     m_html = "".join(f"<span><i>{c}</i></span>" for c in mast_text)
     cl = "".join(f'<div class=cl style="left:{x}px;top:{y}px"><small>{a}</small>{b}</div>' for a, b, _, x, y in lines)
     back_body = f'<div id=kick>{kicker}</div><div id=mast>{m_html}</div><div id=iss>{issue}</div>'
@@ -48,7 +49,8 @@ def frames(clip, html, t0, mast_text, mast, kick, kicker, issue, lines, bar):
     times = [t0 + i / FPS for i in range(len(clip))]
     mattes = person_mattes(clip)
     js = f"const CFG={cfg};" + JS
-    for i, (ui, fr) in enumerate(zip(html.frames(back_body, CSS, js, times), html.frames(front_body, CSS, js, times))):
+    back_css = CSS + (f"#mast,#kick,#iss{{color:{ink};text-shadow:none}}" if ink else "")
+    for i, (ui, fr) in enumerate(zip(html.frames(back_body, back_css, js, times), html.frames(front_body, CSS, js, times))):
         f = clip.frame(i)
         graded = (f - 0.5) * 1.12 + 0.5                  # a touch of "print" contrast
         back = graded.copy()

@@ -41,7 +41,7 @@ def frames(clip, html, t0, start, dur, handle, caption):
     top = int(hy + 1.25 * hw * 0.84)                      # the frame's top edge crosses the face: the head breaks out
     fw = 640
     fh = int(min(H - 300 - top, fw * 16 / 9 * 0.9))
-    x0 = int(np.clip(hx - fw / 2, 60, W - 60 - fw))
+    x0 = int(np.clip(hx - fw / 2, 60, W - 130 - fw))
     final = np.array([x0, top, x0 + fw, top + fh], float)
     ui = ui_overlay(html, fw, fh, handle, caption)
     for i in range(len(clip)):

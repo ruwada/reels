@@ -24,8 +24,9 @@ def tile(html, path=None, note=None):
 
 
 def words_img(html, parts):
-    css = (CSS + "body{flex-direction:column;color:#fff;text-shadow:0 4px 18px rgba(0,0,0,.6)}"
-           ".s{font:700 52px Manrope}.b{font:900 104px/1.05 Unbounded;letter-spacing:-.02em}")
+    css = (CSS + "body{flex-direction:column;color:#fff;text-shadow:0 4px 18px rgba(0,0,0,.6);"
+           "padding:0 130px 0 60px;box-sizing:border-box;text-align:center}"
+           ".s{font:700 52px Manrope}.b{font:900 92px/1.05 Unbounded;letter-spacing:-.02em}")
     return [html.still("".join(f'<div class={c}>{t}</div>' for t, _, c in parts[:n]), css, size=(W, 300))
             for n in range(1, len(parts) + 1)]
 

@@ -10,10 +10,14 @@ DEMO = dict(t0=65.90, t1=68.00, src_size=(1620, 2880), person_zoom=1.30, start=6
             text=("ОСТАЁТСЯ ЗА ЧЕЛОВЕКОМ", 67.15))
 
 
-def frames(clip, html, t0, person_zoom, start, dur, text):
+def frames(clip, html, t0, person_zoom, start, dur, text, fg_bottom=None, text_y=1330):
+    """fg_bottom: rows below this y (output px) move with him, e.g. a table and cup in front of him."""
     big = clip.size[0] / W
     small = Clip(clip.path, clip.t0, clip.t1)
     mattes = person_mattes(small)
+    if fg_bottom:
+        ramp = np.clip((np.arange(H, dtype=np.float32) - fg_bottom) / 40 + 0.5, 0, 1)[:, None]
+        mattes = [np.maximum(m, ramp) for m in mattes]
     heads = head_track(mattes)
     hx, hy, hw = np.median(np.array(heads), axis=0)
     fx, fy = hx, hy + 0.9 * hw
@@ -42,5 +46,5 @@ def frames(clip, html, t0, person_zoom, start, dur, text):
         m = place(mattes[i], person_zoom, 1.0)
         out = bg * (1 - m[..., None]) + person * m[..., None]
         if t >= text[1]:
-            over(out, timg, 0, 1330, opacity=prog(t, text[1], text[1] + 0.3))
+            over(out, timg, 0, text_y, opacity=prog(t, text[1], text[1] + 0.3))
         yield out
