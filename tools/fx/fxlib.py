@@ -59,7 +59,7 @@ class Clip:
     def __init__(self, path, t0, t1, size=(W, H)):
         self.path, self.t0, self.t1, self.size = str(path), t0, t1, size
         w, h = size
-        cmd = ["ffmpeg", "-v", "error", "-ss", f"{t0:.3f}", "-t", f"{t1 - t0:.3f}", "-i", self.path,
+        cmd = ["ffmpeg", "-v", "error", "-ss", f"{max(0.0, t0 - 0.25 / FPS):.4f}", "-t", f"{t1 - t0:.4f}", "-i", self.path,
                "-vf", f"scale={w}:{h}:flags=lanczos,fps={FPS}", "-f", "rawvideo", "-pix_fmt", "bgr24", "-"]
         raw = subprocess.run(cmd, capture_output=True, check=True).stdout
         n = len(raw) // (w * h * 3)

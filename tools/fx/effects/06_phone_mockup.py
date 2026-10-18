@@ -71,7 +71,7 @@ def frames(clip, html, t0, enter, chat, msgs, tap, tap_xy):
             yield f
             continue
         s = ease_out_back(k, 1.2) * 0.74
-        cx = max(hx + 0.62 * hw + PW * 0.37, min(W - 130 - PW * 0.37, hx + 1.3 * hw))
+        cx = min(W - 130 - PW * 0.37, max(hx + 0.62 * hw + PW * 0.37, hx + 1.3 * hw))   # right safe zone wins
         cy = hy + 2.0 * hw + 120 * (1 - ease_out(k)) + 10 * math.sin(t * 2.1)
         q = card_quad(cx, cy, PW * s, PH * s, ry=lerp(-38, -16, ease_out(k)) + 3 * math.sin(t * 1.3), rx=4, rz=3)
         layer = warp_quad(ph, q)
