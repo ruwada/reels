@@ -62,6 +62,8 @@ def frames(clip, html, t0, enter, chat, msgs, tap, tap_xy):
     screens = html.frames(body(chat, msgs), CSS, f"const CFG={cfg};" + JS, times, size=(PW, PH))
     mattes = person_mattes(clip)
     heads = head_track(mattes)
+    mx, mw = np.median([h[0] for h in heads]), np.median([h[2] for h in heads])
+    left = max(mx + 0.62 * mw + PW * 0.37, mx + 1.3 * mw) > W - 130 - PW * 0.37   # one side for the whole take
     for i, ph in enumerate(screens):
         t = times[i]
         f = clip.frame(i)
@@ -71,7 +73,9 @@ def frames(clip, html, t0, enter, chat, msgs, tap, tap_xy):
             yield f
             continue
         s = ease_out_back(k, 1.2) * 0.74
-        cx = min(W - 130 - PW * 0.37, max(hx + 0.62 * hw + PW * 0.37, hx + 1.3 * hw))   # right safe zone wins
+        cx = max(hx + 0.62 * hw + PW * 0.37, hx + 1.3 * hw)
+        if left:                                   # no room right of the head: float on his other side
+            cx = max(40 + PW * 0.37, min(hx - 0.62 * hw - PW * 0.37, hx - 1.3 * hw))
         cy = hy + 2.0 * hw + 120 * (1 - ease_out(k)) + 10 * math.sin(t * 2.1)
         q = card_quad(cx, cy, PW * s, PH * s, ry=lerp(-38, -16, ease_out(k)) + 3 * math.sin(t * 1.3), rx=4, rz=3)
         layer = warp_quad(ph, q)
