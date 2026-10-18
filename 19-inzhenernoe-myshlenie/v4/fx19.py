@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Reel 19 v4, step 2: tools/fx effects rendered on the trimmed base (timeline.json axis) and spliced back in.
 
-    python3 fx19.py ORIG.mov WORK [name ...] [--preview] [--splice]
+    python3 fx19.py ORIG.mov WORK [name ...] [--preview] [--splice] [--en EN_WORDS.json]
+
+--en: English texts in the effects, cued on the English voice-over words (same time axis) -> WORK/fx-en, base_fx-en.mp4
 
   cover   16 cover story   0.00-3.43   magazine cover «СЕНЬОРЫ» rises behind his head (hook)
   glass   17 glass type    7.40-10.07  «ЧЕЛОВЕК» in thick glass on the wall behind him
@@ -52,14 +54,19 @@ orig, work = sys.argv[1], sys.argv[2]
 only = [a for a in sys.argv[3:] if not a.startswith("--")]
 preview = "--preview" in sys.argv
 T = json.load(open(os.path.join(HERE, "timeline.json")))
+EN = sys.argv[sys.argv.index("--en") + 1] if "--en" in sys.argv else None
+only = [a for a in only if a != EN]
+WORDS = json.load(open(EN)) if EN else T["words"]
+FXD = "fx-en" if EN else "fx"
+X = lambda ru, en: en if EN else ru
 segs = T["segments"]
 base = os.path.join(work, "base.mp4")
-os.makedirs(os.path.join(work, "fx"), exist_ok=True)
+os.makedirs(os.path.join(work, FXD), exist_ok=True)
 mod = lambda n: importlib.import_module(f"effects.{n}")
 
 
 def word(w, lo=0, hi=99, end=False):
-    for x in T["words"]:
+    for x in WORDS:
         if lo <= x["s"] <= hi and x["w"].lower().startswith(w.lower()):
             return x["e"] if end else x["s"]
     raise SystemExit(f"no word {w} in {lo}-{hi}")
@@ -78,7 +85,7 @@ def warm_mattes(path, a, b, size=(W, H)):
 
 
 def run(name, gen, n):
-    out = os.path.join(work, "fx", f"{name}.mp4")
+    out = os.path.join(work, FXD, f"{name}.mp4")
     if preview:
         idx = set(np.linspace(0, n - 1, 6).astype(int))
         shots = [cv2.resize(f, (360, 640)) for i, f in enumerate(gen) if i in idx]
@@ -103,19 +110,19 @@ def cover():
     # the masthead sits high so his cap hides only the lower part of the middle letter
     clip = BClip(a, b)
     with Html() as html:
-        run("cover", m.frames(clip, html, t0=a, mast_text="СЕНЬОРЫ", mast=0.0, kick=0.35, kicker="IT · ВЫПУСК № 19",
-                              issue="ОКТЯБРЬ 2026",
-                              lines=[("Главная тема", "AI заменит опытных?", word("опытных", 0, 3) - 0.1, 60, 1290),
-                                     ("Прогноз", "Сеньоры больше не нужны", word("менее", 0, 3) - 0.1, 640, 1250)],
+        run("cover", m.frames(clip, html, t0=a, mast_text=X("СЕНЬОРЫ", "SENIORS"), mast=0.0, kick=0.35, kicker=X("IT · ВЫПУСК № 19", "IT · ISSUE № 19"),
+                              issue=X("ОКТЯБРЬ 2026", "OCTOBER 2026"),
+                              lines=[(X("Главная тема", "Cover story"), X("AI заменит опытных?", "Will AI replace seniors?"), word(X("опытных", "senior"), 0, 3) - 0.1, 60, 1290),
+                                     (X("Прогноз", "Forecast"), X("Сеньоры больше не нужны", "Seniors no longer needed"), word(X("менее", "less"), 0, 3) - 0.1, 640, 1250)],
                               bar=2.4), len(clip))
 
 # ---- 17 glass type: «ЧЕЛОВЕК» behind his head on the spoken word -------------------------------------------
-JOBS["glass"] = (7.40, segs[2]["out"][1])
+JOBS["glass"] = (X(7.40, segs[2]["out"][0]), segs[2]["out"][1])   # EN says «someone» under the B-roll: the word shows as it ends
 def glass():
     a, b = JOBS["glass"]
     clip = BClip(a, b)
     with Html() as html:
-        run("glass", mod("17_glass_type").frames(clip, html, t0=a, word="ЧЕЛОВЕК", appear=word("человек", 7, 8) - 0.05,
+        run("glass", mod("17_glass_type").frames(clip, html, t0=a, word=X("ЧЕЛОВЕК", "HUMAN"), appear=word("человек", 7, 8) - 0.05 if not EN else a + 0.05,
                                                  cy=215, size=190, depth=18), len(clip))
 
 # ---- 05 digital zoom from the 4K original (segment 3 is one continuous span at zoom 1.0) -------------------
@@ -125,7 +132,7 @@ def zoom():
     sa, sb = segs[3]["src"]
     off = sa - a
     m = mod("05_digital_zoom")
-    beats = [(sa, 1.0, ""), (word("разработку", 10, 12) + off, 1.22, ""), (word("быстрее", 10, 12) + off, 1.5, "")]
+    beats = [(sa, 1.0, ""), (word(X("разработку", "development"), 10, 12) + off, 1.22, ""), (word(X("быстрее", "faster"), 10, 12.05) + off, 1.5, "")]
     clip = Clip(orig, sa, sb, size=(1620, 2880))
     with Html() as html:
         gen = m.frames(clip, html if not hasattr(m, "CSS") else html, t0=sa, beats=beats, word_y=1300)
@@ -167,15 +174,15 @@ def check_frames(clip, html, t0, enter, title, items):
 def check():
     a, b = JOBS["check"]
     lo, hi = a, b
-    items = [("Архитектура", word("архитектуру", lo, hi) - 0.05, word("архитектуру", lo, hi, True), False),
-             ("Сервис", word("сервис", lo, hi) - 0.05, word("сервис", lo, hi, True), False),
+    items = [(X("Архитектура", "Architecture"), word(X("архитектуру", "architecture"), lo, hi) - 0.05, word(X("архитектуру", "architecture"), lo, hi, True), False),
+             (X("Сервис", "Service"), word(X("сервис", "service"), lo, hi) - 0.05, word(X("сервис", "service"), lo, hi, True), False),
              ("API", word("API", lo, hi) - 0.05, word("API", lo, hi, True), False),
-             ("SQL-запросы", word("SQL", lo, hi) - 0.05, word("SQL", lo, hi, True), False),
-             ("Тесты", word("тесты", lo, hi) - 0.05, word("тесты", lo, hi, True), False),
-             ("Подходит ЭТОМУ проекту?", word("подходит", lo, hi) - 0.05, word("проекту", lo, hi, True), True)]
+             (X("SQL-запросы", "SQL queries"), word("SQL", lo, hi) - 0.05, word("SQL", lo, hi, True), False),
+             (X("Тесты", "Tests"), word(X("тесты", "tests"), lo, hi) - 0.05, word(X("тесты", "tests"), lo, hi, True), False),
+             (X("Подходит ЭТОМУ проекту?", "Fits THIS project?"), word(X("подходит", "fits"), lo, hi) - 0.05, word(X("проекту", "project"), lo, hi, True), True)]
     clip = BClip(a, b)
     with Html() as html:
-        run("check", check_frames(clip, html, t0=a, enter=a + 0.05, title="AI УМЕЕТ", items=items), len(clip))
+        run("check", check_frames(clip, html, t0=a, enter=a + 0.05, title=X("AI УМЕЕТ", "AI CAN DO"), items=items), len(clip))
 
 # ---- 08 headline wall: each question slaps onto the wall on its own word, he keeps his size ----------------
 JOBS["wall"] = (segs[11]["out"][0], segs[14]["out"][1])
@@ -218,8 +225,8 @@ def wall_frames(clip, html, t0, notes, spots):
 
 def wall():
     a, b = JOBS["wall"]
-    notes = [("Рост нагрузки?", word("росте", a, b) - 0.05), ("Сервис упал?", word("недоступен", a, b) - 0.05),
-             ("Кто поддержит через полгода?", word("поддерживаться", a, b) - 0.05), ("Что с данными?", word("данными", a, b) - 0.05)]
+    notes = [(X("Рост нагрузки?", "Load grows?"), word(X("росте", "load"), a, b) - 0.05), (X("Сервис упал?", "Service down?"), word(X("недоступен", "down"), a, b) - 0.05),
+             (X("Кто поддержит через полгода?", "Who maintains it in 6 months?"), word(X("поддерживаться", "maintained"), a, b) - 0.05), (X("Что с данными?", "What about the data?"), word(X("данными", "data"), a, b) - 0.05)]
     clip = BClip(a, b)
     with Html() as html:
         run("wall", wall_frames(clip, html, a, notes, spots=[(185, 370), (890, 340), (190, 720), (905, 580)]), len(clip))
@@ -236,7 +243,7 @@ def orbit():
         "body{display:flex;align-items:center;justify-content:center;height:100vh}", size=(420, 170))
     clip = BClip(a, b)
     with Html() as html:
-        run("orbit", m.frames(clip, html, t0=a, start=word("активно", a, b) - 0.05, items=names,
+        run("orbit", m.frames(clip, html, t0=a, start=word(X("активно", "use"), a, b) - 0.05, items=names,
                               title=[], title_y=300), len(clip))   # no wall title: here it hides behind his cap
 
 # ---- 15 vertigo: the room slides away on «куда именно эту скорость направлять» ----------------------------
@@ -248,7 +255,7 @@ def vertigo():
     m = mod("15_vertigo")
     clip = Clip(orig, sa, sb, size=(1620, 2880))
     with Html() as html:
-        gen = m.frames(clip, html, t0=sa, person_zoom=1.35, start=word("понять", a, b) + off, dur=1.8, text=("", 999))
+        gen = m.frames(clip, html, t0=sa, person_zoom=1.35, start=word(X("понять", "tells"), a, b) + off, dur=1.8, text=("", 999))
         run("vertigo", (np.clip((f - 0.5) * 1.05 + 0.5, 0, 1) for f in gen), len(clip))
 
 # ---- 06 phone mockup: the Telegram post with guide №11 ---------------------------------------------------
@@ -265,17 +272,20 @@ def phone():
     _track = m.head_track
     m.head_track = lambda mattes: [tuple(np.median(np.array(_track(mattes)), axis=0))] * len(mattes)
     _body = m.body
-    m.body = lambda chat, msgs: _body(chat, msgs).replace("бот · онлайн", "канал в Telegram")
-    msgs = [dict(t=a + 0.35, html='<b>Гайд №11</b>На чём строится инженерное мышление: вопросы, которые не задаст AI.'),
+    m.body = lambda chat, msgs: _body(chat, msgs).replace("бот · онлайн", X("канал в Telegram", "Telegram channel"))
+    msgs = [dict(t=a + 0.35, html=X('<b>Гайд №11</b>На чём строится инженерное мышление: вопросы, которые не задаст AI.',
+                                   '<b>Guide #11</b>What engineering thinking is built on: the questions AI won’t ask.')),
             dict(t=a + 1.0, html='<div class=file style="margin:0"><div class=ic>PDF</div><div><div class=fn>'
-                                 'Инженерное<br>мышление.pdf</div><div class=fs>канал · закреп</div></div></div>')]
+                                 + X('Инженерное<br>мышление.pdf', 'Engineering<br>thinking.pdf') + '</div><div class=fs>'
+                                 + X('канал · закреп', 'channel · pinned') + '</div></div></div>')]
     clip = BClip(a, b)
     with Html() as html:
         run("phone", m.frames(clip, html, t0=a, enter=a + 0.05, chat="Islam Dev AI", msgs=msgs, tap=99, tap_xy=(0, 0)), len(clip))
 
 
-json.dump({k: [round(a, 4), round(b, 4)] for k, (a, b) in JOBS.items()},
-          open(os.path.join(HERE, "fxspans.json"), "w"), indent=1)   # build.py reads it
+if not EN:
+    json.dump({k: [round(a, 4), round(b, 4)] for k, (a, b) in JOBS.items()},
+              open(os.path.join(HERE, "fxspans.json"), "w"), indent=1)   # build.py reads it
 names = only or list(JOBS)
 for n in names:
     a, b = JOBS[n]
@@ -292,7 +302,7 @@ parts, cur, inputs = [], 0, ["-i", base]
 for k, (fa, fb, n) in enumerate(spans):
     if fa > cur:
         parts.append(f"[0:v]trim=start_frame={cur}:end_frame={fa},setpts=PTS-STARTPTS[p{len(parts)}]")
-    inputs += ["-i", os.path.join(work, "fx", f"{n}.mp4")]
+    inputs += ["-i", os.path.join(work, FXD, f"{n}.mp4")]
     parts.append(f"[{k + 1}:v]trim=end_frame={fb - fa},setpts=PTS-STARTPTS,fps={FPS},tpad=stop_mode=clone:stop={fb - fa}"
                  f",trim=end_frame={fb - fa}[p{len(parts)}]")
     cur = fb
@@ -300,5 +310,5 @@ if cur < dur_f:
     parts.append(f"[0:v]trim=start_frame={cur},setpts=PTS-STARTPTS[p{len(parts)}]")
 fc = ";".join(parts) + ";" + "".join(f"[p{i}]" for i in range(len(parts))) + f"concat=n={len(parts)}:v=1:a=0[v]"
 subprocess.run(["ffmpeg", "-v", "error", "-y", *inputs, "-filter_complex", fc, "-map", "[v]", "-c:v", "libx264", "-crf", "12",
-                "-preset", "medium", "-g", "30", "-pix_fmt", "yuv420p", "-r", str(FPS), os.path.join(work, "base_fx.mp4")], check=True)
-print("base_fx.mp4 ready")
+                "-preset", "medium", "-g", "30", "-pix_fmt", "yuv420p", "-r", str(FPS), os.path.join(work, "base_fx-en.mp4" if EN else "base_fx.mp4")], check=True)
+print("base_fx ready")

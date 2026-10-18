@@ -12,6 +12,12 @@ Outputs stay outside git.
     PUPPETEER_EXECUTABLE_PATH=/opt/pw-browsers/chromium npx hyperframes@0.8.121 render -o render.mp4 --fps 30
     python3 mix.py render.mp4 WORK/voice.wav master.mp4   # + 2 quiet whooshes on the scene entries, loudnorm -14
 
+English (same cut, voice-over in the cloned voice, effects with English text cued on the English words):
+
+    python3 en/tts.py TTS && python3 en/sync.py TTS WORK/en
+    python3 fx19.py ORIG.mov WORK --en WORK/en/words-en.json     # -> WORK/fx-en, WORK/base_fx-en.mp4
+    python3 build.py en HF_EN WORK/en/words-en.json && render && python3 mix.py render.mp4 WORK/en/voice-en.wav master-en.mp4
+
 Effects: 16 cover story «СЕНЬОРЫ» (hook) · 17 glass «ЧЕЛОВЕК» · 05 digital zoom on «быстрее» · 07 checklist
 «AI умеет» with a red «подходит ЭТОМУ проекту?» · 08 headline wall of the four questions (he keeps his size) ·
 01 orbit of AI tool chips · 15 vertigo on «куда направлять» · 06 phone with the Telegram post, guide №11.
