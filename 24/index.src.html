@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<script src="assets/gsap.min.js"></script>
+<style>
+@font-face { font-family: "Unbounded"; src: url("assets/fonts/unbounded-cyr.woff2") format("woff2"); font-weight: 200 900; unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: "Unbounded"; src: url("assets/fonts/unbounded-lat.woff2") format("woff2"); font-weight: 200 900; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Manrope"; src: url("assets/fonts/manrope-cyr.woff2") format("woff2"); font-weight: 200 800; unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: "Manrope"; src: url("assets/fonts/manrope-lat.woff2") format("woff2"); font-weight: 200 800; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2190-2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+
+/* reel 21 palette: the magenta of his shelf light + warm paper for the route maps */
+/* reel 24 palette: Telegram's own sky blue on its dark theme; subtitles are chat bubbles (22 was emerald tabs) */
+:root { --sky: #2AABEE; --ink: #0E1621; --panel: #17212B; --bar: #1F2C3A; --out: #2B5278; --mute: #8EA3B8; --red: #FF4D4D; --ok: #4FD18B; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; }
+#root { width: 1080px; height: 1920px; position: relative; overflow: hidden; font-family: "Manrope", sans-serif; color: #fff; }
+.full { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
+video { display: block; width: 1080px; height: 1920px; object-fit: cover; }
+
+#sheet { z-index: 4; background: radial-gradient(1100px 1300px at 40% 25%, #1B3A55 0%, var(--ink) 75%); }
+#pip { z-index: 6; overflow: hidden; left: 0; top: 0; width: 1080px; height: 1920px; position: absolute; }
+#ring { z-index: 6; position: absolute; border-radius: 50%; border: 6px solid var(--sky); box-shadow: 0 0 0 10px rgba(42,171,238,.2), 0 18px 44px rgba(0,0,0,.5); opacity: 0; }
+#pip video { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+.broll { z-index: 7; overflow: hidden; }
+.flash { z-index: 9; background: #fff; opacity: 0; }
+#shadeTop { z-index: 8; height: 900px; background: linear-gradient(180deg, rgba(8,12,18,.85) 0%, rgba(8,12,18,.5) 55%, rgba(8,12,18,0) 100%); opacity: 0; }
+#redPulse { z-index: 8; box-shadow: inset 0 0 220px 40px rgba(255,59,59,.55); opacity: 0; }
+.scene { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; z-index: 5; color: #fff; }
+
+/* telegram notification banner */
+.notif { position: absolute; z-index: 12; left: 50px; top: 210px; width: 980px; padding: 22px 26px; border-radius: 32px; background: rgba(30,38,48,.94);
+         backdrop-filter: blur(20px); box-shadow: 0 24px 60px rgba(0,0,0,.5); display: flex; gap: 22px; align-items: center; }
+.tgi { width: 84px; height: 84px; border-radius: 22px; background: var(--sky); flex: none; display: flex; align-items: center; justify-content: center; }
+.notif .ap { display: flex; font: 700 24px "Manrope"; color: var(--mute); }
+.notif .ap span { margin-left: auto; }
+.notif .ti { font: 800 34px "Manrope"; margin-top: 4px; }
+.notif .tx { font: 600 30px/1.3 "Manrope"; color: #DCE6EF; margin-top: 2px; }
+
+/* chat scene */
+.chat { position: absolute; left: 50px; top: 190px; width: 980px; height: 900px; border-radius: 36px; background: var(--ink); overflow: hidden;
+        box-shadow: 0 30px 80px rgba(0,0,0,.55), 0 0 0 2px rgba(42,171,238,.35); }
+.chat .hd { position: absolute; left: 0; right: 0; top: 0; height: 108px; z-index: 3; background: var(--bar); display: flex; align-items: center; gap: 18px; padding: 0 28px; }
+.chat .av { width: 66px; height: 66px; border-radius: 50%; background: linear-gradient(135deg, #5EC8F8, var(--sky)); display: flex; align-items: center; justify-content: center; font: 800 26px "Unbounded"; }
+.chat .nm { font: 800 36px "Manrope"; } .chat .sb { font: 600 22px "Manrope"; color: var(--sky); }
+.chat .feed { position: absolute; left: 0; right: 0; top: 108px; bottom: 0; overflow: hidden; }
+.chat .in { position: absolute; left: 0; right: 0; top: 0; padding: 26px 26px 30px; }
+.m { position: relative; margin-top: 18px; max-width: 860px; padding: 22px 26px; border-radius: 26px; background: var(--panel); font: 600 35px/1.35 "Manrope"; }
+.m.bot { border-bottom-left-radius: 8px; }
+.m.me { margin-left: auto; background: var(--out); border-bottom-right-radius: 8px; }
+.m .k { font: 800 24px "Unbounded"; letter-spacing: .08em; color: var(--sky); margin-bottom: 10px; }
+.m .big { font: 800 40px "Manrope"; }
+.m .row { display: flex; justify-content: space-between; font: 600 32px "Manrope"; color: var(--mute); margin-top: 6px; }
+.m .row b { color: #fff; }
+.m .hl { margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,.08); overflow: hidden; }
+.m .hl div { display: flex; gap: 16px; font: 600 31px/1.5 "Manrope"; }
+.m .hl i { font-style: normal; color: var(--sky); width: 140px; flex: none; font-weight: 800; }
+.bts { display: flex; gap: 12px; margin-top: 16px; }
+.bt { position: relative; flex: 1; text-align: center; padding: 16px 0; border-radius: 18px; background: rgba(42,171,238,.16); color: var(--sky); font: 800 31px "Manrope"; overflow: hidden; }
+.bt.p { background: var(--sky); color: #fff; }
+.tap { position: absolute; width: 70px; height: 70px; margin: -35px 0 0 -35px; border-radius: 50%; background: rgba(255,255,255,.55); box-shadow: 0 0 0 10px rgba(255,255,255,.2); z-index: 5; opacity: 0; }
+.typing { display: inline-flex; align-items: center; gap: 16px; color: var(--mute); font: 700 33px "Manrope"; }
+.typing .d { display: inline-flex; gap: 8px; } .typing .d i { width: 12px; height: 12px; border-radius: 50%; background: var(--sky); display: block; }
+.scan { position: absolute; left: 0; top: 0; bottom: 0; width: 40%; background: linear-gradient(90deg, transparent, rgba(42,171,238,.25), transparent); }
+.tick { display: block; text-align: right; font: 600 20px "Manrope"; color: #8CCBF2; margin-top: 4px; }
+.sys { display: flex; align-items: center; gap: 14px; margin: 22px auto 0; width: max-content; padding: 14px 26px; border-radius: 40px; background: rgba(79,209,139,.16);
+       border: 2px solid var(--ok); color: #DFF8EA; font: 800 30px "Manrope"; }
+.sys i { width: 38px; height: 38px; border-radius: 50%; background: var(--ok); color: var(--ink); font: 900 22px/38px "Manrope"; text-align: center; font-style: normal; }
+
+/* confirmation request */
+.alert { position: absolute; z-index: 12; left: 60px; top: 220px; width: 960px; padding: 28px 30px 30px; border-radius: 32px; background: rgba(23,33,43,.97);
+         border: 3px solid var(--red); box-shadow: 0 0 0 10px rgba(255,77,77,.15), 0 30px 70px rgba(0,0,0,.55); }
+.alert .k { display: flex; align-items: center; gap: 14px; font: 800 26px "Manrope"; color: #FFB3B3; }
+.alert .k b { width: 46px; height: 46px; border-radius: 14px; background: var(--red); color: #fff; font: 900 30px/46px "Manrope"; text-align: center; }
+.alert .act { margin-top: 16px; font: 900 46px/1.12 "Unbounded"; letter-spacing: -.03em; }
+.alert .why { margin-top: 10px; font: 600 27px "Manrope"; color: var(--mute); }
+.alert .bt.no { background: rgba(255,77,77,.18); color: #FF8A8A; }
+.alert .bt.yes { background: rgba(79,209,139,.16); color: var(--ok); }
+.alert .res { margin-top: 18px; font: 800 30px "Manrope"; color: var(--ok); }
+
+.pill { position: absolute; z-index: 12; left: 60px; font: 900 52px/1.05 "Unbounded"; letter-spacing: -.03em; text-transform: uppercase; padding: 16px 28px 20px; border-radius: 24px;
+        background: var(--red); color: #fff; box-shadow: 0 16px 50px rgba(255,77,77,.4); white-space: nowrap; }
+
+.cta { position: absolute; z-index: 12; left: 60px; top: 196px; width: 960px; padding: 26px 30px; border-radius: 32px; background: rgba(23,33,43,.94); border: 2px solid rgba(42,171,238,.8);
+       display: flex; align-items: center; gap: 26px; box-shadow: 0 24px 60px rgba(0,0,0,.5); }
+.cta .ico { width: 104px; height: 104px; border-radius: 52px; background: var(--sky); flex: none; display: flex; align-items: center; justify-content: center; }
+.cta .t1 { font: 800 46px/1.1 "Unbounded"; white-space: nowrap; letter-spacing: -.02em; }
+.cta .t1 em { font-style: normal; color: var(--sky); }
+.cta .t2 { font: 700 29px/1.3 "Manrope"; color: #D2E2EE; margin-top: 10px; }
+
+/* subtitles: each group is an incoming Telegram message; words pop in, the spoken one turns sky blue */
+#subs { z-index: 20; }
+.g { position: absolute; left: 0; width: 1080px; top: 1090px; display: flex; justify-content: center; }
+.g.low { top: 1420px; }
+.bub { position: relative; max-width: 900px; padding: 14px 30px 18px; border-radius: 34px 34px 34px 10px; background: rgba(23,33,43,.9);
+       box-shadow: 0 14px 40px rgba(0,0,0,.45), inset 0 0 0 2px rgba(42,171,238,.28); display: flex; flex-wrap: wrap; justify-content: center; gap: 0 16px; }
+.w { display: inline-block; font: 800 60px/1.2 "Manrope"; letter-spacing: -.02em; color: #fff; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-duration="/*DUR*/" data-width="1080" data-height="1920">
+  <div id="sheet" class="full"></div>
+  <div id="pip"><video id="base" class="clip" src="assets/base.mp4" data-start="0" data-duration="/*DUR*/" muted playsinline></video></div>
+  <div id="ring"></div>
+  <div id="brolls">/*BROLL*/</div>
+  <div id="shadeTop" class="full"></div>
+  <div id="redPulse" class="full"></div>
+  <div id="fx"></div>
+  <div id="subs" class="full"></div>
+</div>
+<script>
+const D = /*DATA*/;
+const tl = gsap.timeline({ paused: true });
+const $ = (h) => { const t = document.createElement("template"); t.innerHTML = h.trim(); return t.content.firstChild; };
+const fx = document.getElementById("fx");
+const OUT = "expo.out", SOFT = "power3.out", POP = "back.out(1.9)";
+const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+const add = (h, parent = fx) => { const el = $(h); parent.appendChild(el); return el; };
+const show = (el, t0, t1) => { gsap.set(el, { autoAlpha: 0 }); tl.set(el, { autoAlpha: 1 }, t0); if (t1 != null) tl.set(el, { autoAlpha: 0 }, t1); };
+const T = D.t, X = D.text;
+const PLANE = (s, c = "#fff") => `<svg width="${s}" height="${s}" viewBox="0 0 24 24"><path d="M21.5 3.6 2.9 10.8c-1 .4-1 1.8.1 2.1l4.7 1.5 1.8 5.6c.3.9 1.4 1.1 2 .4l2.6-2.6 4.9 3.6c.8.6 1.9.1 2.1-.8l3-15.3c.2-1.2-.9-2.1-2.1-1.6zM9.6 14.6l8.6-7.7-6.9 9.2-.3 3.2-1.4-4.7z" fill="${c}"/></svg>`;
+function tap(el, at, parent) {   // a finger tap: white dot shrinks onto the button, the button flashes
+  const r = el.getBoundingClientRect(), p = parent.getBoundingClientRect();
+  const d = add(`<div class="tap" style="left:${r.left - p.left + r.width / 2}px;top:${r.top - p.top + r.height / 2}px"></div>`, parent);
+  tl.fromTo(d, { opacity: 0, scale: 1.8 }, { opacity: 1, scale: 1, duration: 0.18, ease: "power2.out" }, at - 0.18);
+  tl.to(d, { opacity: 0, scale: 1.4, duration: 0.25 }, at + 0.12);
+  tl.fromTo(el, { scale: 1 }, { scale: 0.93, duration: 0.08, yoyo: true, repeat: 1 }, at);
+}
+
+/* ---------- B-roll ---------- */
+D.broll.forEach((c, k) => {
+  const w = document.getElementById(`br${k}`);
+  show(w, c.at, c.at + c.dur);
+  const v = w.querySelector("video");
+  if (c.in === "sharp") {
+    tl.fromTo(v, { scale: 1.16 }, { scale: 1.0, duration: 0.45, ease: OUT }, c.at);
+    const f = add(`<div class="flash full"></div>`);
+    show(f, c.at, c.at + 0.2);
+    tl.fromTo(f, { opacity: 0.5 }, { opacity: 0, duration: 0.18, ease: "power1.out" }, c.at);
+    tl.fromTo(v, { scale: 1.0 }, { scale: 1.05, duration: Math.max(0.1, c.dur - 0.45), ease: "none" }, c.at + 0.45);
+  } else if (c.in === "smooth") {
+    tl.fromTo(w, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power1.inOut" }, c.at - 0.05);
+    tl.fromTo(v, { scale: 1.06 }, { scale: 1.0, duration: c.dur, ease: "none" }, c.at);
+  } else {
+    tl.fromTo(v, { scale: 1.08 }, { scale: 1.0, duration: c.dur, ease: "none" }, c.at);
+  }
+});
+
+const shade = document.getElementById("shadeTop");
+function shadeOn(a, b) { tl.to(shade, { opacity: 1, duration: 0.3 }, a); tl.to(shade, { opacity: 0, duration: 0.3 }, b - 0.3); }
+
+/* ---------- 1. «новый лид»: a Telegram notification drops in ---------- */
+{
+  const [a, b] = T.notif, N = X.notif;
+  shadeOn(a - 0.1, b + 0.2);
+  const el = add(`<div class="notif"><div class="tgi">${PLANE(52)}</div><div style="flex:1;min-width:0"><div class="ap">${esc(N.app)}<span>${esc(N.when)}</span></div>`
+    + `<div class="ti">${esc(N.title)}</div><div class="tx">${esc(N.text)}</div></div></div>`);
+  show(el, a, b);
+  tl.fromTo(el, { y: -260, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "back.out(1.4)" }, a);
+  tl.to(el, { y: -40, opacity: 0, duration: 0.25, ease: "power2.in" }, b - 0.25);
+}
+
+/* ---------- 2. the manager's flow inside one Telegram chat; he shrinks into a PiP ---------- */
+const pip = document.getElementById("pip"), base = document.getElementById("base"), sheet = document.getElementById("sheet");
+gsap.set(sheet, { autoAlpha: 0 });
+const PS = 0.42, R = 140, CX = 830, CY = 1235, ring = document.getElementById("ring");
+gsap.set(ring, { left: CX - R, top: CY - R, width: 2 * R, height: 2 * R });
+gsap.set(pip, { clipPath: `circle(2300px at ${CX}px ${CY}px)` });
+function pipScene(a, b) {
+  tl.set(sheet, { autoAlpha: 1 }, a);
+  tl.fromTo(sheet, { clipPath: `circle(0px at ${CX}px ${CY}px)` }, { clipPath: `circle(2300px at ${CX}px ${CY}px)`, duration: 0.55, ease: "power3.inOut" }, a);
+  tl.fromTo(pip, { clipPath: `circle(2300px at ${CX}px ${CY}px)` }, { clipPath: `circle(${R}px at ${CX}px ${CY}px)`, duration: 0.55, ease: "power3.inOut" }, a);
+  tl.fromTo(base, { scale: 1, x: 0, y: 0 }, { scale: PS, x: CX - 540 * PS, y: CY - 620 * PS, duration: 0.55, ease: "power3.inOut" }, a);
+  tl.fromTo(ring, { opacity: 0, scale: 1.4 }, { opacity: 1, scale: 1, duration: 0.3, ease: "power2.out" }, a + 0.35);
+  tl.to(ring, { opacity: 0, duration: 0.15 }, b - 0.45);
+  tl.to(pip, { clipPath: `circle(2300px at ${CX}px ${CY}px)`, duration: 0.45, ease: "power3.inOut" }, b - 0.45);
+  tl.to(base, { scale: 1, x: 0, y: 0, duration: 0.45, ease: "power3.inOut" }, b - 0.45);
+  tl.to(sheet, { opacity: 0, duration: 0.3, ease: "power1.in" }, b - 0.3);
+  tl.set(sheet, { autoAlpha: 0, opacity: 1 }, b);
+}
+{
+  const C = X.chat, [a, b] = T.chat, Q = T.chatCues;
+  pipScene(a, b);
+  const sc = add(`<div class="scene"></div>`); show(sc, a, b);
+  const ch = add(`<div class="chat"><div class="hd"><div class="av">${PLANE(34)}</div><div><div class="nm">${esc(C.name)}</div><div class="sb">${esc(C.sub)}</div></div></div>`
+    + `<div class="feed"><div class="in"></div></div></div>`, sc);
+  tl.fromTo(ch, { opacity: 0, y: 60, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: OUT }, a + 0.1);
+  const inn = ch.querySelector(".in"), feed = ch.querySelector(".feed");
+  const msg = (h, cls) => add(`<div class="m ${cls}">${h}</div>`, inn);
+  const card = msg(`<div class="k">${esc(C.card.k)}</div><div class="big">${esc(C.card.name)}</div>`
+    + C.card.rows.map(([k, v]) => `<div class="row">${esc(k)}<b>${esc(v)}</b></div>`).join("")
+    + `<div class="hl">${C.hist.map(([d, s]) => `<div><i>${esc(d)}</i>${esc(s)}</div>`).join("")}</div>`
+    + `<div class="bts"><div class="bt p">${esc(C.btns[0])}</div><div class="bt">${esc(C.btns[1])}</div></div>`, "bot");
+  const typing = msg(`<span class="typing"><span class="d"><i></i><i></i><i></i></span>${esc(C.ai)}</span><span class="scan"></span>`, "bot");
+  const sugg = msg(`<div class="k">${esc(C.sugg.k)}</div>${esc(C.sugg.text)}<div class="bts"><div class="bt p">${esc(C.sugg.btns[0])}</div><div class="bt">${esc(C.sugg.btns[1])}</div></div>`, "bot");
+  const sent = msg(`${esc(C.sent)}<span class="tick">10:42 ✓✓</span>`, "me");
+  const sys = add(`<div class="sys"><i>✓</i>${esc(C.crm)}</div>`, inn);
+  // final layout: the sent message replaces the suggestion, so it is measured without the suggestion in the flow
+  const hist = card.querySelector(".hl"), btns = card.querySelector(".bts");
+  const HH = hist.offsetHeight, BH = btns.offsetHeight + 16;
+  const VIEW = feed.offsetHeight;
+  const bottomOf = (el) => el.offsetTop + el.offsetHeight + 30;
+  const scrollTo = (el, at, extra = 0) => { const y = Math.min(0, VIEW - bottomOf(el) - extra); tl.to(inn, { y, duration: 0.45, ease: SOFT }, at); };
+  [card, typing, sugg, sent, sys].forEach((el) => show(el, 99, null));
+  // card: header first, history unfolds, then the buttons
+  tl.set(card, { autoAlpha: 1 }, Q.card - 0.1);
+  tl.fromTo(card, { opacity: 0, y: 40, scale: 0.94 }, { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: POP }, Q.card - 0.1);
+  tl.fromTo(hist, { height: 0, opacity: 0 }, { height: HH, opacity: 1, duration: 0.45, ease: SOFT }, Q.hist - 0.1);
+  hist.querySelectorAll("div").forEach((r, i) => tl.fromTo(r, { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.3, ease: OUT }, Q.hist + 0.12 * i));
+  tl.fromTo(btns, { height: 0, opacity: 0, marginTop: 0 }, { height: btns.offsetHeight, opacity: 1, marginTop: 16, duration: 0.35, ease: SOFT }, Q.btn - 0.15);
+  tap(btns.children[0], Q.tap, inn);
+  tl.to(btns.children[0], { background: "#1E86BD", duration: 0.1 }, Q.tap);
+  // AI thinking
+  tl.set(typing, { autoAlpha: 1 }, Q.ai - 0.15);
+  tl.fromTo(typing, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.3, ease: OUT }, Q.ai - 0.15);
+  scrollTo(typing, Q.ai - 0.15);
+  typing.querySelectorAll(".d i").forEach((d, i) => tl.fromTo(d, { y: 0 }, { y: -10, duration: 0.18, yoyo: true, repeat: 7, ease: "sine.inOut" }, Q.ai + 0.1 * i));
+  tl.fromTo(typing.querySelector(".scan"), { x: "-100%" }, { x: "260%", duration: 0.75, repeat: 1, ease: "none" }, Q.ai);
+  // the suggestion replaces the typing bubble
+  tl.to(typing, { opacity: 0, height: 0, marginTop: 0, paddingTop: 0, paddingBottom: 0, duration: 0.25 }, Q.sugg - 0.2);
+  tl.set(sugg, { autoAlpha: 1 }, Q.sugg - 0.1);
+  tl.fromTo(sugg, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: POP }, Q.sugg - 0.1);
+  tl.call(() => {}, [], Q.sugg);
+  scrollTo(sugg, Q.sugg - 0.1, -typing.offsetHeight - 18);
+  tap(sugg.querySelector(".bt.p"), Q.ok + 0.1, inn);
+  // confirmed: the suggestion flies to the right as a sent message
+  tl.to(sugg, { opacity: 0, x: 120, height: 0, marginTop: 0, paddingTop: 0, paddingBottom: 0, duration: 0.3, ease: "power2.in" }, Q.ok + 0.3);
+  tl.set(sent, { autoAlpha: 1 }, Q.ok + 0.45);
+  tl.fromTo(sent, { opacity: 0, x: 80, scale: 0.9 }, { opacity: 1, x: 0, scale: 1, duration: 0.4, ease: OUT }, Q.ok + 0.45);
+  // written to CRM
+  tl.set(sys, { autoAlpha: 1 }, Q.crm - 0.1);
+  tl.fromTo(sys, { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.45, ease: POP }, Q.crm - 0.1);
+  tl.fromTo(sys.querySelector("i"), { rotation: -90, scale: 0 }, { rotation: 0, scale: 1, duration: 0.45, ease: POP }, Q.crm);
+  // scroll positions for the sent message and the CRM line (typing and suggestion are collapsed by then)
+  const collapsed = typing.offsetHeight + 18 + sugg.offsetHeight + 18;
+  scrollTo(sent, Q.ok + 0.45, -collapsed);
+  scrollTo(sys, Q.crm - 0.1, -collapsed);
+}
+
+/* ---------- 3. a dangerous action waits for your OK ---------- */
+{
+  const [a, rq, conf, b] = T.alert, A = X.alert;
+  shadeOn(a - 0.1, b);
+  const rp = document.getElementById("redPulse");
+  tl.fromTo(rp, { opacity: 0 }, { opacity: 1, duration: 0.25, yoyo: true, repeat: 3, ease: "sine.inOut" }, a);
+  const el = add(`<div class="alert"><div class="k"><b>!</b>${esc(A.k)}</div><div class="act">${esc(A.act)}</div><div class="why">${esc(A.why)}</div>`
+    + `<div class="bts"><div class="bt yes">✓ ${esc(A.yes)}</div><div class="bt no">✕ ${esc(A.no)}</div></div><div class="res">✓ ${esc(A.done)}</div></div>`);
+  show(el, a, b);
+  tl.fromTo(el, { opacity: 0, y: -80, scale: 0.92 }, { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: POP }, a);
+  tl.fromTo(el, { x: 0 }, { x: 10, duration: 0.05, yoyo: true, repeat: 5 }, a + 0.45);
+  const bt = el.querySelectorAll(".bt");
+  tl.fromTo(bt, { scale: 1 }, { scale: 1.06, duration: 0.18, yoyo: true, repeat: 1, stagger: 0.1 }, rq);
+  tap(bt[1], conf + 0.05, el);
+  tl.to(bt[1], { background: "#FF4D4D", color: "#fff", duration: 0.12 }, conf + 0.05);
+  const res = el.querySelector(".res");
+  tl.fromTo(res, { opacity: 0, height: 0 }, { opacity: 1, height: 44, duration: 0.3, ease: SOFT }, conf + 0.3);
+}
+
+/* ---------- 4. «ещё один сложный интерфейс» over the wall of dashboards ---------- */
+{
+  const [a, b] = T.complex;
+  const el = add(`<div class="pill" style="top:250px">${esc(X.complex)}</div>`);
+  show(el, a, b);
+  tl.fromTo(el, { opacity: 0, scale: 0.5, rotation: -6 }, { opacity: 1, scale: 1, rotation: -2, duration: 0.4, ease: POP }, a);
+}
+
+/* ---------- 5. CTA ---------- */
+{
+  const C = X.cta, a = T.cta;
+  shadeOn(a, D.dur + 0.3);
+  const t1 = esc(C.l1).replace(/№\d+/, (m) => `<em>${m}</em>`);
+  const el = add(`<div class="cta"><div class="ico">${PLANE(58)}</div><div><div class="t1">${t1}</div><div class="t2">${esc(C.l2)} ↑</div></div></div>`);
+  show(el, a, null);
+  tl.fromTo(el, { opacity: 0, y: -60, scale: .9 }, { opacity: 1, y: 0, scale: 1, duration: 0.55, ease: POP }, a + 0.05);
+  tl.fromTo(el.querySelector(".ico"), { rotation: -20 }, { rotation: 0, duration: 0.8, ease: "elastic.out(1,.5)" }, a + 0.2);
+}
+
+/* ---------- subtitles ---------- */
+{
+  const subs = document.getElementById("subs");
+  D.groups.forEach((g) => {
+    const el = add(`<div class="g${g.low ? " low" : ""}"><div class="bub">${g.words.map((w) => `<span class="w">${esc(w.w)}</span>`).join("")}</div></div>`, subs);
+    show(el, g.s, g.e);
+    const bub = el.querySelector(".bub");
+    tl.fromTo(bub, { opacity: 0, y: 30, scale: 0.85, transformOrigin: "0% 100%" }, { opacity: 1, y: 0, scale: 1, duration: 0.22, ease: "back.out(2.2)" }, g.s);
+    const spans = el.querySelectorAll(".w");
+    g.words.forEach((w, i) => {
+      const sp = spans[i];
+      tl.fromTo(sp, { opacity: 0.25 }, { opacity: 1, duration: 0.1 }, w.s - 0.04);
+      const nx = i + 1 < g.words.length ? g.words[i + 1].s - 0.02 : g.e;
+      tl.set(sp, { color: "#2AABEE" }, w.s - 0.02);
+      tl.set(sp, { color: "#fff" }, nx);
+    });
+  });
+}
+
+window.__timelines = window.__timelines || {};
+window.__timelines["main"] = tl;
+tl.seek(0);
+</script>
+</body>
+</html>
