@@ -10,7 +10,7 @@ import fxlib
 fxlib.MATTE_MODEL = "human+objects"   # he holds the cup most of the time: keep it in front
 from fxlib import Clip, Html, over, zoom_frame, radial_blur, prog, ease_in, ease_out, W, H, FPS
 
-TIGHT = f"{HERE}/work/tight.mp4"
+TIGHT = f"{HERE}/work/tight-v5.mp4"
 WORK = __import__("pathlib").Path(HERE) / "work"
 VOICE = f"{HERE}/work/tight-voice.wav"
 sys.path.insert(0, HERE)

@@ -49,7 +49,7 @@ if __name__ == "__main__":
         refs[seat] = decode(take, (fa + fb) // 2, (fa + fb) // 2 + 1)[0]
     parts = []
     for k, (take, a, b, seat, _) in enumerate(TAKES):
-        p = f"{WORK}/r{k:02d}.mp4"
+        p = f"{WORK}/v5-r{k:02d}.mp4"
         parts.append(p)
         if os.path.exists(p):
             continue
@@ -59,7 +59,7 @@ if __name__ == "__main__":
         fix = matcher(fr[len(fr) // 2], refs[seat], 0.0 if take == REF[seat] else 0.8)
         encode((fix(f) for f in fr), p)
         print(take, len(fr), "frames", flush=True)
-    open(f"{WORK}/list.txt", "w").write("".join(f"file '{p}'\n" for p in parts))
-    subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "concat", "-safe", "0", "-i", f"{WORK}/list.txt",
-                    "-c", "copy", f"{WORK}/tight.mp4"], check=True)
+    open(f"{WORK}/list-v5.txt", "w").write("".join(f"file '{p}'\n" for p in parts))
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "concat", "-safe", "0", "-i", f"{WORK}/list-v5.txt",
+                    "-c", "copy", f"{WORK}/tight-v5.mp4"], check=True)
     print("tight.mp4 written")
