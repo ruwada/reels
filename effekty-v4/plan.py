@@ -53,3 +53,21 @@ def start(take):
 
 
 END = sum((frames_of(a, b)[1] - frames_of(a, b)[0]) / FPS for _, a, b, *_ in TAKES)
+
+
+# v8: his picture is retimed to the clone voice (retime.py); when work/warp.json exists, T/start/END follow it
+import json as _json, os as _os
+import numpy as _np
+_WARP = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "work", "warp.json")
+if _os.path.exists(_WARP):
+    WARP = _json.load(open(_WARP))
+    TAKES = [x for x in TAKES if x[0] in WARP]
+
+    def T(take, t):
+        w = WARP[take]
+        return round(w["start"] + float(_np.interp(t, w["src"], w["out"])), 4)
+
+    def start(take):
+        return WARP[take]["start"]
+
+    END = WARP["_end"]

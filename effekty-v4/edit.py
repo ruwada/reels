@@ -10,7 +10,7 @@ import fxlib
 fxlib.MATTE_MODEL = "human+objects"   # he holds the cup most of the time: keep it in front
 from fxlib import Clip, Html, over, zoom_frame, radial_blur, prog, ease_in, ease_out, W, H, FPS
 
-TIGHT = f"{HERE}/work/tight-v5.mp4"
+TIGHT = f"{HERE}/work/tight-v8.mp4"
 WORK = __import__("pathlib").Path(HERE) / "work"
 VOICE = f"{HERE}/work/tight-voice.wav"
 sys.path.insert(0, HERE)
@@ -38,10 +38,6 @@ SEG = [
     ("17_glass_type", start("0346"), dict(_tag_y=1240, word="ГЛАВНОЕ", appear=T("0346", 1.90), cy=300, size=150, depth=14)),
     ("15_vertigo", start("0348"), dict(src_size=(1620, 2880), person_zoom=1.12, start=T("0348", 1.50), dur=2.2,
                                        fg_bottom=1780, text_y=1380, text=("КАК В КИНО", T("0348", 3.04)))),
-    ("16_cover_story", start("0349"), dict(mast_text="МОНТАЖ", mast=T("0349", 2.25), kick=T("0349", 2.50),
-        kicker="МОНТАЖ · ВЫПУСК № 18", issue="ОКТЯБРЬ 2026", bar=T("0349", 3.90), ink="#1d1a16",
-        lines=[("Обложка", "Ты — на обложке журнала", T("0349", 3.20), 60, 1150),
-               ("Разбор", "17 эффектов без монтажёра", T("0349", 3.60), 660, 1000)])),
     ("12_green_screen", start("0351"), dict(swap=T("0351", 3.22), flood=T("0351", 3.29), every=0.10, cap=T("0351", 3.34),
         person_scale=0.80, caption='без <span>зелёной ткани</span>',
         questions=["Сделай рилс", "Добавь субтитры", "Сделай обложку", "Убери паузы", "Наложи эффекты", "Сделай рилс",
@@ -56,8 +52,6 @@ SEG = [
     ("02_couch_wall", start("0355"), dict(start=T("0355", 1.30), every=0.05, tiles=TH, words_y=1130,
         notes=["гайд №18", "17 эффектов", "без монтажёра", "один телефон"],
         words=[("стена за спиной", T("0355", 1.60), "s"), ("твоими роликами", T("0355", 3.10), "b")])),
-    ("05_digital_zoom", start("0356"), dict(src_size=(1620, 2880), word_y=1060,
-        beats=[(T("0356", 1.55), 1.0, "наезд"), (T("0356", 2.47), 1.25, "на каждое"), (T("0356", 3.58), 1.5, "слово")])),
     ("10_chart_grow", start("0358"), dict(grid=T("0358", 0.75), labels=["ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ", "ВС"],
         values=[0.10, 0.14, 0.12, 0.30, 0.45, 0.72, 1.0],
         times=[T("0358", t) for t in (0.95, 1.20, 1.45, 1.75, 2.05, 2.35, 2.60)], tag=T("0358", 2.75), tag_text="×3 ↗",
@@ -80,7 +74,7 @@ SEG = [
               dict(t=T("0368", 8.70), html='<span class=ok>✓ Гайд открыт</span><br>Шаг 1: сними 17 коротких дублей.')])),
 ]
 NO_TR = {J}                        # no zoom-blur where the zoom-through lands: it is already decelerating there
-SEAT = {s: [x[3] for x in TAKES if T(x[0], x[1]) <= s + 1e-6][-1] for _, s, _ in SEG}
+SEAT = {s: [x[3] for x in TAKES if start(x[0]) <= s + 1e-6][-1] for _, s, _ in SEG}
 FG = {"A": 1780, "B": 1650}        # rows below: table / laptop / cup in front of him
 NAMES = {"08_headline_wall": "стена заголовков", "15_vertigo": "головокружение", "11_pull_back": "отъезд в редактор",
          "01_orbit": "орбита", "03_ui_world": "мир интерфейса", "14_doodle_boil": "живые каракули",
