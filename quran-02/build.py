@@ -53,7 +53,8 @@ AD = A1 - A0; T = AD + cfg.get('tail', 1.2)
 print(f"audio {A0:.2f}-{A1:.2f} ({AD:.1f} s), video {T:.1f} s")
 
 # --- text layers (Playwright) ----------------------------------------------------------------------
-json.dump(dict(style=style, surah_name=cfg['surah_name'], ayat=d['ayat'], out=W), open(f"{W}/layers.json", "w"), ensure_ascii=False)
+shade = json.load(open(f"{W}/shade.json")) if os.path.exists(f"{W}/shade.json") else None
+json.dump(dict(style=style, surah_name=cfg['surah_name'], ayat=d['ayat'], out=W, shade=shade), open(f"{W}/layers.json", "w"), ensure_ascii=False)
 subprocess.run(["node", "layers.mjs", f"{W}/layers.json"], check=True,
                env={**os.environ, "NODE_PATH": subprocess.run(["npm", "root", "-g"], capture_output=True, text=True).stdout.strip()})
 
