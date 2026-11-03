@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<script src="assets/gsap.min.js"></script>
+<style>
+@font-face { font-family: "Unbounded"; src: url("assets/fonts/unbounded-cyr.woff2") format("woff2"); font-weight: 200 900; unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: "Unbounded"; src: url("assets/fonts/unbounded-lat.woff2") format("woff2"); font-weight: 200 900; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Manrope"; src: url("assets/fonts/manrope-cyr.woff2") format("woff2"); font-weight: 200 800; unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: "Manrope"; src: url("assets/fonts/manrope-lat.woff2") format("woff2"); font-weight: 200 800; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2190-2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+
+/* reel 21 palette: the magenta of his shelf light + warm paper for the route maps */
+
+/* reel 22 palette: radar emerald on deep navy, the sheet is a dark «control room» (21 was magenta + cream maps) */
+:root { --g: #1ED68F; --ink: #0E1726; --navy: #0E1726; --red: #FF4D4D; --amber: #F2A93B; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; }
+#root { width: 1080px; height: 1920px; position: relative; overflow: hidden; font-family: "Manrope", sans-serif; color: #fff; }
+.full { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
+video { display: block; width: 1080px; height: 1920px; object-fit: cover; }
+
+#sheet { z-index: 4; background:
+  linear-gradient(rgba(30,214,143,.07) 2px, transparent 2px) 0 0 / 60px 60px,
+  linear-gradient(90deg, rgba(30,214,143,.07) 2px, transparent 2px) 0 0 / 60px 60px,
+  radial-gradient(1100px 1300px at 30% 25%, #15233A 0%, #0A111D 80%); }
+#pip { z-index: 6; overflow: hidden; left: 0; top: 0; width: 1080px; height: 1920px; position: absolute; }
+#ring { z-index: 6; position: absolute; border-radius: 50%; border: 6px solid var(--g); box-shadow: 0 0 0 10px rgba(30,214,143,.18), 0 18px 44px rgba(0,0,0,.45); opacity: 0; }
+#pip video { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+.broll { z-index: 7; overflow: hidden; }
+.flash { z-index: 9; background: #fff; opacity: 0; }
+#shadeTop { z-index: 8; height: 820px; background: linear-gradient(180deg, rgba(6,10,18,.82) 0%, rgba(6,10,18,.45) 55%, rgba(6,10,18,0) 100%); opacity: 0; }
+.scene { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; z-index: 5; color: #fff; }
+
+.kick { font: 800 28px "Unbounded"; letter-spacing: .14em; color: var(--g); }
+.title { max-width: 720px; font: 900 64px/1.04 "Unbounded"; letter-spacing: -.035em; text-transform: uppercase; color: #fff; margin-top: 14px; }
+
+/* funnel */
+.fn { position: absolute; left: 70px; height: 112px; border-radius: 26px; background: rgba(255,255,255,.06); border: 2px solid rgba(30,214,143,.35);
+      display: flex; align-items: center; gap: 22px; padding: 0 28px; overflow: hidden; }
+.fn .fill { position: absolute; left: 0; top: 0; bottom: 0; background: linear-gradient(90deg, rgba(30,214,143,.32), rgba(30,214,143,.12)); transform-origin: 0 50%; }
+.fn .n { position: relative; width: 60px; height: 60px; border-radius: 18px; background: var(--g); color: var(--ink); font: 900 28px "Unbounded"; display: flex; align-items: center; justify-content: center; flex: none; }
+.fn .lb { position: relative; font: 900 36px "Unbounded"; letter-spacing: -.02em; text-transform: uppercase; white-space: nowrap; }
+.fn .ct { position: relative; margin-left: auto; font: 800 30px "Manrope"; color: #CFF7E6; white-space: nowrap; }
+.fn.human { border-color: #fff; background: rgba(255,255,255,.14); }
+.fn.human .n { background: #fff; }
+.note { position: absolute; left: 70px; font: 700 24px "Manrope"; color: rgba(255,255,255,.5); }
+
+/* overlays over the speaker and the B-roll */
+.card { position: absolute; z-index: 12; left: 60px; top: 230px; width: 960px; padding: 26px 30px 30px; border-radius: 28px; background: rgba(255,255,255,.96); color: var(--ink);
+        box-shadow: 0 24px 60px rgba(0,0,0,.45); }
+.card .h { display: flex; align-items: center; gap: 12px; font: 800 24px "Manrope"; color: #6B7487; }
+.card .h i { width: 14px; height: 14px; border-radius: 50%; background: var(--g); display: inline-block; }
+.card .h b { margin-left: auto; font: 800 22px "Unbounded"; color: var(--ink); background: var(--g); padding: 6px 14px; border-radius: 10px; }
+.card .tx { margin-top: 14px; font: 700 38px/1.3 "Manrope"; min-height: 150px; }
+.card .caret { display: inline-block; width: 4px; height: 40px; background: var(--g); margin-left: 4px; vertical-align: -6px; }
+.pill { position: absolute; z-index: 12; left: 60px; font: 900 54px/1.05 "Unbounded"; letter-spacing: -.03em; text-transform: uppercase; padding: 14px 28px 20px; border-radius: 22px;
+        background: var(--g); color: var(--ink); box-shadow: 0 16px 50px rgba(30,214,143,.35); white-space: nowrap; }
+.pill.dark { background: rgba(14,23,38,.9); color: #fff; border: 3px solid var(--g); box-shadow: 0 16px 40px rgba(0,0,0,.45); }
+.pill.bad { background: var(--red); color: #fff; box-shadow: 0 16px 50px rgba(255,77,77,.4); }
+.pill small { display: block; font: 800 24px "Manrope"; letter-spacing: .02em; text-transform: none; opacity: .75; margin-bottom: 6px; }
+.big { position: absolute; z-index: 12; left: 70px; font: 900 92px/1 "Unbounded"; letter-spacing: -.04em; text-transform: uppercase; text-shadow: 0 6px 30px rgba(0,0,0,.55); }
+.big .x { position: absolute; left: -14px; right: -14px; top: 50%; height: 18px; margin-top: -9px; background: var(--red); border-radius: 9px; transform-origin: 0 50%; }
+.big .k { display: block; font: 800 28px "Unbounded"; letter-spacing: .14em; color: var(--g); margin-bottom: 14px; text-shadow: 0 2px 14px rgba(0,0,0,.7); }
+
+.cta { position: absolute; z-index: 12; left: 60px; top: 196px; width: 960px; padding: 26px 30px; border-radius: 30px; background: rgba(10,17,29,.9); border: 2px solid rgba(30,214,143,.75);
+       display: flex; align-items: center; gap: 26px; box-shadow: 0 24px 60px rgba(0,0,0,.45); }
+.cta .ico { width: 104px; height: 104px; border-radius: 52px; background: #2AABEE; flex: none; display: flex; align-items: center; justify-content: center; }
+.cta .t1 { font: 800 44px/1.1 "Unbounded"; white-space: nowrap; letter-spacing: -.02em; }
+.cta .t1 em { font-style: normal; color: var(--g); }
+.cta .t2 { font: 700 30px "Manrope"; color: #D2E6DE; margin-top: 10px; }
+
+/* subtitles: Unbounded caps, each word pops in when spoken, the spoken one turns navy on an emerald tab */
+#subs { z-index: 20; }
+.g { position: absolute; left: 50px; width: 980px; top: 1072px; display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 18px; }
+.g.low { top: 1440px; }
+.w { position: relative; isolation: isolate; display: inline-block; font: 800 62px/1.18 "Unbounded"; letter-spacing: -.02em; text-transform: uppercase; color: #fff; padding: 2px 6px;
+     text-shadow: 0 3px 0 rgba(0,0,0,.35), 0 6px 26px rgba(0,0,0,.65); }
+.w b { position: absolute; left: -10px; right: -10px; top: 4px; bottom: 2px; background: var(--g); border-radius: 12px; z-index: -1; transform: rotate(-1.5deg); box-shadow: 0 10px 30px rgba(30,214,143,.4); }
+.w i { font-style: normal; position: relative; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-duration="/*DUR*/" data-width="1080" data-height="1920">
+  <div id="sheet" class="full"></div>
+  <div id="pip"><video id="base" class="clip" src="assets/base.mp4" data-start="0" data-duration="/*DUR*/" muted playsinline></video></div>
+  <div id="ring"></div>
+  <div id="brolls">/*BROLL*/</div>
+  <div id="shadeTop" class="full"></div>
+  <div id="fx"></div>
+  <div id="subs" class="full"></div>
+</div>
+<script>
+const D = /*DATA*/;
+const tl = gsap.timeline({ paused: true });
+const $ = (h) => { const t = document.createElement("template"); t.innerHTML = h.trim(); return t.content.firstChild; };
+const fx = document.getElementById("fx");
+const OUT = "expo.out", SOFT = "power3.out", IN = "power2.in", POP = "back.out(1.9)";
+const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+const add = (h, parent = fx) => { const el = $(h); parent.appendChild(el); return el; };
+const show = (el, t0, t1) => { gsap.set(el, { autoAlpha: 0 }); tl.set(el, { autoAlpha: 1 }, t0); if (t1 != null) tl.set(el, { autoAlpha: 0 }, t1); };
+const T = D.t, X = D.text;
+
+/* ---------- B-roll ---------- */
+D.broll.forEach((c, k) => {
+  const w = document.getElementById(`br${k}`);
+  show(w, c.at, c.at + c.dur);
+  const v = w.querySelector("video");
+  if (c.in === "sharp") {
+    tl.fromTo(v, { scale: 1.16 }, { scale: 1.0, duration: 0.45, ease: OUT }, c.at);
+    const f = add(`<div class="flash full"></div>`);
+    show(f, c.at, c.at + 0.2);
+    tl.fromTo(f, { opacity: 0.5 }, { opacity: 0, duration: 0.18, ease: "power1.out" }, c.at);
+    tl.fromTo(v, { scale: 1.0 }, { scale: 1.05, duration: Math.max(0.1, c.dur - 0.45), ease: "none" }, c.at + 0.45);
+  } else if (c.in === "smooth") {
+    tl.fromTo(w, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power1.inOut" }, c.at - 0.05);
+    tl.fromTo(v, { scale: 1.06 }, { scale: 1.0, duration: c.dur, ease: "none" }, c.at);
+  } else {
+    tl.fromTo(v, { scale: 1.08 }, { scale: 1.0, duration: c.dur, ease: "none" }, c.at);
+  }
+  if (c.out === "smooth") tl.to(w, { opacity: 0, duration: 0.25, ease: "power1.in" }, c.at + c.dur - 0.25);
+});
+
+/* ---------- PiP: the speaker shrinks into a magenta ring while a scene plays on paper ---------- */
+const pip = document.getElementById("pip"), base = document.getElementById("base"), sheet = document.getElementById("sheet");
+gsap.set(sheet, { autoAlpha: 0 });
+const PS = 0.44, R = 125, CX = 895, CY = 330, ring = document.getElementById("ring");
+gsap.set(ring, { left: CX - R, top: CY - R, width: 2 * R, height: 2 * R });
+gsap.set(pip, { clipPath: `circle(2300px at ${CX}px ${CY}px)` });
+function pipScene(a, b) {
+  tl.set(sheet, { autoAlpha: 1 }, a);
+  tl.fromTo(sheet, { clipPath: `circle(0px at ${CX}px ${CY}px)` }, { clipPath: `circle(2300px at ${CX}px ${CY}px)`, duration: 0.55, ease: "power3.inOut" }, a);
+  tl.fromTo(pip, { clipPath: `circle(2300px at ${CX}px ${CY}px)` }, { clipPath: `circle(${R}px at ${CX}px ${CY}px)`, duration: 0.55, ease: "power3.inOut" }, a);
+  tl.fromTo(base, { scale: 1, x: 0, y: 0 }, { scale: PS, x: CX - 540 * PS, y: CY - 600 * PS, duration: 0.55, ease: "power3.inOut" }, a);
+  tl.fromTo(ring, { opacity: 0, scale: 1.4 }, { opacity: 1, scale: 1, duration: 0.3, ease: "power2.out" }, a + 0.35);
+  tl.to(ring, { opacity: 0, duration: 0.15 }, b - 0.45);
+  tl.to(pip, { clipPath: `circle(2300px at ${CX}px ${CY}px)`, duration: 0.45, ease: "power3.inOut" }, b - 0.45);
+  tl.to(base, { scale: 1, x: 0, y: 0, duration: 0.45, ease: "power3.inOut" }, b - 0.45);
+  tl.to(sheet, { opacity: 0, duration: 0.3, ease: "power1.in" }, b - 0.3);
+  tl.set(sheet, { autoAlpha: 0, opacity: 1 }, b);
+}
+const shade = document.getElementById("shadeTop");
+function shadeOn(a, b) { tl.to(shade, { opacity: 1, duration: 0.3 }, a); tl.to(shade, { opacity: 0, duration: 0.3 }, b - 0.3); }
+function header(sc, kick, title, at) {
+  const h = add(`<div style="position:absolute;left:70px;top:224px"><div class="kick">${esc(kick)}</div><div class="title">${esc(title).replace("\n", "<br>")}</div></div>`, sc);
+  tl.fromTo(h, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: OUT }, at);
+}
+
+/* ---------- 1. personal offer typed over the typing hands ---------- */
+{
+  const [a, b] = T.offer, O = X.offer;
+  const el = add(`<div class="card"><div class="h"><i></i>${esc(O.to)}<b>${esc(O.tag)}</b></div><div class="tx"><span></span><i class="caret"></i></div></div>`);
+  show(el, a, b);
+  tl.fromTo(el, { opacity: 0, y: -40 }, { opacity: 1, y: 0, duration: 0.35, ease: OUT }, a);
+  const sp = el.querySelector(".tx span"), ty = { k: 0 };
+  tl.to(ty, { k: O.text.length, duration: b - a - 0.5, ease: "none", onUpdate: () => { sp.textContent = O.text.slice(0, Math.round(ty.k)); } }, a + 0.2);
+}
+
+/* ---------- 2. leads handed to the manager ---------- */
+{
+  const [a, b] = T.manager;
+  const el = add(`<div class="pill" style="top:250px"><small>${esc(X.manager.k)}</small>${esc(X.manager.v)}</div>`);
+  show(el, a, b);
+  tl.fromTo(el, { opacity: 0, x: -80 }, { opacity: 1, x: 0, duration: 0.3, ease: OUT }, a);
+}
+
+/* ---------- 3. funnel scene: the whole process, not a chat bot ---------- */
+{
+  const F = X.funnel, [a, b] = T.funnel, C = T.funnelCues;
+  pipScene(a, b);
+  const sc = add(`<div class="scene"></div>`); show(sc, a, b);
+  header(sc, F.kick, F.title, a + 0.2);
+  const W0 = 940, step = 112;
+  F.rows.forEach(([lb, ct], i) => {
+    const w = W0 - i * 70, human = i === F.rows.length - 1;
+    const el = add(`<div class="fn${human ? " human" : ""}" style="top:${520 + i * 128}px;width:${w}px"><div class="fill"></div><div class="n">${i + 1}</div><div class="lb">${esc(lb)}</div><div class="ct">${esc(ct)}</div></div>`, sc);
+    tl.fromTo(el, { opacity: 0, x: -60 }, { opacity: 1, x: 0, duration: 0.35, ease: OUT }, C[i] - 0.1);
+    tl.fromTo(el.querySelector(".fill"), { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: SOFT }, C[i]);
+    tl.fromTo(el.querySelector(".n"), { scale: 0.3 }, { scale: 1, duration: 0.35, ease: POP }, C[i]);
+  });
+  const nt = add(`<div class="note" style="top:${520 + F.rows.length * 128 + 6}px">${esc(F.note)}</div>`, sc);
+  tl.fromTo(nt, { opacity: 0 }, { opacity: 1, duration: 0.3 }, C[1]);
+}
+
+/* ---------- 4. «sales on autopilot» struck out ---------- */
+{
+  const [a, x, b] = T.auto;
+  shadeOn(a - 0.15, b);
+  const el = add(`<div class="big" style="top:250px"><span class="k">${esc(X.auto.k)}</span><span style="position:relative">${esc(X.auto.v).replace("\n", "<br>")}<i class="x"></i></span></div>`);
+  show(el, a, b);
+  tl.fromTo(el, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: OUT }, a);
+  tl.fromTo(el.querySelector(".x"), { scaleX: 0, rotation: -6 }, { scaleX: 1, rotation: -6, duration: 0.25, ease: "power2.out" }, x);
+  tl.to(el, { opacity: 0.55, duration: 0.2 }, x + 0.15);
+}
+
+/* ---------- 5. the deal stays with a person ---------- */
+{
+  const [a, b] = T.deal;
+  const el = add(`<div class="pill dark" style="top:250px"><small>${esc(X.deal.k)}</small>${esc(X.deal.v)}</div>`);
+  show(el, a, b);
+  tl.fromTo(el, { opacity: 0, scale: 0.6, rotation: -4 }, { opacity: 1, scale: 1, rotation: -2, duration: 0.4, ease: POP }, a);
+}
+
+/* ---------- 6. what AI does / doesn't ---------- */
+{
+  const [g1, g2, bend, bad, b] = T.role;
+  const e1 = add(`<div class="pill" style="top:250px">✓ ${esc(X.role[0])}</div>`);
+  const e2 = add(`<div class="pill" style="top:370px">✓ ${esc(X.role[1])}</div>`);
+  show(e1, g1, bend); show(e2, g2, bend);
+  tl.fromTo(e1, { opacity: 0, x: -80 }, { opacity: 1, x: 0, duration: 0.3, ease: OUT }, g1);
+  tl.fromTo(e2, { opacity: 0, x: -80 }, { opacity: 1, x: 0, duration: 0.3, ease: OUT }, g2);
+  shadeOn(bad - 0.2, b);
+  const e3 = add(`<div class="pill bad" style="top:250px">✕ ${esc(X.role[2])}</div>`);
+  show(e3, bad, b);
+  tl.fromTo(e3, { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.4, ease: POP }, bad);
+}
+
+/* ---------- 7. CTA ---------- */
+{
+  const C = X.cta, a = T.cta;
+  shadeOn(a, D.dur + 0.3);
+  const t1 = esc(C.l1).replace("№15", "<em>№15</em>");
+  const el = add(`<div class="cta"><div class="ico"><svg width="58" height="58" viewBox="0 0 24 24"><path d="M21.5 3.6 2.9 10.8c-1 .4-1 1.8.1 2.1l4.7 1.5 1.8 5.6c.3.9 1.4 1.1 2 .4l2.6-2.6 4.9 3.6c.8.6 1.9.1 2.1-.8l3-15.3c.2-1.2-.9-2.1-2.1-1.6zM9.6 14.6l8.6-7.7-6.9 9.2-.3 3.2-1.4-4.7z" fill="#fff"/></svg></div><div><div class="t1">${t1}</div><div class="t2">${esc(C.l2)} ↑</div></div></div>`);
+  show(el, a, null);
+  tl.fromTo(el, { opacity: 0, y: -60, scale: .9 }, { opacity: 1, y: 0, scale: 1, duration: 0.55, ease: POP }, a + 0.05);
+  tl.fromTo(el.querySelector(".ico"), { rotation: -20 }, { rotation: 0, duration: 0.8, ease: "elastic.out(1,.5)" }, a + 0.2);
+}
+
+/* ---------- subtitles ---------- */
+{
+  const subs = document.getElementById("subs");
+  D.groups.forEach((g) => {
+    const el = add(`<div class="g${g.low ? " low" : ""}">${g.words.map((w) => `<span class="w"><b></b><i>${esc(w.w)}</i></span>`).join("")}</div>`, subs);
+    show(el, g.s, g.e);
+    const spans = el.querySelectorAll(".w");
+    g.words.forEach((w, i) => {
+      const sp = spans[i], pill = sp.querySelector("b"), tx = sp.querySelector("i");
+      tl.fromTo(sp, { opacity: 0, y: 26, scale: 0.7 }, { opacity: 1, y: 0, scale: 1, duration: 0.22, ease: "back.out(2.6)" }, w.s - 0.04);
+      tl.fromTo(pill, { opacity: 0, scaleX: 0.6 }, { opacity: 1, scaleX: 1, duration: 0.14, ease: "power2.out" }, w.s - 0.02);
+      const nx = i + 1 < g.words.length ? g.words[i + 1].s - 0.02 : g.e;
+      tl.set(pill, { opacity: 0 }, nx);
+      tl.set(tx, { color: "#0E1726", textShadow: "none" }, w.s - 0.02);
+      tl.set(tx, { color: "#fff", textShadow: "0 3px 0 rgba(0,0,0,.35), 0 6px 26px rgba(0,0,0,.65)" }, nx);
+    });
+  });
+}
+
+window.__timelines = window.__timelines || {};
+window.__timelines["main"] = tl;
+tl.seek(0);
+</script>
+</body>
+</html>

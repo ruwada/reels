@@ -21,7 +21,10 @@ edit.json:
      "messages": [{"me": true, "text": "..."}, {"me": false, "text": "...", "time": "19:02"}]},
     {"start": 23, "end": 26, "kind": "clip", "file": "broll.mp4", "from": 0, "transition": "sharp", "grade": true}
   ],
-  "cta": {"text": "Напиши «AI»\\nв комментариях", "accent": "«AI»", "start": -3.5}
+  "subs": {"text": "#FFFFFF", "hl": "#C6F432", "bg": "#0B1B4D", "bg_alpha": 0.15},  # optional subtitle box, pick per reel
+  "cta": {"text": "Напиши «AI»\\nв комментариях", "accent": "«AI»", "start": -3.5},
+  "plates": [{"text": "...", "start": 20, "end": 23, "top": 300}],  # optional extra plates in the hook style
+  "en": "en.json"                  # optional English line under the subtitles: [{"s": 0.1, "e": 3.9, "t": "..."}]
   # hook/cta take an optional "top" (px) to keep the plate off the speaker's face
 }
 All times are seconds in the source video; a negative cta.start counts from the end.
@@ -31,6 +34,9 @@ A chat with "frame": "phone" is drawn as a Telegram screen in a phone; "me" mess
 Clips get a mild grade to sit with the speaker's footage ("grade": false to keep them as shot).
 """
 import html, json, os, re, shutil, subprocess, sys, tempfile
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import pop_subs  # noqa: E402
 
 W, H, FPS = 1080, 1920, 30
 LIME, BG = "#C6F432", "#0D0F14"
@@ -74,8 +80,45 @@ def chunk_words(words, max_words=3, max_chars=20, gap=0.35):
     return chunks
 
 
-def build_ass(words, path):
-    lime = "&H0032F4C6&"
+def ass_color(hex_rgb, alpha=0.0):
+    """#RRGGBB + transparency 0..1 -> ASS &HAABBGGRR"""
+    r, g, b = hex_rgb.lstrip("#")[0:2], hex_rgb.lstrip("#")[2:4], hex_rgb.lstrip("#")[4:6]
+    return f"&H{round(alpha * 255):02X}{b}{g}{r}".upper().replace("&H", "&H", 1)
+
+
+def build_ass(words, path, subs=None, en=None):
+    """subs (optional, pick per reel): {"text": "#FFFFFF", "hl": "#C6F432", "bg": "#0B1B4D", "bg_alpha": 0.15,
+    "en": "#C9CED8"}. With "bg" every line sits on a coloured box; without it, the classic outlined white text.
+    en (optional): English phrases [{"s": 0.1, "e": 3.9, "t": "..."}], a smaller line under the Russian one."""
+    subs = subs or {}
+    lime = ass_color(subs.get("hl", LIME)) + "&"
+    white = ass_color(subs.get("text", "#FFFFFF")) + "&"
+    mv = subs.get("y", 560)  # distance of the subtitle baseline from the bottom edge
+    marker = subs.get("style") == "marker"
+    if marker:
+        # "marker": bold caps with a dark outline; the spoken word turns dark on a thick coloured outline,
+        # which reads as a highlighter stroke behind that word
+        ink = ass_color(subs.get("ink", "#10201B"))
+        style = (f"Style: Sub,Unbounded ExtraBold,{subs.get('size', 62)},{white[:-1]},{white[:-1]},&H00101010,&H8C000000,"
+                 f"-1,0,0,0,100,100,0,0,1,6,3,2,80,80,{mv},1")
+        hl_on = f"{{\\c{ink}&\\3c{lime}\\bord13\\shad0}}"
+        hl_off = f"{{\\c{white}\\3c&H101010&\\bord6\\shad3}}"
+        en_col = ass_color(subs.get("en", "#E6ECEA"))
+        style += f"\nStyle: En,Manrope ExtraBold,42,{en_col},{en_col},&H00101010,&H8C000000,-1,0,0,0,100,100,0,0,1,4,2,8,110,110,{H - mv + 30},1"
+    elif subs.get("bg"):
+        box = ass_color(subs["bg"], subs.get("bg_alpha", 0.15))
+        style = f"Style: Sub,Manrope ExtraBold,80,{white[:-1]},{white[:-1]},{box},{box},-1,0,0,0,100,100,0,0,3,20,0,2,90,90,{mv},1"
+    else:
+        style = f"Style: Sub,Manrope ExtraBold,86,{white[:-1]},{white[:-1]},&H00000000,&H96000000,-1,0,0,0,100,100,0,0,1,7,4,2,90,90,{mv},1"
+    if marker:
+        pass
+    elif subs.get("bg"):
+        en_col = ass_color(subs.get("en", "#C9CED8"))
+        en_box = ass_color(subs["bg"], min(subs.get("bg_alpha", 0.15) + 0.1, 1))
+        style += f"\nStyle: En,Manrope,44,{en_col},{en_col},{en_box},{en_box},-1,0,0,0,100,100,0,0,3,14,0,8,110,110,{H - mv + 26},1"
+    else:
+        en_col = ass_color(subs.get("en", "#C9CED8"))
+        style += f"\nStyle: En,Manrope,46,{en_col},{en_col},&H00000000,&H96000000,-1,0,0,0,100,100,0,0,1,4,2,8,110,110,{H - mv + 26},1"
     head = f"""[Script Info]
 ScriptType: v4.00+
 PlayResX: {W}
@@ -85,7 +128,7 @@ ScaledBorderAndShadow: yes
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Sub,Manrope ExtraBold,86,&H00FFFFFF,&H00FFFFFF,&H00000000,&H96000000,-1,0,0,0,100,100,0,0,1,7,4,2,90,90,560,1
+{style}
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
@@ -93,6 +136,8 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
     lines = []
     for chunk in chunk_words(words):
         shown = [re.sub(r"[.,:;…]+$", "", w["w"]) for w in chunk]
+        if marker:
+            shown = [x.upper() for x in shown]
         c_end = chunk[-1]["e"]
         for i, w in enumerate(chunk):
             start = w["s"]
@@ -100,9 +145,15 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
             parts = []
             for j, text in enumerate(shown):
                 text = ass_escape(text)
-                parts.append(f"{{\\c{lime}}}{text}{{\\c&H00FFFFFF&}}" if j == i else text)
+                if marker:
+                    # hard spaces keep the thick marker stroke off the neighbouring words
+                    parts.append(f"\\h{hl_on}{text}{hl_off}\\h" if j == i else text)
+                else:
+                    parts.append(f"{{\\c{lime}}}{text}{{\\c{white}}}" if j == i else text)
             pop = "{\\fscx88\\fscy88\\t(0,110,\\fscx100\\fscy100)}" if i == 0 else ""
             lines.append(f"Dialogue: 0,{ass_time(start)},{ass_time(end)},Sub,,0,0,0,,{pop}{' '.join(parts)}")
+    for seg in en or []:
+        lines.append(f"Dialogue: 1,{ass_time(seg['s'])},{ass_time(seg['e'])},En,,0,0,0,,{ass_escape(seg['t'])}")
     open(path, "w").write(head + "\n".join(lines) + "\n")
 
 
@@ -178,7 +229,7 @@ THEME_CSS = f"""
 .terminal .item .n::before{{content:'> '}}
 .terminal .tag{{border-radius:10px}}
 
-.phone{{position:absolute;left:190px;right:190px;top:170px;height:1060px;border-radius:90px;background:#0E1621;overflow:hidden;
+.phone{{position:absolute;left:190px;right:190px;top:240px;height:1000px;border-radius:90px;background:#0E1621;overflow:hidden;
   border:14px solid #15171C;box-shadow:0 40px 120px rgba(0,0,0,.6),0 0 0 3px rgba(255,255,255,.1);
   animation:panel .45s cubic-bezier(.2,.9,.3,1.1) both}}
 .phone .island{{position:absolute;top:20px;left:50%;width:150px;height:42px;margin-left:-75px;border-radius:24px;background:#000;z-index:2}}
@@ -272,13 +323,17 @@ def card_html(c, theme="dark"):
 <div class="handle">{HANDLE}</div><div class="content">{body}</div></div>"""
 
 
-def banner_html(text, accent, top=260):
-    """Hook / CTA plate on a transparent background, sits above the speaker."""
+def banner_html(text, accent, top=260, sub=None, color=LIME):
+    """Hook / CTA plate on a transparent background, sits above the speaker; sub = optional small second line
+    (e.g. the English version)."""
+    sub = (f'<div style="font-family:Manrope;font-weight:700;font-size:38px;line-height:1.25;letter-spacing:0;'
+           f'color:#AEB4C0;margin-top:18px;animation:up .4s .35s both">{html.escape(sub).replace(chr(10), "<br>")}</div>'
+           if sub else "")
     return f"""<div style="position:absolute;left:70px;right:70px;top:{top}px;display:flex;justify-content:center;
 animation:slidein .4s cubic-bezier(.2,.9,.3,1.2) both">
-<div style="background:rgba(13,15,20,.92);border:4px solid {LIME};border-radius:36px;padding:40px 48px;text-align:center;
+<div style="background:rgba(13,15,20,.92);border:4px solid {color};border-radius:36px;padding:40px 48px;text-align:center;
 font-family:Unbounded;font-weight:800;font-size:72px;line-height:1.12;letter-spacing:-1px;box-shadow:0 20px 60px rgba(0,0,0,.5)">
-{accented(text, accent, words_anim=True, delay0=0.15, step=0.06)}</div></div>"""
+{accented(text, accent, words_anim=True, delay0=0.15, step=0.06).replace('class="w acc" style="', f'class="w acc" style="color:{color};')}{sub}</div></div>"""
 
 
 def render_frames(page, body, seconds, outdir, transparent):
@@ -305,7 +360,12 @@ def main(plan_path):
     words = json.load(open(p(plan["words"])))
     tmp = tempfile.mkdtemp(prefix="reel-")
 
-    build_ass(words, f"{tmp}/subs.ass")
+    en = json.load(open(p(plan["en"]))) if plan.get("en") else None
+    subs_o = plan.get("subs") or {}
+    pop = subs_o.get("style") == "pop"  # big key word + small words, rendered as PNGs (tools/pop_subs.py)
+    if not pop:
+        build_ass(words, f"{tmp}/subs.ass", subs_o, en)
+    pop_caps = []
 
     # cards and clips; transition "smooth" = soft fade, "sharp" = slide (cards) or hard cut + punch-in (clips)
     overlays, banners = [], []
@@ -314,7 +374,8 @@ def main(plan_path):
         browser = pw.chromium.launch(executable_path=CHROME)
         page = browser.new_page(viewport={"width": W, "height": H})
         for i, c in enumerate(plan.get("cards", [])):
-            o = dict(s=c["start"], e=c["end"], kind=c["kind"], sharp=c.get("transition", plan.get("transition")) == "sharp")
+            tr = c.get("transition", plan.get("transition"))
+            o = dict(s=c["start"], e=c["end"], kind=c["kind"], sharp=tr in ("sharp", "cut"), cut=tr == "cut")
             if c["kind"] == "clip":
                 o.update(kind="clip", grade=c.get("grade", True),
                          inp=["-ss", str(c.get("from", 0)), "-t", f"{o['e'] - o['s']:.3f}", "-i", p(c["file"])])
@@ -324,16 +385,26 @@ def main(plan_path):
                 render_frames(page, card_html(c, theme), o["e"] - o["s"], d, transparent=theme == "glass")
                 o.update(kind="card", glass=theme == "glass", inp=["-framerate", str(FPS), "-i", f"{d}/%05d.png"])
             overlays.append(o)
-        for key, top in (("hook", 260), ("cta", 300)):
-            b = plan.get(key)
+        plates = [(plan.get("hook"), 260), (plan.get("cta"), 300)] + [(b, 260) for b in plan.get("plates", [])]
+        for key, (b, top) in enumerate(plates):
             if not b:
                 continue
             s = b.get("start", 0)
             s = total + s if s < 0 else s
             e = b.get("end", total)
-            d = f"{tmp}/{key}"
-            render_frames(page, banner_html(b["text"], b.get("accent"), b.get("top", top)), e - s, d, transparent=True)
+            if b.get("style") == "pop":
+                f = f"{tmp}/plate{key}.png"
+                pop_subs.render_png(page, pop_subs.plate_html(b, subs_o), subs_o, f)
+                banners.append((s, e, ["-loop", "1", "-framerate", str(FPS), "-t", f"{e - s:.3f}", "-i", f]))
+                continue
+            d = f"{tmp}/plate{key}"
+            render_frames(page, banner_html(b["text"], b.get("accent"), b.get("top", top), b.get("sub"), b.get("color", LIME)), e - s, d, transparent=True)
             banners.append((s, e, ["-framerate", str(FPS), "-i", f"{d}/%05d.png"]))
+        if pop:
+            for j, (ws, k, a, b) in enumerate(pop_subs.plan(words, total)):
+                f = f"{tmp}/cap{j:03d}.png"
+                pop_subs.render_png(page, pop_subs.chunk_html(ws, k, subs_o), subs_o, f)
+                pop_caps.append((a, b, f))
         browser.close()
 
     args = ["ffmpeg", "-y", "-v", "error", "-stats", "-i", src]
@@ -355,7 +426,8 @@ def main(plan_path):
         s, e, sharp = o["s"], o["e"], o["sharp"]
         d = e - s
         args += o["inp"]
-        on = f"enable='between(t,{s},{e})'"
+        pad = 1 / FPS if o["kind"] == "clip" else 0  # clips run one frame past their slot: no one-frame gap
+        on = f"enable='between(t,{s},{e + pad:.4f})'"
         if o.get("glass"):
             # frost the speaker behind a glass card: blurred, dimmed copy of the frame that fades with the card
             f = 0.15 if sharp else 0.4
@@ -366,13 +438,14 @@ def main(plan_path):
             last = f"gv{idx}"
         chain = f"[{idx}:v]"
         if o["kind"] == "clip":
-            chain += f"scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},fps={FPS},setsar=1,"
+            # tpad holds the last frame if the clip is a little shorter than its slot
+            chain += f"scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},fps={FPS},setsar=1,tpad=stop_mode=clone:stop_duration=2,"
             if o["grade"]:
                 chain += "eq=contrast=1.05:brightness=-0.02:saturation=0.88,vignette=angle=PI/5,"
-            if sharp:  # hard cut in, then a quick settle from a 12% push-in
+            if sharp and not o.get("cut"):  # hard cut in, then a quick settle from a 12% push-in
                 chain += (f"scale=w='trunc({W}*(1+0.12*pow(max(0,1-t/0.3),2))/2)*2':h=-2:eval=frame,"
                           f"crop={W}:{H}:(iw-{W})/2:(ih-{H})/2,")
-        chain += f"format=rgba,trim=duration={d:.3f},"
+        chain += f"format=rgba,trim=duration={d + pad:.3f},"
         ov = "overlay=eof_action=pass"
         if not sharp:
             fd = 0.4
@@ -386,9 +459,18 @@ def main(plan_path):
         fc.append(f"[{last}][o{idx}]{ov}:{on}[v{idx}]")
         last = f"v{idx}"; idx += 1
 
-    subs = f"{tmp}/subs.ass".replace(":", "\\:")
-    fc.append(f"[{last}]ass='{subs}':fontsdir=/usr/local/share/fonts/brand[vs]")
-    last = "vs"
+    if pop:
+        # each screen pops in from 118 % to 100 % in 0.15 s
+        for a, b, f in pop_caps:
+            args += ["-loop", "1", "-framerate", str(FPS), "-t", f"{b - a:.3f}", "-i", f]
+            z = "(1+0.18*max(0,1-t/0.15))"
+            fc.append(f"[{idx}:v]format=rgba,scale=w='{W}*{z}':h='{H}*{z}':eval=frame,setpts=PTS-STARTPTS+{a}/TB[o{idx}]")
+            fc.append(f"[{last}][o{idx}]overlay=x='(W-w)/2':y='(H-h)/2':eof_action=pass:enable='between(t,{a:.3f},{b:.3f})'[v{idx}]")
+            last = f"v{idx}"; idx += 1
+    else:
+        subs = f"{tmp}/subs.ass".replace(":", "\\:")
+        fc.append(f"[{last}]ass='{subs}':fontsdir=/usr/local/share/fonts/brand[vs]")
+        last = "vs"
     for s, e, inp in banners:
         args += inp
         d = e - s
@@ -399,11 +481,21 @@ def main(plan_path):
               "loudnorm=I=-14:TP=-1.5:LRA=11,aresample=48000[a]")
 
     args += ["-filter_complex", ";".join(fc), "-map", f"[{last}]", "-map", "[a]",
-             "-t", f"{total:.3f}", "-c:v", "libx264", "-preset", "slow", "-crf", "16", "-profile:v", "high",
+             "-t", f"{total:.3f}", *venc(plan.get("enc", {})),
              "-pix_fmt", "yuv420p", "-r", str(FPS), "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart", out]
     run(args)
     shutil.rmtree(tmp, ignore_errors=True)
     print("rendered", out)
+
+
+def venc(e):
+    """Video encoder args. Default h264 CRF 16 (~7 Mbit/s on a talking head).
+    "enc": {"crf": 10} for a high-bitrate master; {"codec": "hevc", "crf": 18} for x265 (tag hvc1)."""
+    if e.get("codec") == "hevc":
+        return ["-c:v", "libx265", "-preset", e.get("preset", "slow"), "-crf", str(e.get("crf", 18)),
+                "-x265-params", "aq-mode=3:log-level=error", "-tag:v", "hvc1"]
+    return ["-c:v", "libx264", "-preset", e.get("preset", "slow"), "-crf", str(e.get("crf", 16)),
+            "-tune", "film", "-x264-params", "aq-mode=3", "-profile:v", "high"]
 
 
 if __name__ == "__main__":
