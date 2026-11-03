@@ -46,3 +46,8 @@ DaVinci Resolve (free) project the author finishes on Windows or Mac.
 subtitles as one alpha clip per phrase, V4 hook and CTA), `subtitry.srt`, `KAK-OTKRYT.txt` and `media/`.
 The original video is not copied: the author drops it into `media/` under its own name. Zip `proekt/`
 and send it. Transitions and the -14 LUFS loudness step are added in Resolve. `proekt/` stays out of git.
+
+## Виды монтажа
+
+Сводная инструкция по всем пяти форматам видео и по переносу в другой аккаунт:
+[`docs/MONTAZH-VIDY.md`](docs/MONTAZH-VIDY.md).
