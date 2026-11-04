@@ -47,7 +47,8 @@ subtitles as one alpha clip per phrase, V4 hook and CTA), `subtitry.srt`, `KAK-O
 The original video is not copied: the author drops it into `media/` under its own name. Zip `proekt/`
 and send it. Transitions and the -14 LUFS loudness step are added in Resolve. `proekt/` stays out of git.
 
-## Виды монтажа
+## Виды монтажа и новый проект
 
-Сводная инструкция по всем пяти форматам видео и по переносу в другой аккаунт:
+Сводная инструкция по всем пяти форматам видео: 
 [`docs/MONTAZH-VIDY.md`](docs/MONTAZH-VIDY.md).
+Как поднять такой же проект на другом аккаунте, шаг за шагом: [`docs/NOVYJ-PROEKT.md`](docs/NOVYJ-PROEKT.md).

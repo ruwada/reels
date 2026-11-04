@@ -30,7 +30,7 @@
    как мы её закрываем. Не «вот какой инструмент», а «вот что у тебя болит».
 4. **Публикует он сам.** Инстаграм (рилсы, карусели, сторис) выкладывает владелец с телефона.
    Мы после его «да» отправляем файлы **документом** в его личный чат с ботом
-   (`chat_id 2058551165`, `TELEGRAM_BOT_TOKEN`, `sendDocument` + `disable_content_type_detection=true`,
+   (id чата — в памяти проекта, `TELEGRAM_BOT_TOKEN`, `sendDocument` + `disable_content_type_detection=true`,
    лимит 50 МБ) и прикладываем в треде. YouTube Shorts и TikTok ставятся через Metricool
    (бренд islam.devai 7091234) — только русские версии. LinkedIn ведёт свой тред.
 5. **Сначала показать, потом публиковать.** Монтаж + подпись + первый комментарий уходят на
@@ -391,8 +391,8 @@ Gemini работает на предоплаченных кредитах AI St
   (канал islamdevai) и TikTok (islam.devai). У TikTok обязателен `tiktokData.title`.
   Инстаграм через Metricool не публикуем.
 - **Typefully** — LinkedIn (видео на бесплатном тарифе ≤10 МБ).
-- **Telegram** — канал `@islamdevai` (id `-1003476204900`, бот `@claude_publishing_bot` админ)
-  и личный чат `2058551165`. С `curl -F` `chat_id=@islamdevai` читается как файл — брать
+- **Telegram** — канал `@islamdevai` (бот — администратор канала)
+  и личный чат с ботом (id — в памяти проекта). С `curl -F` `chat_id=@islamdevai` читается как файл — брать
   `--form-string`.
 - **ElevenLabs** — голос `islam.devai-2` `BfVyIdPg9joQxukEjS3J`. В новом аккаунте клон придётся
   создавать заново из его записей (≈6 минут речи, highpass + loudnorm, без изоляции) и заново
