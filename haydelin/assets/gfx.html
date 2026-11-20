@@ -1,0 +1,48 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{width:1080px;height:1920px;font-family:Manrope,sans-serif;overflow:hidden;background:transparent}
+.lock{position:absolute;inset:0;background:linear-gradient(160deg,#5E9EA8 0%,#7DB5AE 45%,#9CC9B8 75%,#7FB3B7 100%)}
+.clock{position:absolute;top:250px;width:100%;text-align:center;color:#fff;font-weight:700;font-size:210px;letter-spacing:-4px}
+.date{position:absolute;top:500px;width:100%;text-align:center;color:#fff;font-size:44px;font-weight:600;opacity:.95}
+.notif{position:absolute;left:60px;right:60px;top:760px;background:rgba(240,246,244,.93);border-radius:56px;padding:44px 46px;display:flex;gap:34px;align-items:flex-start;box-shadow:0 20px 60px rgba(0,0,0,.15)}
+.ic{flex:none;width:116px;height:116px;border-radius:30px;background:#2E7864;display:flex;align-items:center;justify-content:center}
+.t{font-size:44px;font-weight:800;color:#1B2421;display:flex;justify-content:space-between;gap:20px}
+.t span{font-weight:600;color:#6B7672;font-size:36px;white-space:nowrap}
+.b{font-size:40px;line-height:1.3;color:#2A3330;margin-top:10px;font-weight:600}
+.app{font-size:32px;color:#4F5B57;font-weight:700;margin-bottom:8px;letter-spacing:.5px}
+/* settings screen */
+.scr{position:absolute;inset:0;background:#F5F7F6}
+.hd{position:absolute;top:150px;left:70px;font-size:64px;font-weight:800;color:#18211E}
+.panel{position:absolute;top:300px;left:50px;right:50px;background:#fff;border-radius:48px;padding:20px 50px;box-shadow:0 6px 30px rgba(0,0,0,.05)}
+.row{display:flex;align-items:center;gap:26px;padding:44px 0;border-bottom:2px solid #EEF1F0}
+.row:last-child{border-bottom:none}
+.ri{flex:none;width:104px;height:104px;border-radius:30px;background:#E6F2EE;display:flex;align-items:center;justify-content:center;font-size:52px;color:#2E7864;font-weight:800}
+.rt{flex:1}.rt b{display:block;font-size:46px;color:#18211E;font-weight:800}.rt i{display:block;font-style:normal;font-size:36px;color:#8A9591;margin-top:8px;line-height:1.3;font-weight:600}
+.sw{flex:none;width:150px;height:84px;border-radius:42px;background:#E3E8E6;position:relative}
+.sw:after{content:"";position:absolute;top:12px;left:12px;width:60px;height:60px;border-radius:50%;background:#C9D1CE}
+.sw.on{background:#2E7864}.sw.on:after{left:78px;background:#fff}
+.pill{background:#E6F2EE;border-radius:24px;padding:14px 18px;font-size:38px;font-weight:800;color:#18211E}
+.note{position:absolute;top:1640px;left:80px;right:80px;font-size:36px;color:#6B7672;line-height:1.35;font-weight:600}
+/* store card */
+.store{position:absolute;inset:0;background:radial-gradient(circle at 70% 20%,#3C8F78 0%,#1F5C4E 60%,#173F37 100%)}
+.big{position:absolute;top:640px;width:100%;text-align:center;color:#fff;font-size:96px;font-weight:800;line-height:1.1}
+.big em{font-style:normal;color:#C9B8FF}
+.badges{position:absolute;top:960px;width:100%;display:flex;flex-direction:column;align-items:center;gap:36px}
+.bd{width:640px;padding:34px 0;border-radius:36px;background:#0F1C18;color:#fff;text-align:center;font-size:56px;font-weight:800;border:3px solid rgba(255,255,255,.25)}
+.bd small{display:block;font-size:30px;font-weight:600;opacity:.7;margin-bottom:4px}
+</style></head><body><div id="root"></div>
+<script>
+const tooth=`<svg width="70" height="78" viewBox="0 0 70 78"><path d="M35 8c-7-6-17-7-24-2C3 11 3 23 6 34c3 10 4 20 7 32 2 8 9 8 11 0l4-16c1-4 3-6 7-6s6 2 7 6l4 16c2 8 9 8 11 0 3-12 4-22 7-32 3-11 3-23-5-28-7-5-17-4-24 2z" fill="#fff"/><circle cx="35" cy="30" r="12" fill="#2E7864"/><path d="M29 30l4 4 8-8" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/></svg>`;
+const V={
+lockbg:(time,date)=>`<div class="lock"><div class="clock">${time}</div><div class="date">${date}</div></div>`,
+notif:(title,time,body)=>`<div class="notif"><div class="ic">${tooth}</div><div style="flex:1"><div class="t">${title}<span>${time}</span></div><div class="b">${body}</div></div></div>`,
+tyagi:(on)=>`<div class="scr"><div class="hd">Настройки тяг</div><div class="panel">
+<div class="row"><div class="ri">#</div><div class="rt"><b>Режим брекетов</b><i>Чистка с подсказками вокруг брекетов и под дугой</i></div><div class="sw ${on?'on':''}"></div></div>
+<div class="row"><div class="ri">◉</div><div class="rt"><b>Напоминания о тягах</b><i>Приложение напомнит надеть резинки в течение дня</i></div><div class="sw ${on?'on':''}"></div></div>
+<div class="row"><div class="ri">◷</div><div class="rt"><b>Окно напоминаний</b></div><div class="pill">09:00</div><div style="font-size:40px;color:#8A9591">–</div><div class="pill">21:00</div></div>
+<div class="row"><div class="ri">♪</div><div class="rt"><b>Напоминаний в день</b><i>3 напоминания в день</i></div></div>
+</div><div class="note">ⓘ Чистка зубов остаётся доступной в любом режиме: тяги и брекеты её не отключают</div></div>`,
+store:()=>`<div class="store"><div class="big">Скоро<br><em>в сторах</em></div><div class="badges"><div class="bd"><small>Загрузите в</small>App Store</div><div class="bd"><small>Доступно в</small>Google Play</div></div></div>`
+};
+window.show=(k,...a)=>{document.getElementById('root').innerHTML=V[k](...a)};
+</script></body></html>

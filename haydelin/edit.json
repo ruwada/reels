@@ -1,0 +1,171 @@
+{
+ "src": "orig.mov",
+ "words": "words.json",
+ "out": "rils-haydelin-montazh-v2.mp4",
+ "theme": "paper",
+ "subs": {
+  "style": "marker",
+  "text": "#FFFFFF",
+  "hl": "#FFD84D",
+  "ink": "#10201B",
+  "size": 56,
+  "y": 400,
+  "en": "#E6ECEA"
+ },
+ "hook": {
+  "text": "Брекеты за\nсотни тысяч",
+  "accent": "сотни тысяч",
+  "start": 0,
+  "end": 2.2,
+  "top": 230,
+  "sub": "Braces cost a fortune",
+  "color": "#FFD84D"
+ },
+ "zooms": [],
+ "cards": [
+  {
+   "start": 2.2,
+   "end": 3.5,
+   "kind": "clip",
+   "file": "broll/33401574.mp4",
+   "from": 1.0,
+   "transition": "cut",
+   "grade": false
+  },
+  {
+   "start": 3.5,
+   "end": 4.55,
+   "kind": "clip",
+   "file": "broll/7597961.mp4",
+   "from": 3.0,
+   "transition": "cut",
+   "grade": false
+  },
+  {
+   "start": 4.55,
+   "end": 5.45,
+   "kind": "clip",
+   "file": "broll/7250829.mp4",
+   "from": 1.0,
+   "transition": "cut",
+   "grade": false
+  },
+  {
+   "start": 5.45,
+   "end": 6.7,
+   "kind": "clip",
+   "file": "broll/33590009.mp4",
+   "from": 1.0,
+   "transition": "cut",
+   "grade": false
+  },
+  {
+   "start": 8.1,
+   "end": 10.4,
+   "kind": "clip",
+   "file": "work/p_dev.mp4",
+   "from": 0,
+   "transition": "cut",
+   "grade": false
+  },
+  {
+   "start": 10.4,
+   "end": 12.4,
+   "kind": "clip",
+   "file": "work/p_alarm.mp4",
+   "from": 0,
+   "transition": "cut",
+   "grade": false
+  },
+  {
+   "start": 12.4,
+   "end": 18.15,
+   "kind": "clip",
+   "file": "work/p_start.mp4",
+   "from": 0,
+   "transition": "cut",
+   "grade": false
+  },
+  {
+   "start": 18.15,
+   "end": 22.6,
+   "kind": "clip",
+   "file": "work/p_timer.mp4",
+   "from": 0,
+   "transition": "cut",
+   "grade": false
+  },
+  {
+   "start": 24.3,
+   "end": 29.4,
+   "kind": "clip",
+   "file": "work/p_modes.mp4",
+   "from": 0,
+   "transition": "cut",
+   "grade": false
+  },
+  {
+   "start": 29.4,
+   "end": 35.7,
+   "kind": "clip",
+   "file": "work/p_coins.mp4",
+   "from": 0,
+   "transition": "cut",
+   "grade": false
+  },
+  {
+   "start": 35.7,
+   "end": 37.6,
+   "kind": "clip",
+   "file": "broll/7171041.mp4",
+   "from": 2.0,
+   "transition": "cut",
+   "grade": false
+  },
+  {
+   "start": 37.6,
+   "end": 43.8,
+   "kind": "clip",
+   "file": "work/p_parent.mp4",
+   "from": 0,
+   "transition": "cut",
+   "grade": false
+  },
+  {
+   "start": 43.8,
+   "end": 48.65,
+   "kind": "clip",
+   "file": "work/p_priv.mp4",
+   "from": 0,
+   "transition": "smooth",
+   "grade": false
+  },
+  {
+   "start": 48.65,
+   "end": 50.4,
+   "kind": "clip",
+   "file": "work/p_both.mp4",
+   "from": 0,
+   "transition": "cut",
+   "grade": false
+  },
+  {
+   "start": 50.4,
+   "end": 53.25,
+   "kind": "clip",
+   "file": "work/p_store.mp4",
+   "from": 0,
+   "transition": "cut",
+   "grade": false
+  }
+ ],
+ "cta": {
+  "text": "Напиши «ЗУБЫ»\nв комментариях",
+  "accent": "«ЗУБЫ»",
+  "start": 53.25,
+  "top": 230,
+  "sub": "Comment “TEETH” for the link",
+  "color": "#FFD84D"
+ },
+ "en": "en.json"
+}
